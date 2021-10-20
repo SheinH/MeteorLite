@@ -39,6 +39,7 @@ import meteor.config.ConfigSectionDescriptor;
 import meteor.config.Keybind;
 import meteor.config.ModifierlessKeybind;
 import meteor.config.Range;
+import meteor.eventbus.EventBus;
 import meteor.plugins.Plugin;
 import meteor.ui.MeteorUI;
 import meteor.ui.components.ConfigButton;
@@ -77,6 +78,8 @@ public class PluginConfigPanel extends AnchorPane {
 	private ConfigManager configManager;
 	@Inject
 	private MeteorUI meteorUI;
+	@Inject
+	private EventBus eventBus;
 	private PluginToggleButton toggleButton;
 
 	public PluginConfigPanel(Plugin plugin) {
@@ -126,6 +129,7 @@ public class PluginConfigPanel extends AnchorPane {
 
 		if (plugin.isToggleable()) {
 			toggleButton = new PluginToggleButton(plugin);
+			eventBus.register(toggleButton);
 			toggleButton.setSelected(plugin.enabled);
 			AnchorPane.setTopAnchor(toggleButton, 15.0);
 			AnchorPane.setBottomAnchor(toggleButton, 2.0);

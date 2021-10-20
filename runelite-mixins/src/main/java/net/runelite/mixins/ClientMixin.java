@@ -71,7 +71,7 @@ public abstract class ClientMixin implements RSClient {
   @Inject
   private static Set<String> unhiddenCasts = new HashSet<String>();
   @Inject
-  private final ArrayList<String> outdatedScripts = new ArrayList<String>();
+  private ArrayList<String> outdatedScripts;
   @Inject
   boolean occluderEnabled = false;
   @Inject
@@ -806,6 +806,8 @@ public abstract class ClientMixin implements RSClient {
   @Inject
   @Override
   public void setOutdatedScript(String outdatedScript) {
+    if (outdatedScripts == null)
+      outdatedScripts = new ArrayList<>();
     if (!outdatedScripts.contains(outdatedScript)) {
       outdatedScripts.add(outdatedScript);
     }
