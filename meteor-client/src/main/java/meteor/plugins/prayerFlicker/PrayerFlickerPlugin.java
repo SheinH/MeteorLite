@@ -9,6 +9,8 @@ import meteor.eventbus.Subscribe;
 import meteor.input.KeyManager;
 import meteor.plugins.Plugin;
 import meteor.plugins.PluginDescriptor;
+import meteor.plugins.api.coords.Area;
+import meteor.plugins.api.coords.RectangularArea;
 import meteor.plugins.api.packets.MousePackets;
 import meteor.plugins.api.packets.WidgetPackets;
 import meteor.plugins.api.widgets.Prayers;
@@ -65,11 +67,21 @@ public class PrayerFlickerPlugin extends Plugin {
 
     boolean toggle;
 
+    Area fightArea = new RectangularArea(3218,3593,3256,3632);
+
     @Subscribe
     public void onGameTick(GameTick event) {
         if (client.getGameState() != GameState.LOGGED_IN) {
             return;
         }
+        var player = client.getLocalPlayer();
+//        if(!fightArea.contains(player)){
+//            toggle = false;
+//            if (Prayers.isQuickPrayerEnabled()) {
+//                MousePackets.queueClickPacket(0, 0);
+//                WidgetPackets.queueWidgetActionPacket(WidgetInfo.MINIMAP_QUICK_PRAYER_ORB.getPackedId(), -1, -1);
+//            }
+//        }
         if (toggle) {
             boolean quickPrayer = client.getVar(Varbits.QUICK_PRAYER) == 1;
             if (quickPrayer) {

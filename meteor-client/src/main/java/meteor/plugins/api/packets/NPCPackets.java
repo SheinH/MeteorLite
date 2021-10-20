@@ -44,7 +44,7 @@ public class NPCPackets {
 
     public static void queueNPCAction5Packet(int NPCIndex, int ctrlDown) {
         PacketWriter writer = Game.getClient().getPacketWriter();
-        PacketBufferNode packet = Game.getClient().preparePacket(Game.getClient().getNPCAction5Packet(), writer.getIsaacCipher());
+        PacketBufferNode packet = Game.getClient().preparePacket(Game.getClient().getNPCActionPacket(), writer.getIsaacCipher());
         packet.getPacketBuffer().writeShortA$api(NPCIndex);
         packet.getPacketBuffer().writeByte01A$api(ctrlDown);
         writer.queuePacket(packet);

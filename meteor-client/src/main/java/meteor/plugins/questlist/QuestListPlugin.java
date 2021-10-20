@@ -25,6 +25,8 @@
 package meteor.plugins.questlist;
 
 import com.google.common.collect.ImmutableList;
+import com.questhelper.QuestHelperQuest;
+import com.questhelper.panel.questorders.QuestOrders;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -53,7 +55,7 @@ import java.util.stream.Collectors;
 public class QuestListPlugin extends Plugin
 {
 	private static final int ENTRY_PADDING = 8;
-	private static final List<String> QUEST_HEADERS = ImmutableList.of("Free Quests", "Members' Quests", "Miniquests");
+	private static final List<String> QUEST_HEADERS = ImmutableList.of("Free Quests", "Members' Quests", "Miniquests", "Optimal Quest Order");
 
 	private static final String MENU_OPEN = "Open";
 	private static final String MENU_CLOSE = "Close";
@@ -165,6 +167,22 @@ public class QuestListPlugin extends Plugin
 		}
 	}
 
+	private int getQuestPosition(QuestWidget widget){
+		var optimalOrder = QuestOrders.getOptimalOrder();
+		for (int i = 0; i < optimalOrder.size(); i++) {
+			QuestHelperQuest q = optimalOrder.get(i);
+			if(Objects.equals(q.getName(), widget.quest.getText()) || q.getName().contains(widget.quest.getText())){
+				return i;
+			}
+		}
+		return 9999;
+	}
+	public List<QuestWidget> sortOptimalOrder(Collection<QuestWidget> quests){
+		var optimalOrder = QuestOrders.getOptimalOrder();
+		var key = Comparator.comparingInt(this::getQuestPosition);
+		return quests.stream().sorted(key).toList();
+	}
+
 	@Subscribe
 	public void onVarClientIntChanged(VarClientIntChanged varClientIntChanged)
 	{
@@ -241,6 +259,19 @@ public class QuestListPlugin extends Plugin
 		updateFilter(filter);
 	}
 
+	private void populateQuestSet(){
+		var questSections = QuestContainer.values();
+		for(QuestContainer questContainer : questSections){
+			Widget list = client.getWidget(questContainer.widgetInfo);
+			var quests = Arrays.stream(list.getDynamicChildren())
+					.sorted(Comparator.comparing(Widget::getRelativeY))
+					.filter(w -> !QUEST_HEADERS.contains(w.getText()))
+					.map(w -> new QuestWidget(w, Text.removeTags(w.getText()).toLowerCase()))
+					.collect(Collectors.toList());
+			questSet.put(questContainer,quests);
+		}
+	}
+
 	private void updateFilter(String filter)
 	{
 		filter = filter.toLowerCase();
@@ -255,19 +286,24 @@ public class QuestListPlugin extends Plugin
 			return;
 		}
 
+		var freeQuestList = getQuestsFromQuestList(freeList);
+		if(!freeQuestList.isEmpty()){
+			joinQuestLists();
+		}
+
 		updateList(QuestContainer.FREE_QUESTS, filter);
 		updateList(QuestContainer.MEMBER_QUESTS, filter);
 		updateList(QuestContainer.MINI_QUESTS, filter);
 
-		memberList.setOriginalY(freeList.getOriginalY() + freeList.getOriginalHeight() + ENTRY_PADDING);
-		miniList.setOriginalY(memberList.getOriginalY() + memberList.getOriginalHeight() + ENTRY_PADDING);
+		memberList.setOriginalY(freeList.getOriginalY());
+		//miniList.setOriginalY(memberList.getOriginalY() + memberList.getOriginalHeight() + ENTRY_PADDING);
 
 		// originalHeight is changed within updateList so revalidate all lists
 		freeList.revalidate();
 		memberList.revalidate();
 		miniList.revalidate();
 
-		int y = miniList.getRelativeY() + miniList.getHeight() + 10;
+		int y = memberList.getRelativeY() + memberList.getHeight() + 10;
 
 		int newHeight;
 		if (container.getScrollHeight() > 0)
@@ -289,6 +325,71 @@ public class QuestListPlugin extends Plugin
 				WidgetInfo.QUESTLIST_CONTAINER.getPackedId(),
 				newHeight
 			));
+	}
+
+	private void joinQuestLists() {
+		final Widget container = client.getWidget(WidgetInfo.QUESTLIST_CONTAINER);
+		final Widget freeList = client.getWidget(QuestContainer.FREE_QUESTS.widgetInfo);
+		final Widget memberList = client.getWidget(QuestContainer.MEMBER_QUESTS.widgetInfo);
+		final Widget miniList = client.getWidget(QuestContainer.MINI_QUESTS.widgetInfo);
+		if (freeList == null || memberList == null || miniList == null)
+		{
+			return;
+		}
+		var freeQuests = getQuestWidgetsFromQuestList(freeList);
+		var miniQuests = getQuestWidgetsFromQuestList(miniList);
+		var freeListChildren = freeList.getChildren();
+		var miniListChildren = miniList.getChildren();
+		if (freeListChildren != null) {
+			for (int i = 0; i < freeListChildren.length; i++) {
+				if(freeQuests.contains(freeListChildren[i])){
+					freeListChildren[i] = null;
+				}
+			}
+			freeList.setChildren(freeListChildren);
+			freeQuests.forEach(x -> x.setParentId(memberList.getId()));
+			freeList.setHidden(true);
+		}
+		if (miniListChildren != null) {
+			for (int i = 0; i < miniListChildren.length; i++) {
+				if(miniQuests.contains(miniListChildren[i])){
+					miniListChildren[i] = null;
+				}
+			}
+			miniList.setChildren(miniListChildren);
+			miniQuests.forEach(x -> x.setParentId(memberList.getId()));
+			miniList.setHidden(true);
+		}
+
+
+		var memberChildren = new ArrayList<Widget>();
+		Collections.addAll(memberChildren,memberList.getChildren());
+		memberChildren.addAll(freeQuests);
+		memberChildren.addAll(miniQuests);
+
+		var items = memberChildren.toArray(new osrs.Widget[0]);
+		for(var w : items){
+			if(w != null && w.getText().equals("Members' Quests")){
+				w.setText("Optimal Quest Order");
+			}
+		}
+		memberList.setChildren(items);
+	}
+
+	private List<Widget> getQuestWidgetsFromQuestList(Widget questList){
+		var quests = Arrays.stream(questList.getDynamicChildren())
+				.sorted(Comparator.comparing(Widget::getRelativeY))
+				.filter(w -> !QUEST_HEADERS.contains(w.getText()))
+				.collect(Collectors.toList());
+		return quests;
+	}
+	private List<QuestWidget> getQuestsFromQuestList(Widget questList){
+		var quests = Arrays.stream(questList.getDynamicChildren())
+				.sorted(Comparator.comparing(Widget::getRelativeY))
+				.filter(w -> !QUEST_HEADERS.contains(w.getText()))
+				.map(w -> new QuestWidget(w, Text.removeTags(w.getText()).toLowerCase()))
+				.collect(Collectors.toList());
+		return quests;
 	}
 
 	private void updateList(QuestContainer questContainer, String filter)
@@ -322,13 +423,10 @@ public class QuestListPlugin extends Plugin
 		if (quests == null)
 		{
 			// Find all of the widgets that we care about, sorting by their Y value
-			quests = Arrays.stream(list.getDynamicChildren())
-				.sorted(Comparator.comparing(Widget::getRelativeY))
-				.filter(w -> !QUEST_HEADERS.contains(w.getText()))
-				.map(w -> new QuestWidget(w, Text.removeTags(w.getText()).toLowerCase()))
-				.collect(Collectors.toList());
+			quests = getQuestsFromQuestList(list);
 			questSet.put(questContainer, quests);
 		}
+		quests = sortOptimalOrder(quests);
 
 		// offset because of header
 		int y = 20;

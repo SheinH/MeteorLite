@@ -219,6 +219,7 @@ public class PlatformInfo extends Node {
 			var8.packetBuffer.writeIntME(UserComparator6.selectedItemWidget);
 			var8.packetBuffer.writeShort(ArchiveDiskAction.selectedItemSlot);
 			Client.packetWriter.addNode(var8);
+			System.out.println("var3: " + var3 + " siid: " + PacketBufferNode.selectedItemId + " SIW: " + UserComparator6.selectedItemWidget + " ada: " + ArchiveDiskAction.selectedItemSlot);
 		} else if (var2 == 2) {
 			Client.mouseCrossX = var6;
 			Client.mouseCrossY = var7;
@@ -299,7 +300,7 @@ public class PlatformInfo extends Node {
 					Client.mouseCrossState = 0;
 					Client.destinationX = var0;
 					Client.destinationY = var1;
-					var9 = LoginScreenAnimation.getPacketBufferNode(ClientPacket.field2717, Client.packetWriter.isaacCipher);
+					var9 = LoginScreenAnimation.getPacketBufferNode(ClientPacket.Packet_itemOnNPCPacket, Client.packetWriter.isaacCipher);
 					var9.packetBuffer.writeInt2(UserComparator6.selectedItemWidget);
 					var9.packetBuffer.writeShortA(var3);
 					var9.packetBuffer.writeByte(KeyHandler.KeyHandler_pressedKeys[82] ? 1 : 0);
@@ -394,7 +395,8 @@ public class PlatformInfo extends Node {
 					var9.packetBuffer.writeByte01A(KeyHandler.KeyHandler_pressedKeys[82] ? 1 : 0);
 					Client.packetWriter.addNode(var9);
 				}
-			} else {
+			}
+			else {
 				Player var15;
 				if (var2 == 14) {
 					var15 = Client.players[var3];
@@ -974,6 +976,6 @@ public class PlatformInfo extends Node {
 		if (class7.field31 != null && Client.field620 == 0) {
 			class16.invalidateWidget(class7.field31);
 		}
-
+		System.out.println("Var2 is set to: " + var2);
 	}
 }

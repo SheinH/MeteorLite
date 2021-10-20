@@ -9,6 +9,10 @@ import meteor.eventbus.Subscribe;
 import meteor.game.WorldService;
 import meteor.plugins.Plugin;
 import meteor.plugins.PluginDescriptor;
+import meteor.plugins.api.items.Equipment;
+import meteor.plugins.api.packets.ItemPackets;
+import meteor.plugins.api.packets.MousePackets;
+import meteor.plugins.api.packets.WidgetPackets;
 import meteor.ui.overlay.OverlayManager;
 import meteor.util.PvPUtil;
 import meteor.util.WorldUtil;
@@ -146,41 +150,23 @@ public class AutoLogHop extends Plugin {
     }
 
     private void teleportAway() {
-        switch (config.teleMethod()) {
-            case ROYAL_SEED_POD:
-                //can't use royal seed pod above lv 30 wilderness.
-                if (PvPUtil.getWildernessLevelFrom(client.getLocalPlayer().getWorldLocation()) > 30)
-                    return;
-                //kinda a janky way to get the inventory widget without implementing a utils of some kind.
-                Widget inventory = client.getWidget(WidgetInfo.INVENTORY);
-                if (inventory == null)
-                    return;
-                Collection<WidgetItem> items = inventory.getWidgetItems();
-                for (WidgetItem item : items)
-                {
-                    if (item.getId() == 19564)
-                    {
-                        client.invokeMenuAction("Commune", "<col=ff9040>Royal seed pod", 19564, MenuAction.ITEM_FIRST_OPTION.getId(), item.getSlot(), inventory.getId());
-                        break;
-                    }
-                }
-                break;
-            case ROW_GRAND_EXCHANGE:
-                //can't use ring of wealth above lv 30 wilderness.
-                if (PvPUtil.getWildernessLevelFrom(client.getLocalPlayer().getWorldLocation()) > 30)
-                    return;
-                //not as janky as inventory items kek
-                Widget equipment = client.getWidget(WidgetInfo.EQUIPMENT_RING);
-                ItemContainer container = client.getItemContainer(InventoryID.EQUIPMENT);
-                if (equipment == null)
-                    return;
-                //don't attempt to tele if we don't have a ring lol
-                if (container != null && Arrays.stream(container.getItems()).noneMatch(item -> client.getItemComposition(item.getId()).getName().toLowerCase().contains("ring of wealth (")))
-                    return;
+        //can't use ring of wealth above lv 30 wilderness.
+        if (PvPUtil.getWildernessLevelFrom(client.getLocalPlayer().getWorldLocation()) > 30)
+            return;
+        //not as janky as inventory items kek
+        Widget equipment = client.getWidget(WidgetInfo.EQUIPMENT_RING);
+        ItemContainer container = client.getItemContainer(InventoryID.EQUIPMENT);
+        if (equipment == null)
+            return;
+        //don't attempt to tele if we don't have a ring lol
+        if (container != null && Arrays.stream(container.getItems()).noneMatch(item -> client.getItemComposition(item.getId()).getName().toLowerCase().contains("ring of wealth (")))
+            return;
 
-                client.invokeMenuAction("Grand Exchange", "<col=ff9040>Ring of wealth ( )</col>", 3, MenuAction.CC_OP.getId(), -1, equipment.getId());
-                break;
-        }
+        //client.invokeMenuAction("Grand Exchange", "<col=ff9040>Ring of wealth ( )</col>", 3, MenuAction.CC_OP.getId(), -1, equipment.getId());
+        var ring = WidgetInfo.EQUIPMENT_RING;
+        var ringWidget = client.getWidget(ring);
+        MousePackets.queueClickPacket(0, 0);
+        WidgetPackets.widgetAction(ringWidget,"Grand Exchange");
     }
 
     private boolean passedWildernessChecks() {

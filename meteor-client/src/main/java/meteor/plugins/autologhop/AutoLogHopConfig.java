@@ -47,9 +47,7 @@ public interface AutoLogHopConfig extends Config
             description = "Username for login",
             position = 12,
             section = title,
-            hidden = true,
-            unhide = "method",
-            unhideValue = "LOGOUT_HOP"
+            textField = true
     )
     default String user() {
         return "";
@@ -61,10 +59,8 @@ public interface AutoLogHopConfig extends Config
             description = "Password for login",
             position = 13,
             section = title,
-            secret = true,
-            hidden = true,
-            unhide = "method",
-            unhideValue = "LOGOUT_HOP"
+            textField = true,
+            secret = true
     )
     default String password() {
         return "";

@@ -7,6 +7,7 @@ import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,4 +47,6 @@ public class Widgets {
     public static boolean isVisible(Widget widget) {
         return widget != null && !GameThread.invokeLater(widget::isHidden);
     }
+
+
 }

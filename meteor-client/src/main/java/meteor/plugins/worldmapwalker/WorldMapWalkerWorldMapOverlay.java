@@ -1,8 +1,10 @@
 package meteor.plugins.worldmapwalker;
 
+import meteor.game.SpriteManager;
 import meteor.plugins.api.entities.Players;
 import meteor.plugins.api.game.Game;
 import meteor.plugins.api.movement.pathfinder.Walker;
+import meteor.plugins.worldmapwalker.WorldMapWalkerPlugin;
 import meteor.ui.overlay.Overlay;
 import meteor.ui.overlay.OverlayLayer;
 import meteor.ui.overlay.OverlayPosition;
@@ -10,6 +12,7 @@ import meteor.ui.overlay.OverlayPriority;
 import meteor.ui.overlay.worldmap.WorldMapOverlay;
 import net.runelite.api.Perspective;
 import net.runelite.api.Point;
+import net.runelite.api.SpriteID;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.widgets.Widget;
@@ -20,59 +23,29 @@ import javax.inject.Singleton;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Path2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-@Singleton
-public class WorldMapWalkerOverlay extends Overlay {
+public class WorldMapWalkerWorldMapOverlay extends Overlay {
     WorldMapWalkerPlugin plugin;
     static final Color TRANSPARENT_GREEN = new Color(0,255,0,128);
     static final Color TRANSPARENT_RED = new Color(255,0,0,128);
     @Inject
     private WorldMapOverlay worldMapOverlay;
+    @Inject
+    private SpriteManager spriteManager;
 
     @Inject
-    private WorldMapWalkerOverlay(WorldMapWalkerPlugin plugin) {
+    private WorldMapWalkerWorldMapOverlay(WorldMapWalkerPlugin plugin) {
         this.plugin = plugin;
 
         setPosition(OverlayPosition.DYNAMIC);
-        setLayer(OverlayLayer.ABOVE_SCENE);
-        setPriority(OverlayPriority.HIGHEST);
+        setLayer(OverlayLayer.ABOVE_WIDGETS);
     }
 
 
-    private void renderPath(Graphics2D graphics, List<WorldPoint> path, int startIndex){
-        ArrayList<LocalPoint> pathToDraw = new ArrayList<>(path.size() - startIndex);
-        for (int i = startIndex; i < path.size(); i++) {
-            pathToDraw.add(LocalPoint.fromWorld(client,path.get(i)));
-        }
-        GeneralPath generalPath = new GeneralPath(Path2D.WIND_EVEN_ODD,pathToDraw.size());
-        for (LocalPoint currentTile : pathToDraw) {
-            if (currentTile != null) {
-                var pathPoint = Perspective.localToCanvas(client, currentTile, client.getPlane());
-                if (pathPoint == null) {
-                    graphics.setColor(TRANSPARENT_GREEN);
-                    graphics.draw(generalPath);
-                    generalPath.reset();
-                } else {
-                    if (generalPath.getCurrentPoint() == null) {
-                        generalPath.moveTo(pathPoint.getX(), pathPoint.getY());
-                    } else {
-                        generalPath.lineTo(pathPoint.getX(), pathPoint.getY());
-                    }
-                }
-            } else if (generalPath.getCurrentPoint() != null) {
-                graphics.setColor(TRANSPARENT_GREEN);
-                graphics.draw(generalPath);
-                generalPath.reset();
-            }
-        }
-        if(generalPath.getCurrentPoint() != null){
-            graphics.setColor(TRANSPARENT_GREEN);
-            graphics.draw(generalPath);
-        }
-    }
     public void renderPathOnWorldMap(Graphics2D graphics, List<WorldPoint> path, int startIndex){
         GeneralPath generalPath = new GeneralPath(Path2D.WIND_EVEN_ODD,path.size());
         for (int i = startIndex; i < path.size(); i++) {
@@ -97,6 +70,7 @@ public class WorldMapWalkerOverlay extends Overlay {
             graphics.draw(generalPath);
         }
     }
+    BufferedImage flagSprite;
 
     @Override
     public Dimension render(Graphics2D graphics) {
@@ -131,15 +105,19 @@ public class WorldMapWalkerOverlay extends Overlay {
         if(index > 0){
             index--;
         }
-//        for (int i = index; i < path.size() - 1; i++) {
-//            path.get(i).outline(Game.getClient(),graphics, new Color(0,255,0,128),null);
-//        }
-        renderPath(graphics,path,index);
-        plugin.mapPoint.outline(Game.getClient(), graphics, new Color(255,0,0,128), "Destination");
-        /*final Widget map = client.getWidget(WidgetInfo.WORLD_MAP_VIEW);
+        final Widget map = client.getWidget(WidgetInfo.WORLD_MAP_VIEW);
         if(map != null){
             renderPathOnWorldMap(graphics,path,index);
-        }*/
+            Point pathPoint = worldMapOverlay.mapWorldPointToGraphicsPoint(path.get(path.size() - 1));
+            //Offset
+            pathPoint = pathPoint.offset(-7,-15);
+            if(map.getBounds().contains(pathPoint.getX(),pathPoint.getY())){
+                if(flagSprite == null){
+                    flagSprite = spriteManager.getSprite(SpriteID.MINIMAP_DESTINATION_FLAG,0);
+                }
+                graphics.drawImage(flagSprite,pathPoint.getX(),pathPoint.getY(),null);
+            }
+        }
         return null;
     }
 }
