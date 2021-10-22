@@ -1,12 +1,12 @@
 package meteor.plugins.worldmapwalker;
 
 import com.google.inject.Provides;
+import lombok.Getter;
 import meteor.config.ConfigManager;
 import meteor.eventbus.Subscribe;
 import meteor.game.SpriteManager;
 import meteor.input.KeyListener;
 import meteor.input.KeyManager;
-import meteor.menus.WidgetMenuOption;
 import meteor.plugins.Plugin;
 import meteor.plugins.PluginDescriptor;
 import meteor.plugins.api.entities.Players;
@@ -14,11 +14,11 @@ import meteor.plugins.api.movement.Movement;
 import meteor.plugins.api.movement.Reachable;
 import meteor.plugins.api.movement.pathfinder.Walker;
 import meteor.plugins.api.scene.Tiles;
-import meteor.plugins.api.widgets.Widgets;
+import meteor.plugins.worldmapwalker.overlay.WorldMapWalkerOverlay;
+import meteor.plugins.worldmapwalker.overlay.WorldMapWalkerWorldMapOverlay;
 import meteor.ui.overlay.OverlayManager;
 import meteor.ui.overlay.worldmap.WorldMapOverlay;
 import meteor.ui.overlay.worldmap.WorldMapPoint;
-import meteor.ui.overlay.worldmap.WorldMapPointManager;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.*;
@@ -30,7 +30,6 @@ import javax.inject.Singleton;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -48,8 +47,7 @@ public class WorldMapWalkerPlugin extends Plugin {
     private WorldMapOverlay worldMapOverlay;
     @Inject
     private WorldMapWalkerWorldMapOverlay worldMapWalkerWorldMapOverlayOverlay;
-    @Inject
-    private KeyManager keyManager;
+    @Getter
     @Inject
     WorldMapWalkerConfig config;
     @Inject
@@ -60,9 +58,9 @@ public class WorldMapWalkerPlugin extends Plugin {
     private SpriteManager spriteManager;
 
 
-    private boolean hotKeyPressed;
 
     private Point lastMenuOpenedPoint;
+    @Getter
     WorldPoint mapPoint;
     WorldMapPoint worldMapPoint;
 
@@ -72,6 +70,9 @@ public class WorldMapWalkerPlugin extends Plugin {
 
     private static final String DESTINATION_MENU_TARGET = "<col=00ff00>Destination";
 
+    @Inject
+    private KeyManager keyManager;
+    private boolean hotKeyPressed;
     @Override
     public void startup() {
         keyManager.registerKeyListener(new KeyListener() {
@@ -112,13 +113,16 @@ public class WorldMapWalkerPlugin extends Plugin {
         }
     }
 
+    //Special logic if the destination is loaded in scene
     private void handleLocalDestination(){
-        //Short circuit if player next to destination.
         var player = client.getLocalPlayer();
+        if(player == null || mapPoint == null)
+            return;
         if(player.distanceTo(mapPoint) <= 1){
             setMapPoint(null);
             return;
         }
+        //Getting path
         List<WorldPoint> path;
         try {
             path = Walker.PATH_CACHE.get(mapPoint);
@@ -131,26 +135,16 @@ public class WorldMapWalkerPlugin extends Plugin {
             return;
         }
         for (int i = 0; i < path.size() - 1; i++) {
-            //Check for wall
+            //Check for doors along path
             Tile source = Tiles.getAt(path.get(i));
             Tile dest = Tiles.getAt(path.get(i + 1));
+            //Path is not fully loaded in scene
             if(source == null || dest == null){
                 walkUsingWalker();
                 return;
             }
-            if(Reachable.isObstacle(path.get(i + 1))){
-                logger.info("Obstacle detected");
-                setMapPoint(path.get(i));
-                walkUsingWalker();
-                return;
-            }
+            //Path contains a door
             if(Walker.isDoored(source,dest) || Walker.isDoored(dest,source)){
-                walkUsingWalker();
-                return;
-            }
-            else if(Walker.isWalled(source,dest) || Walker.isWalled(dest,source)){
-                logger.info("Wall detected");
-                setMapPoint(path.get(i));
                 walkUsingWalker();
                 return;
             }
@@ -158,9 +152,10 @@ public class WorldMapWalkerPlugin extends Plugin {
         walkDirectly();
     }
 
+    //Click on point
     private void walkDirectly() {
         var destination = client.getLocalDestinationLocation();
-        if(destination == null || WorldPoint.fromLocal(client,destination).equals(mapPoint)){
+        if(destination == null || !WorldPoint.fromLocal(client,destination).equals(mapPoint)){
             Movement.setDestination(mapPoint.getX(),mapPoint.getY());
             if(client.getLocalPlayer().distanceTo(mapPoint) < 7){
                 setMapPoint(null);
