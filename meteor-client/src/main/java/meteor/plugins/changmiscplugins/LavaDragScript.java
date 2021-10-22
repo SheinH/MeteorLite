@@ -93,7 +93,7 @@ public class LavaDragScript extends Plugin {
 
     private static final WorldPoint walkBackPathPoint = new WorldPoint(3200 ,3801,0);
     private void doWaitingVetion() {
-        if(stateTimer.getSecondsFromStart() >= 8){
+        if(stateTimer.getSecondsFromStart() >= 10){
             var player = client.getLocalPlayer();
             if(player.getWorldLocation().equals(walkBackPathPoint)) {
                 transitionState(LavaDragsState.FIGHTING);
@@ -253,10 +253,10 @@ public class LavaDragScript extends Plugin {
                 }
             }
             var lavaDrag = NPCs.getNearest(
-                    x -> x.getId() == NpcID.LAVA_DRAGON && lavaDragonTargetArea.contains(x)
+                    x -> x.getId() == NpcID.LAVA_DRAGON && lavaDragonTargetArea.contains(x) && !x.isDead()
             );
             if(lavaDrag != null && (!Objects.equals(player.getInteracting(),lavaDrag) || player.isIdle())){
-                lavaDrag.interact("Attack");
+				lavaDrag.interact("Attack");
             }
         }
     }
