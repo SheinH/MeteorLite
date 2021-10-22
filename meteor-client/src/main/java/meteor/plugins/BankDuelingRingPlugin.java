@@ -47,6 +47,13 @@ public class BankDuelingRingPlugin extends Plugin {
             ItemID.RING_OF_DUELING7,
             ItemID.RING_OF_DUELING8
     );
+    private static ImmutableSet<Integer> ROW_IDS = ImmutableSet.of(
+            ItemID.RING_OF_WEALTH_1,
+            ItemID.RING_OF_WEALTH_2,
+            ItemID.RING_OF_WEALTH_3,
+            ItemID.RING_OF_WEALTH_4,
+            ItemID.RING_OF_WEALTH_5
+    );
     @Inject
     private ExecutorService executorService;
     private Future<?> currentTask;

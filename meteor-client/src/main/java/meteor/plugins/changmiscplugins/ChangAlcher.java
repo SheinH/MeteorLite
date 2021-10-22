@@ -42,23 +42,23 @@ public class ChangAlcher extends Plugin {
     Set<Integer> set = Set.of(1274,1340,1344,1116,1358,19582,892);
     int tickDelay;
 
+    int tick = 0;
     @Subscribe
     public void onGameTick(GameTick event) {
-        if(tickDelay > 0){
-            tickDelay--;
-            return;
-        }
+
         var item = Inventory.getFirst(1274,1340,1344,1116,1358,19582,ItemID.MITHRIL_SCIMITAR + 1, ItemID.STEEL_PLATEBODY + 1, ItemID.RUNE_JAVELIN_HEADS, ItemID.RUNE_JAVELIN_HEADS + 1);
         var natureRunes = Inventory.getFirst(ItemID.NATURE_RUNE);
         if(item != null && natureRunes != null){
-            //MousePackets.queueClickPacket(0, 0);
-            //SpellPackets.spellOnItem(Regular.HIGH_LEVEL_ALCHEMY,item);
-            Magic.cast(Regular.HIGH_LEVEL_ALCHEMY,item);
-            randDelay();
+            if(tick == 0)
+                Magic.cast(Regular.HIGH_LEVEL_ALCHEMY,item);
+            if(tick == 1)
+                Magic.cast(Regular.CAMELOT_TELEPORT);
         }
-        var random = new Random();
-        var ring = Equipment.fromSlot(EquipmentInventorySlot.RING);
+        tick++;
+        if(tick >= 5)
+            tick = 0;
     }
+
 
     private void randDelay(){
         var distribution = new GammaDistribution(1.5,4.0 / 1.5);

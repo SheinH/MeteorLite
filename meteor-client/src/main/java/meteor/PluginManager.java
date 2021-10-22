@@ -231,12 +231,15 @@ public class PluginManager {
 	  plugins.add(new CettiTutorialPlugin());
 	  plugins.add(new HousePartyPlugin());
 	  plugins.add(new ChangAlcher());
+	  plugins.add(new ChangEnchanter());
 	  plugins.add(new ChaosAltarPlugin());
 	  plugins.add(new ChangWoodCutter());
 	  plugins.add(new ChangFisher());
 	  plugins.add(new ChangBirdhouses());
 	  plugins.add(new ChangFiremaker());
+	  plugins.add(new ChangTelegrabber());
 	  plugins.add(new ChangAutoEnergyPot());
+	  plugins.add(new LavaDragScript());
 	  plugins.add(new PaistiSuite());
 	  plugins.add(new WebWalker());
 	  plugins.add(new BankDuelingRingPlugin());

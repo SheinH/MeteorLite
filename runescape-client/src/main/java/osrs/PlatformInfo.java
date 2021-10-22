@@ -300,7 +300,7 @@ public class PlatformInfo extends Node {
 					Client.mouseCrossState = 0;
 					Client.destinationX = var0;
 					Client.destinationY = var1;
-					var9 = LoginScreenAnimation.getPacketBufferNode(ClientPacket.Packet_itemOnNPCPacket, Client.packetWriter.isaacCipher);
+					var9 = LoginScreenAnimation.getPacketBufferNode(ClientPacket.field2717, Client.packetWriter.isaacCipher);
 					var9.packetBuffer.writeInt2(UserComparator6.selectedItemWidget);
 					var9.packetBuffer.writeShortA(var3);
 					var9.packetBuffer.writeByte(KeyHandler.KeyHandler_pressedKeys[82] ? 1 : 0);
