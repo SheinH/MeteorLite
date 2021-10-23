@@ -240,6 +240,7 @@ public class PluginManager {
 	  plugins.add(new ChangFiremaker());
 	  plugins.add(new ChangTelegrabber());
 	  plugins.add(new ChangAutoEnergyPot());
+	  plugins.add(new KotlinTestPlugin());
 	  plugins.add(new LavaDragScript());
 	  plugins.add(new PaistiSuite());
 	  plugins.add(new WebWalker());
