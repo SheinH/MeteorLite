@@ -1,26 +1,23 @@
 package meteor.plugins.changmiscplugins;
 
-import meteor.callback.ClientThread;
 import meteor.eventbus.Subscribe;
 import meteor.plugins.Plugin;
 import meteor.plugins.PluginDescriptor;
 import meteor.plugins.api.entities.Players;
-import meteor.plugins.api.game.GameThread;
 import meteor.plugins.api.items.Inventory;
 import meteor.plugins.api.movement.Movement;
-import meteor.plugins.api.packets.GameObjectPackets;
 import meteor.plugins.api.packets.ItemPackets;
 import meteor.plugins.api.packets.MousePackets;
-import meteor.ui.overlay.Overlay;
+import meteor.plugins.api.packets.TileObjectPackets;
 import meteor.ui.overlay.OverlayManager;
-import meteor.ui.overlay.OverlayUtil;
-import net.runelite.api.*;
+import net.runelite.api.AnimationID;
+import net.runelite.api.GameObject;
+import net.runelite.api.Item;
+import net.runelite.api.ItemID;
 import net.runelite.api.events.GameTick;
-import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.queries.GameObjectQuery;
 
 import javax.inject.Inject;
-import java.awt.*;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
@@ -111,7 +108,7 @@ public class ChangWoodCutter extends Plugin {
                         .result(client)
                         .nearestTo(Players.getLocal());
                 MousePackets.queueClickPacket(0, 0);
-                GameObjectPackets.gameObjectFirstOption(tree, 0);
+                TileObjectPackets.tileObjectFirstOption(tree,0);
                 logger.info("Chopping");
             }
             if (Inventory.isFull()) {

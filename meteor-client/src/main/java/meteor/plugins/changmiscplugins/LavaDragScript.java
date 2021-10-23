@@ -39,6 +39,8 @@ import net.runelite.api.queries.WallObjectQuery;
 import net.runelite.api.widgets.WidgetInfo;
 import org.apache.commons.lang3.time.StopWatch;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +49,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @PluginDescriptor(
         name = "Chang Lava Drags",
@@ -131,6 +135,22 @@ public class LavaDragScript extends Plugin {
         }
     }
 
+    private void flickPrayer(){
+        boolean quickPrayer = client.getVar(Varbits.QUICK_PRAYER) == 1;
+        if (quickPrayer) {
+            MousePackets.queueClickPacket(0, 0);
+            WidgetPackets.queueWidgetActionPacket(WidgetInfo.MINIMAP_QUICK_PRAYER_ORB.getPackedId(), -1, -1);
+        }
+        MousePackets.queueClickPacket(0, 0);
+        WidgetPackets.queueWidgetActionPacket(WidgetInfo.MINIMAP_QUICK_PRAYER_ORB.getPackedId(), -1, -1);
+    }
+    private void turnOffPrayer(){
+        if (Prayers.isQuickPrayerEnabled()) {
+            MousePackets.queueClickPacket(0, 0);
+            WidgetPackets.queueWidgetActionPacket(WidgetInfo.MINIMAP_QUICK_PRAYER_ORB.getPackedId(), -1, -1);
+        }
+    }
+
     private void doGoing() {
         if(geArea.contains(Players.getLocal())){
             handleTP();
@@ -148,30 +168,24 @@ public class LavaDragScript extends Plugin {
                     .first();
             if(exit != null){
                 exit.interact("Exit");
-                return;
             }
             else{
                 logger.info("Cave exit not found!");
             }
         }
-        boolean quickPrayer = client.getVar(Varbits.QUICK_PRAYER) == 1;
-        if (quickPrayer) {
-            MousePackets.queueClickPacket(0, 0);
-            WidgetPackets.queueWidgetActionPacket(WidgetInfo.MINIMAP_QUICK_PRAYER_ORB.getPackedId(), -1, -1);
-        }
-        MousePackets.queueClickPacket(0, 0);
-        WidgetPackets.queueWidgetActionPacket(WidgetInfo.MINIMAP_QUICK_PRAYER_ORB.getPackedId(), -1, -1);
-
-        if(!Movement.isWalking()){
-            Movement.walkTo(fightingSpot);
-        }
-        if(generalArea.contains(Players.getLocal())){
-            transitionState(LavaDragsState.FIGHTING);
-            if (Prayers.isQuickPrayerEnabled()) {
-                MousePackets.queueClickPacket(0, 0);
-                WidgetPackets.queueWidgetActionPacket(WidgetInfo.MINIMAP_QUICK_PRAYER_ORB.getPackedId(), -1, -1);
+        else {
+            flickPrayer();
+            if (!Movement.isWalking()) {
+                Movement.walkTo(fightingSpot);
             }
-            return;
+            if (generalArea.contains(Players.getLocal())) {
+                transitionState(LavaDragsState.FIGHTING);
+                if (Prayers.isQuickPrayerEnabled()) {
+                    MousePackets.queueClickPacket(0, 0);
+                    WidgetPackets.queueWidgetActionPacket(WidgetInfo.MINIMAP_QUICK_PRAYER_ORB.getPackedId(), -1, -1);
+                }
+                return;
+            }
         }
     }
 
@@ -180,6 +194,7 @@ public class LavaDragScript extends Plugin {
             return;
         if(quantity == 1){
             GameThread.invoke(() -> Bank.withdraw(itemID,quantity, Bank.WithdrawMode.ITEM));
+            Time.sleepUntil(() -> Inventory.contains(x -> x.getId() == itemID),50,5000);
         }
         else{
             GameThread.invoke(() -> Bank.withdraw(itemID,quantity, Bank.WithdrawMode.ITEM));
@@ -208,7 +223,7 @@ public class LavaDragScript extends Plugin {
         }
 
         GameThread.invoke(() -> Bank.depositInventory());
-        Time.sleep(600);
+        Time.sleepUntil(() -> Inventory.isEmpty(),50,5000);
         Bank.setQuantityMode(Bank.QuantityMode.ONE);
         Time.sleep(600);
         withdraw(ItemID.PESTLE_AND_MORTAR,1);
@@ -273,7 +288,9 @@ public class LavaDragScript extends Plugin {
     }
 
     private void doLeaving() {
+        flickPrayer();
         if (geArea.contains(client.getLocalPlayer())) {
+            turnOffPrayer();
             transitionState(LavaDragsState.BANKING);
             return;
         }
@@ -292,6 +309,7 @@ public class LavaDragScript extends Plugin {
     }
 
     private void doWaitingVetion() {
+        turnOffPrayer();
         if (stateTimer.getTime(TimeUnit.SECONDS) >= 10) {
             var player = client.getLocalPlayer();
             if (player.getWorldLocation().equals(walkBackPathPoint)) {
@@ -306,11 +324,13 @@ public class LavaDragScript extends Plugin {
     }
 
     private void doFleeingVetion() {
+        flickPrayer();
         if (state == LavaDragsState.LEAVING)
             return;
         var player = client.getLocalPlayer();
         if (player.getWorldLocation().equals(vetionSafeSpot)) {
             transitionState(LavaDragsState.WAITING_VETION);
+            turnOffPrayer();
         }
         if (player.isIdle()) {
             MousePackets.queueClickPacket(0, 0);
@@ -539,10 +559,21 @@ public class LavaDragScript extends Plugin {
                 .build());
     }
 
+    int numCharges = -1;
     @Subscribe
     public void onChatMessage(ChatMessage message) {
-        if (message.getMessage().equals("The bag's too full!")) {
+        if (message.getMessage().equals("The bag's too full.")) {
             lootingBagFull = true;
+        }
+        //Check charges
+        Pattern pattern = Pattern.compile("Your weapon has ([\\d,]+) charges.");
+        Matcher matcher = pattern.matcher(message.getMessage());
+        if(matcher.matches()){
+            var numChargesString = matcher.group(1);
+            try {
+                numCharges= NumberFormat.getNumberInstance(java.util.Locale.US).parse(numChargesString).intValue();
+            } catch (ParseException e) {
+            }
         }
     }
 

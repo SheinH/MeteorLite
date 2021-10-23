@@ -4,7 +4,7 @@ import meteor.plugins.api.commons.Time;
 import meteor.plugins.api.game.Game;
 import meteor.plugins.api.game.GameThread;
 import meteor.plugins.api.game.Vars;
-import meteor.plugins.api.packets.DialogPackets;
+import meteor.plugins.api.input.Keyboard;
 import meteor.plugins.api.widgets.Dialog;
 import meteor.plugins.api.widgets.Widgets;
 import net.runelite.api.InventoryID;
@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class Bank extends Items {
-	private static final Bank BANK = new Bank();
+public class AsyncBank extends Items {
+	private static final AsyncBank BANK = new AsyncBank();
 	private static final int WITHDRAW_MODE_VARBIT = 3958;
 	private static final int QUANTITY_MODE_VARP = 6590;
 	private static final Supplier<Widget> MAIN_TAB = () -> Widgets.get(12, 11, 0);
@@ -101,7 +101,7 @@ public class Bank extends Items {
 	public static void releasePlaceholders() {
 		if (!isSettingsOpen()) {
 			toggleSettings();
-			Time.sleepUntil(Bank::isSettingsOpen, 5000);
+			Time.sleepUntil(AsyncBank::isSettingsOpen, 5000);
 		}
 
 		Widget widget = RELEASE_PLACEHOLDERS.get();
@@ -172,7 +172,7 @@ public class Bank extends Items {
 		}
 
 		WithdrawOption withdrawOption = WithdrawOption.ofAmount(item, amount);
-		item.interact(withdrawOption.getMenuIndex());
+		item.interact(withdrawOption.menuIndex + 1);
 
 		if (withdrawOption == WithdrawOption.X) {
 			Dialog.enterInput(amount);
@@ -209,27 +209,27 @@ public class Bank extends Items {
 
 		WithdrawOption withdrawOption = WithdrawOption.ofAmount(item, amount);
 		if (withdrawMode == WithdrawMode.NOTED && !isNotedWithdrawMode()) {
-			setWithdrawMode(true);
-			Time.sleepUntil(Bank::isNotedWithdrawMode, 5000);
+			GameThread.invoke(() -> setWithdrawMode(true));
+			Time.sleepUntil(AsyncBank::isNotedWithdrawMode, 5000);
 		}
 
 		if (withdrawMode == WithdrawMode.ITEM && isNotedWithdrawMode()) {
-			setWithdrawMode(false);
+			GameThread.invoke(() -> setWithdrawMode(false));
 			Time.sleepUntil(() -> !isNotedWithdrawMode(), 5000);
 		}
 
-		item.interact(withdrawOption.getMenuIndex());
+		GameThread.invoke(() -> item.interact(withdrawOption.menuIndex));
 
 		if (withdrawOption == WithdrawOption.X) {
-			Time.sleepUntil(Dialog::isEnterInputOpen,50,5000);
-			DialogPackets.sendNumberInput(amount);
+			Time.sleepUntil(() -> Dialog.isEnterInputOpen(),50,3000);
+			Keyboard.type(String.valueOf(amount),true);
 		}
 	}
 
 	public static void setWithdrawMode(boolean noted) {
 		Widget widget = noted ? WITHDRAW_NOTE.get() : WITHDRAW_ITEM.get();
 		if (widget != null) {
-			GameThread.invoke(() -> widget.interact(0));
+			widget.interact(0);
 		}
 	}
 
@@ -411,13 +411,6 @@ public class Bank extends Items {
 			}
 
 			return WithdrawOption.X;
-		}
-
-		int getMenuIndex(){
-			if(Bank.getQuantityMode() == QuantityMode.ONE)
-				return menuIndex;
-			else
-				return menuIndex + 1;
 		}
 	}
 }
