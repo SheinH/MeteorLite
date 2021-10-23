@@ -231,6 +231,7 @@ public class PluginManager {
 	  plugins.add(new CettiTutorialPlugin());
 	  plugins.add(new HousePartyPlugin());
 	  plugins.add(new ChangAlcher());
+	  plugins.add(new ChangTestPlugin());
 	  plugins.add(new ChangEnchanter());
 	  plugins.add(new ChaosAltarPlugin());
 	  plugins.add(new ChangWoodCutter());
