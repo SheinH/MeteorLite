@@ -18,7 +18,6 @@ import meteor.plugins.api.game.Combat;
 import meteor.plugins.api.game.Game;
 import meteor.plugins.api.game.GameThread;
 import meteor.plugins.api.game.Worlds;
-import meteor.plugins.api.items.AsyncBank;
 import meteor.plugins.api.items.Bank;
 import meteor.plugins.api.items.Equipment;
 import meteor.plugins.api.items.Inventory;
@@ -29,6 +28,7 @@ import meteor.plugins.api.packets.*;
 import meteor.plugins.api.widgets.Dialog;
 import meteor.plugins.api.widgets.Prayers;
 import meteor.ui.overlay.OverlayManager;
+import meteor.util.PvPUtil;
 import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ChatMessage;
@@ -36,6 +36,7 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.InteractingChanged;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.queries.WallObjectQuery;
+import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import org.apache.commons.lang3.time.StopWatch;
 
@@ -89,6 +90,7 @@ public class LavaDragScript extends Plugin {
     NPC currentTarget;
     boolean lootingBagFull;
     private Future<?> bankTask;
+    int bankTries = 0;
 
     void transitionState(LavaDragsState newState) {
         state = newState;
@@ -135,6 +137,31 @@ public class LavaDragScript extends Plugin {
             case BANKING -> doBanking();
             case GOING -> doGoing();
         }
+    }
+
+    private void halt(){
+        Widget logoutButton = client.getWidget(182, 8);
+        Widget logoutDoorButton = client.getWidget(69, 23);
+        int param1 = -1;
+        if (logoutButton != null) {
+            param1 = logoutButton.getId();
+        } else if (logoutDoorButton != null) {
+            param1 = logoutDoorButton.getId();
+        }
+        if (param1 == -1) {
+            return;
+        }
+        int p1 = param1;
+        MousePackets.queueClickPacket(0,0);
+        GameThread.invoke(() -> client.invokeMenuAction(
+                "Logout",
+                "",
+                1,
+                MenuAction.CC_OP.getId(),
+                -1,
+                p1
+        ));
+        toggle(false);
     }
 
     private void flickPrayer(){
@@ -218,44 +245,103 @@ public class LavaDragScript extends Plugin {
                 Time.sleep(600);
         }
 
-        var oldRing = Equipment.fromSlot(EquipmentInventorySlot.RING);
-        if(oldRing != null && oldRing.getId() == ItemID.RING_OF_WEALTH){
-            oldRing.interact("Remove");
-            Time.sleepUntil(() -> Equipment.fromSlot(EquipmentInventorySlot.RING) == null,50,5000);
-        }
 
         GameThread.invoke(() -> Bank.depositInventory());
         Time.sleepUntil(() -> Inventory.isEmpty(),50,5000);
+        Time.sleep(600);
         Bank.setQuantityMode(Bank.QuantityMode.ONE);
         Time.sleep(600);
-        withdraw(ItemID.PESTLE_AND_MORTAR,1);
-        withdraw(ItemID.LOOTING_BAG,1);
         withdraw(ItemID.AIR_RUNE,80);
         withdraw(ItemID.LAW_RUNE,80);
         withdraw(ItemID.NATURE_RUNE,3);
         withdraw(ItemID.FIRE_RUNE,15);
+        withdraw(ItemID.PESTLE_AND_MORTAR,1);
+        withdraw(ItemID.LOOTING_BAG,1);
+        withdraw(ItemID.SHARK,1);
+        withdraw(ItemID.SHARK,1);
+        withdraw(ItemID.SHARK,1);
         withdraw(ItemID.DIVINE_MAGIC_POTION4,1);
         withdraw(ItemID.DIVINE_MAGIC_POTION4,1);
-        withdraw(ItemID.SHARK,1);
-        withdraw(ItemID.SHARK,1);
-        withdraw(ItemID.SHARK,1);
 
         Predicate<Item> isGamesNeck = x -> x.getId() >= ItemID.GAMES_NECKLACE8 && x.getId() <= ItemID.GAMES_NECKLACE1 && x.getId() % 2 == 1;
         var neck = Bank.getFirst(isGamesNeck);
         if(neck != null){
-            Bank.withdraw(neck.getId(),1, Bank.WithdrawMode.ITEM);
+            withdraw(neck.getId(),1);
         }
 
+        handleROW();
         //Check ROW
-        if(Equipment.fromSlot(EquipmentInventorySlot.RING) == null){
-            var newRing = Bank.getFirst(ItemID.RING_OF_WEALTH_5);
-            MousePackets.queueClickPacket(0,0);
-            Bank.withdraw(newRing.getId(),1, Bank.WithdrawMode.ITEM);
-            Time.sleepUntil(() -> Inventory.contains(newRing.getId()),50,5000);
-            GameThread.invoke( () -> Inventory.getFirst(ItemID.RING_OF_WEALTH_5).interact("Wear"));
-        }
+        Time.sleep(2000);
         GameThread.invoke(() -> Game.getClient().runScript(138)); // closes the input dialog
-        transitionState(LavaDragsState.GOING);
+        if(readyForAnotherTrip()) {
+            transitionState(LavaDragsState.GOING);
+            lootingBagFull = false;
+        }
+        else{
+            bankTries++;
+            if(bankTries > 3)
+                halt();
+        }
+    }
+
+    private boolean inventoryHasItemAmount(int itemID,int amount){
+        var items = Inventory.getAll(itemID);
+        int total = 0;
+        for(var x : items){
+            total += x.getQuantity();
+        }
+        return Math.max(total,items.size()) >= amount;
+    }
+    private boolean readyForAnotherTrip() {
+        if(Inventory.isFull())
+            return false;
+        if(!inventoryHasItemAmount(ItemID.LAW_RUNE,80) || !inventoryHasItemAmount(ItemID.AIR_RUNE,80))
+            return false;
+        if(!inventoryHasItemAmount(ItemID.SHARK,3))
+            return false;
+        Predicate<Item> isGamesNeck = x -> x.getId() >= ItemID.GAMES_NECKLACE8 && x.getId() <= ItemID.GAMES_NECKLACE1 && x.getId() % 2 == 1;
+        if(!Inventory.contains(isGamesNeck))
+            return false;
+        if(!Inventory.contains(ItemID.PESTLE_AND_MORTAR))
+            return false;
+        //Trident check
+        //ROW CHECk
+        var ring = Equipment.fromSlot(EquipmentInventorySlot.RING);
+        final ImmutableSet<Integer> validRings = ImmutableSet.of(
+                ItemID.RING_OF_WEALTH_1,
+                ItemID.RING_OF_WEALTH_2,
+                ItemID.RING_OF_WEALTH_3,
+                ItemID.RING_OF_WEALTH_4,
+                ItemID.RING_OF_WEALTH_5
+        );
+        if(ring == null || !validRings.contains(ring.getId()))
+            return false;
+        numCharges = -1;
+
+        var wep = Equipment.fromSlot(EquipmentInventorySlot.WEAPON);
+        wep.interact("Check");
+        Time.sleepUntil(() -> numCharges != -1,50,2000);
+        if(numCharges == -1 || numCharges < 500)
+            return false;
+        return true;
+    }
+
+    private void handleROW() {
+        var oldRing = Equipment.fromSlot(EquipmentInventorySlot.RING);
+        if(oldRing == null || oldRing.getId() == ItemID.RING_OF_WEALTH){
+            withdraw(ItemID.RING_OF_WEALTH_5,1);
+        }
+        var ring = Inventory.getFirst(ItemID.RING_OF_WEALTH_5);
+        if(ring != null){
+            ItemPackets.queueBankItemActionPacket(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER.getPackedId(),ring.getId(), ring.getSlot());
+            Time.sleepUntil(() -> {
+                var ringSlot = Equipment.fromSlot(EquipmentInventorySlot.RING);
+                return ringSlot != null && ringSlot.getId() == ItemID.RING_OF_WEALTH_5;
+            },50,4000);
+            if(Inventory.contains(ItemID.RING_OF_WEALTH)){
+                Bank.deposit(ItemID.RING_OF_WEALTH,1);
+            }
+        }
     }
 
     private void handleTP(){
@@ -273,6 +359,7 @@ public class LavaDragScript extends Plugin {
     }
 
     private void doBanking() {
+        turnOffPrayer();
         if(Bank.isOpen()){
             if(bankTask == null || bankTask.isDone()) {
                 bankTask = executor.submit(this::bankItems);
@@ -297,7 +384,7 @@ public class LavaDragScript extends Plugin {
             return;
         }
         if (stateTimer.getTime(TimeUnit.MINUTES) >= 2) {
-            toggle(false);
+            halt();
             return;
         }
         final WorldPoint exitPoint = new WorldPoint(3205, 3740, 0);
@@ -306,8 +393,11 @@ public class LavaDragScript extends Plugin {
         }
         var ring = WidgetInfo.EQUIPMENT_RING;
         var ringWidget = client.getWidget(ring);
-        MousePackets.queueClickPacket(0, 0);
-        WidgetPackets.widgetAction(ringWidget, "Grand Exchange");
+        if (PvPUtil.getWildernessLevelFrom(client.getLocalPlayer().getWorldLocation()) < 30){
+            turnOffPrayer();
+            MousePackets.queueClickPacket(0, 0);
+            WidgetPackets.widgetAction(ringWidget, "Grand Exchange");
+        }
     }
 
     private void doWaitingVetion() {
@@ -437,7 +527,6 @@ public class LavaDragScript extends Plugin {
                     var loot = getLoot();
                     if (loot.isEmpty()) {
                         transitionState(LavaDragsState.LEAVING);
-                        sendChatMessage("Looting bag and Inventory full. Shutting down.");
                         return;
                     }
                     var itemToLoot = loot.stream().max(Comparator.comparingInt(x -> x.getQuantity() * itemManager.getItemPrice(x.getId())));
@@ -445,7 +534,6 @@ public class LavaDragScript extends Plugin {
                     return;
                 }
                 transitionState(LavaDragsState.LEAVING);
-                sendChatMessage("Looting bag and Inventory full. Shutting down.");
                 return;
             }
             var lootBag = Inventory.getFirst("Looting bag");
@@ -467,7 +555,7 @@ public class LavaDragScript extends Plugin {
             return;
         }
         if (stateTimer.getTime(TimeUnit.SECONDS) > 90) {
-            toggle();
+            halt();
             sendChatMessage("LOOT timeout, shutting down");
             return;
         }
@@ -494,6 +582,11 @@ public class LavaDragScript extends Plugin {
     }
 
     private void doFighting() {
+        var player = client.getLocalPlayer();
+        if(!generalArea.contains(player)){
+            logger.info("Fighting state in incorrect area! Shutting down.");
+            halt();
+        }
         if (currentTarget != null && currentTarget.isDead()) {
             killCount++;
             currentTarget = null;
@@ -505,10 +598,9 @@ public class LavaDragScript extends Plugin {
         }
         if (stateTimer.getTime(TimeUnit.MINUTES) > 2) {
             sendChatMessage("FIGHTING timeout, shutting down");
-            transitionState(LavaDragsState.LEAVING);
+            halt();
         }
         //Move to right spot
-        var player = client.getLocalPlayer();
         if (!player.getWorldLocation().equals(fightingSpot)) {
             MousePackets.queueClickPacket(0, 0);
             Movement.setDestination(fightingSpot.getX(), fightingSpot.getY());
@@ -545,9 +637,8 @@ public class LavaDragScript extends Plugin {
         if(lavaDrag == null)
             return;
         var weapon = Equipment.fromSlot(EquipmentInventorySlot.WEAPON);
-        if(weapon.getId() == ItemID.TRIDENT_OF_THE_SEAS) {
-            if (lavaDrag.distanceTo(client.getLocalPlayer()) < 7) {
-                if(Combat.getAttackStyle() != Combat.AttackStyle.FIRST)
+        if(weapon.getId() == ItemID.TRIDENT_OF_THE_SEAS || weapon.getId() == ItemID.TRIDENT_OF_THE_SWAMP) {
+            if (lavaDrag.distanceTo(client.getLocalPlayer()) < 6) {
                     Combat.setAttackStyle(Combat.AttackStyle.FIRST);
             } else {
                 if(Combat.getAttackStyle() != Combat.AttackStyle.FOURTH)
@@ -571,7 +662,8 @@ public class LavaDragScript extends Plugin {
     @Subscribe
     public void onInteractingChanged(InteractingChanged event) {
         if (vetionIDs.contains(event.getSource().getId()) && Objects.equals(event.getTarget(), client.getLocalPlayer())) {
-            state = LavaDragsState.FLEEING_VETION;
+            if(state != LavaDragsState.LEAVING)
+                state = LavaDragsState.FLEEING_VETION;
             GameThread.invoke(() -> {
                 //Movement.setDestination(vetionSafeSpot.getX(),vetionSafeSpot.getY());
                 MousePackets.queueClickPacket(0, 0);
@@ -593,6 +685,11 @@ public class LavaDragScript extends Plugin {
         if (message.getMessage().equals("The bag's too full.")) {
             lootingBagFull = true;
         }
+        if(message.getType() != ChatMessageType.GAMEMESSAGE)
+            return;
+        if(message.getMessage().toLowerCase().contains("out of charges")){
+            halt();
+        }
         //Check charges
         Pattern pattern = Pattern.compile("Your weapon has ([\\d,]+) charges.");
         Matcher matcher = pattern.matcher(message.getMessage());
@@ -600,6 +697,7 @@ public class LavaDragScript extends Plugin {
             var numChargesString = matcher.group(1);
             try {
                 numCharges= NumberFormat.getNumberInstance(java.util.Locale.US).parse(numChargesString).intValue();
+                logger.info("NUM CHARGES: " + numCharges);
             } catch (ParseException e) {
             }
         }

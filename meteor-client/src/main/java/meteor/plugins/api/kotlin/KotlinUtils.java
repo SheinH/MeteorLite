@@ -4,7 +4,7 @@ import meteor.chat.ChatMessageManager;
 import meteor.chat.QueuedMessage;
 import net.runelite.api.ChatMessageType;
 
-public class ChatMessage {
+public class KotlinUtils {
 
     public static void sendChatMessage(ChatMessageManager chatMessageManager, String message ){
         chatMessageManager.queue(QueuedMessage.builder()
