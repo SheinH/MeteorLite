@@ -28,6 +28,7 @@ import meteor.plugins.changmiscplugins.*;
 import meteor.plugins.cettitutorial.CettiTutorialPlugin;
 import meteor.plugins.chaosaltar.ChaosAltarPlugin;
 import meteor.plugins.houseparty.HousePartyPlugin;
+import meteor.plugins.interfacestyles.InterfaceStylesPlugin;
 import meteor.plugins.nightmareHelper.NightmareHelper;
 import meteor.plugins.highalchemy.HighAlchPlugin;
 import meteor.plugins.PvPKeys.PvPKeys;
@@ -408,6 +409,7 @@ public class PluginManager {
 		plugins.add(new XpGlobesPlugin());
 		plugins.add(new XpUpdaterPlugin());
 		plugins.add(new ZulrahPlugin());
+		plugins.add(new InterfaceStylesPlugin());
   }
 
 	public void startInternalPlugins() {

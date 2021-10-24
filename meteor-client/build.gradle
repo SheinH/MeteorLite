@@ -3,8 +3,8 @@ plugins {
     id 'application'
     id 'com.github.johnrengelman.shadow'
     id 'org.beryx.runtime'
-    id 'org.jetbrains.kotlin.plugin.lombok' version '1.5.31'
     id 'org.openjfx.javafxplugin' version '0.0.10'
+    id 'org.jetbrains.kotlin.plugin.lombok' version '1.5.31'
     id "org.jetbrains.kotlin.jvm" version "1.5.31"
 }
 

@@ -92,8 +92,10 @@ public class LavaDragScript extends Plugin {
 
     void transitionState(LavaDragsState newState) {
         state = newState;
-        if (newState == LavaDragsState.LOOTING)
+        if (newState == LavaDragsState.LOOTING) {
             lootingBagTries = 0;
+            lavaDragAttacked = false;
+        }
         stateTimer.reset();
         stateTimer.start();
     }
@@ -413,6 +415,7 @@ public class LavaDragScript extends Plugin {
         return false;
     }
 
+    boolean lavaDragAttacked = false;
     private void doLooting() {
         var player = client.getLocalPlayer();
         if (!player.getWorldLocation().equals(fightingSpot)) {
@@ -420,10 +423,30 @@ public class LavaDragScript extends Plugin {
             Movement.setDestination(fightingSpot.getX(), fightingSpot.getY());
             return;
         }
+        var lavaDrag = NPCs.getNearest(
+                x -> x.getId() == NpcID.LAVA_DRAGON && lavaDragonTargetArea.contains(x) && !x.isDead()
+        );
+        handleAttackStyle(lavaDrag);
+        if(lavaDrag != null && !Objects.equals(lavaDrag.getInteracting(),player)){
+            attackDragon();
+            return;
+        }
         if (Inventory.getFreeSlots() < 2) {
             if (lootingBagTries > 4 || lootingBagFull) {
+                if(!Inventory.isFull()) {
+                    var loot = getLoot();
+                    if (loot.isEmpty()) {
+                        transitionState(LavaDragsState.LEAVING);
+                        sendChatMessage("Looting bag and Inventory full. Shutting down.");
+                        return;
+                    }
+                    var itemToLoot = loot.stream().max(Comparator.comparingInt(x -> x.getQuantity() * itemManager.getItemPrice(x.getId())));
+                    teleGrab(itemToLoot.get());
+                    return;
+                }
                 transitionState(LavaDragsState.LEAVING);
                 sendChatMessage("Looting bag and Inventory full. Shutting down.");
+                return;
             }
             var lootBag = Inventory.getFirst("Looting bag");
             var loot = Inventory.getFirst(ItemID.LAVA_DRAGON_BONES);
@@ -456,6 +479,18 @@ public class LavaDragScript extends Plugin {
         return TileItems.getAll(x ->
                 lavaDragonTargetArea.contains(x) && itemManager.getItemPrice(x.getId()) * x.getQuantity() > 1000
         );
+    }
+
+    private void attackDragon(){
+        var player = client.getLocalPlayer();
+        var lavaDrag = NPCs.getNearest(
+                x -> x.getId() == NpcID.LAVA_DRAGON && lavaDragonTargetArea.contains(x) && !x.isDead()
+        );
+        handleAttackStyle(lavaDrag);
+        if (lavaDrag != null && (!Objects.equals(player.getInteracting(), lavaDrag) || player.isIdle() || Dialog.isOpen())) {
+            lavaDrag.interact("Attack");
+            currentTarget = lavaDrag;
+        }
     }
 
     private void doFighting() {
@@ -502,14 +537,7 @@ public class LavaDragScript extends Plugin {
                     return;
                 }
             }
-            var lavaDrag = NPCs.getNearest(
-                    x -> x.getId() == NpcID.LAVA_DRAGON && lavaDragonTargetArea.contains(x) && !x.isDead()
-            );
-            handleAttackStyle(lavaDrag);
-            if (lavaDrag != null && (!Objects.equals(player.getInteracting(), lavaDrag) || player.isIdle() || Dialog.isOpen())) {
-                lavaDrag.interact("Attack");
-                currentTarget = lavaDrag;
-            }
+            attackDragon();
         }
     }
 
