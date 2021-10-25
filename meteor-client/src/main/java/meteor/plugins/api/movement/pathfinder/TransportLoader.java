@@ -1,29 +1,36 @@
 package meteor.plugins.api.movement.pathfinder;
 
 import meteor.plugins.api.entities.NPCs;
+import meteor.plugins.api.entities.Players;
 import meteor.plugins.api.entities.TileObjects;
 import meteor.plugins.api.game.Skills;
 import meteor.plugins.api.game.Vars;
 import meteor.plugins.api.game.Worlds;
 import meteor.plugins.api.items.Inventory;
+import meteor.plugins.api.movement.Movement;
+import meteor.plugins.api.movement.Reachable;
 import meteor.plugins.api.widgets.Dialog;
 import net.runelite.api.Item;
 import net.runelite.api.NPC;
 import net.runelite.api.Skill;
 import net.runelite.api.TileObject;
+import net.runelite.api.coords.Direction;
+import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class TransportLoader {
+    private static final int RFD_VARBIT = 1850;
     private static final int BUILD_DELAY_SECONDS = 5;
     private static Instant lastBuild = Instant.now().minusSeconds(6);
     private static List<Transport> LAST_TRANSPORT_LIST = Collections.emptyList();
+
+    private static final WorldArea MLM = new WorldArea(3714, 5633, 60, 62, 0);
 
     public static List<Transport> buildTransports() {
         if (lastBuild.plusSeconds(BUILD_DELAY_SECONDS).isAfter(Instant.now())) {
@@ -74,6 +81,16 @@ public class TransportLoader {
                     2882,
                     "Pay-toll(10gp)")
             );
+        }
+
+        // Lumbridge castle dining room, ignore if RFD is in progress.
+        if (Vars.getBit(RFD_VARBIT) == -1) {
+            transports.add(objectTransport(new WorldPoint(3213, 3221, 0), new WorldPoint(3212, 3221, 0), 12349, "Open"));
+            transports.add(objectTransport(new WorldPoint(3212, 3221, 0), new WorldPoint(3213, 3221, 0), 12349, "Open"));
+            transports.add(objectTransport(new WorldPoint(3213, 3222, 0), new WorldPoint(3212, 3222, 0), 12350, "Open"));
+            transports.add(objectTransport(new WorldPoint(3212, 3222, 0), new WorldPoint(3213, 3222, 0), 12350, "Open"));
+            transports.add(objectTransport(new WorldPoint(3207, 3218, 0), new WorldPoint(3207, 3217, 0), 12348, "Open"));
+            transports.add(objectTransport(new WorldPoint(3207, 3217, 0), new WorldPoint(3207, 3218, 0), 12348, "Open"));
         }
 
         if (Worlds.inMembersWorld()) {
@@ -163,6 +180,41 @@ public class TransportLoader {
                 new WorldPoint(2822, 9774, 0),
                 1164,
                 "Well that is a risk I will have to take."));
+
+        // Motherload Mine
+        if (MLM.contains(Players.getLocal())) {
+            transports.addAll(motherloadMineTransport(new WorldPoint(3726, 5643, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3726, 5654, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3727, 5652, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3727, 5683, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3728, 5651, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3728, 5688, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3731, 5683, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3733, 5680, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3745, 5689, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3748, 5684, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3748, 5689, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3755, 5640, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3756, 5639, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3757, 5677, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3759, 5690, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3762, 5652, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3762, 5668, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3765, 5688, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3766, 5639, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3766, 5647, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3768, 5674, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3768, 5679, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3769, 5642, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3769, 5658, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3769, 5680, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3770, 5659, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3771, 5638, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3762, 5687, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3766, 5670, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3719, 5664, 0)));
+            transports.addAll(motherloadMineTransport(new WorldPoint(3720, 5665, 0)));
+        }
 
         return List.copyOf(LAST_TRANSPORT_LIST = transports);
     }
@@ -262,6 +314,32 @@ public class TransportLoader {
                 npc.interact(0);
             }
         });
+    }
+
+    public static List<Transport> motherloadMineTransport(
+            WorldPoint rockfall
+    ) {
+        return Arrays.stream(Direction.values()).map(dir -> {
+            WorldPoint neighbor = Reachable.getNeighbour(dir, rockfall);
+            if (Reachable.isWalkable(neighbor)) {
+                WorldPoint dest = null;
+                switch (dir) {
+                    case NORTH -> dest = rockfall.dy(-1);
+                    case SOUTH -> dest = rockfall.dy(1);
+                    case WEST -> dest = rockfall.dx(1);
+                    case EAST -> dest = rockfall.dx(-1);
+                }
+                if (dest != null) {
+                    WorldPoint finalDest = dest;
+                    return new Transport(neighbor, finalDest, Integer.MAX_VALUE, 0, () -> {
+                        TileObjects.getAt(rockfall, x -> x.getName().equalsIgnoreCase("Rockfall")).stream()
+                                .findFirst()
+                                .ifPresentOrElse(obj -> obj.interact("Mine"), () -> Movement.walk(finalDest));
+                    });
+                }
+            }
+            return null;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public static Transport objectTransport(

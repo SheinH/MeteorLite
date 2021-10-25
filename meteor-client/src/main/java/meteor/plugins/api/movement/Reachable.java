@@ -79,18 +79,19 @@ public class Reachable {
                 continue;
             }
 
-            boolean containsPoint;
-            if (targetObject instanceof GameObject go) {
-                containsPoint = go.getWorldArea().contains(neighbour);
-            } else {
-                containsPoint = targetObject.getWorldLocation().equals(neighbour);
-            }
+            if (targetObject != null) {
+                boolean containsPoint;
+                if (targetObject instanceof GameObject go) {
+                    containsPoint = go.getWorldArea().contains(neighbour);
+                } else {
+                    containsPoint = targetObject.getWorldLocation().equals(neighbour);
+                }
 
-            if (targetObject != null
-                    && containsPoint
-                    && (!isWalled(dir, getCollisionFlag(current)) || targetObject instanceof WallObject)) {
-                out.add(neighbour);
-                continue;
+                if (containsPoint
+                        && (!isWalled(dir, getCollisionFlag(current)) || targetObject instanceof WallObject)) {
+                    out.add(neighbour);
+                    continue;
+                }
             }
 
             if (!canWalk(dir, getCollisionFlag(current), getCollisionFlag(neighbour))) {

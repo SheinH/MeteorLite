@@ -2,7 +2,6 @@ package meteor.plugins.api.items;
 
 import meteor.plugins.api.commons.Time;
 import meteor.plugins.api.game.Game;
-import meteor.plugins.api.game.GameThread;
 import meteor.plugins.api.game.Vars;
 import meteor.plugins.api.packets.DialogPackets;
 import meteor.plugins.api.widgets.Dialog;
@@ -302,13 +301,34 @@ public class Bank extends Items {
 		return BANK.exists(name);
 	}
 
+	public static List<Widget> getTabs() {
+		return Widgets.getChildren(WidgetInfo.BANK_TAB_CONTAINER, x -> x.hasAction("Collapse tab"));
+	}
+
 	public static boolean hasTabs() {
-		Widget tabContainer = Widgets.get(WidgetInfo.BANK_TAB_CONTAINER);
-		return tabContainer != null && tabContainer.getChild(11) != null && tabContainer.getChild(11).hasAction("Collapse tab");
+		return !getTabs().isEmpty();
 	}
 
 	public static void collapseTabs() {
-		Game.getClient().interact(6, 1007, 11, 786442);
+		for (int i = 0; i < getTabs().size(); i++) {
+			Widget tab = getTabs().get(i);
+			Game.getClient().interact(6, 1007, 11 + i, tab.getId());
+		}
+	}
+
+	public static void collapseTab(int index) {
+		Widget tabContainer = Widgets.get(WidgetInfo.BANK_TAB_CONTAINER);
+		if (!Widgets.isVisible(tabContainer)) {
+			return;
+		}
+
+		int tabIdx = 11 + index;
+		Widget tab = tabContainer.getChild(tabIdx);
+		if (!Widgets.isVisible(tab)) {
+			return;
+		}
+
+		Game.getClient().interact(6, 1007, tabIdx, tab.getId());
 	}
 
 	public static boolean isMainTabOpen() {

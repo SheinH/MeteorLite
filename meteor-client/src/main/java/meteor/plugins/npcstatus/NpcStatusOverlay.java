@@ -27,7 +27,6 @@ package meteor.plugins.npcstatus;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -50,6 +49,7 @@ public class NpcStatusOverlay extends Overlay
 	private final NpcStatusPlugin plugin;
 	private int lastTicksLeft = 0;
 	private boolean isPraying;
+	private Random random = new Random();
 
 	@Inject
 	private NpcStatusConfig config;
@@ -72,11 +72,13 @@ public class NpcStatusOverlay extends Overlay
 		if (config.autoPray())
 			if (client.getLocalPlayer().isIdle())
 				if (isPraying)
-					disablePrayers();
+					queueDisablePrayers(random.nextInt(300));
 		for (MemorizedNPC npc : plugin.getMemorizedNPCs())
 		{
 			if (npc.getNpc().getInteracting() == client.getLocalPlayer() || client.getLocalPlayer().getInteracting() == npc.getNpc())
 			{
+				int flickOn = 40 + random.nextInt(70);
+				int flickOff = 600 - flickOn + random.nextInt(200);
 				switch (npc.getStatus())
 				{
 					case FLINCHING:
@@ -88,9 +90,7 @@ public class NpcStatusOverlay extends Overlay
 							if (lastTicksLeft != ticksLeft)
 								if (config.autoPray())
 									if (ticksLeft == 1)
-										enablePrayers();
-									else
-										disablePrayers();
+										enablePrayers(flickOn, flickOff);
 							lastTicksLeft = ticksLeft;
 						}
 						npc.setTimeLeft(lastTicksLeft);
@@ -102,9 +102,7 @@ public class NpcStatusOverlay extends Overlay
 							if (lastTicksLeft != ticksLeft)
 								if (config.autoPray())
 									if (ticksLeft == 1)
-										enablePrayers();
-									else
-										disablePrayers();
+										enablePrayers(flickOn, flickOff);
 						lastTicksLeft = ticksLeft;
 						}
 						npc.setTimeLeft(lastTicksLeft);
@@ -126,7 +124,7 @@ public class NpcStatusOverlay extends Overlay
 		return null;
 	}
 
-	private void enablePrayers() {
+	private void enablePrayers(int flickOn, int flickOff) {
 		executorService.schedule(() -> {
 			if (config.prayStyle() == PrayStyle.MELEE) {
 				if (!Prayers.isEnabled(Prayer.PROTECT_FROM_MELEE))
@@ -140,11 +138,12 @@ public class NpcStatusOverlay extends Overlay
 				if (!Prayers.isEnabled(Prayer.PROTECT_FROM_MAGIC))
 					Prayers.toggle(Prayer.PROTECT_FROM_MAGIC);
 			}
+			queueDisablePrayers(flickOff);
 			isPraying = true;
-		}, 40 + new Random().nextInt(70), TimeUnit.MILLISECONDS);
+		}, flickOn, TimeUnit.MILLISECONDS);
 	}
 
-	private void disablePrayers() {
+	private void queueDisablePrayers(int flickOff) {
 		executorService.schedule(() -> {
 			if (!Prayers.isEnabled(Prayer.PROTECT_FROM_MELEE))
 				if (!Prayers.isEnabled(Prayer.PROTECT_FROM_MELEE))
@@ -164,6 +163,6 @@ public class NpcStatusOverlay extends Overlay
 					Prayers.toggle(Prayer.PROTECT_FROM_MAGIC);
 			}
 			isPraying = false;
-		}, 100 + new Random().nextInt(200), TimeUnit.MILLISECONDS);
+		}, flickOff, TimeUnit.MILLISECONDS);
 	}
 }

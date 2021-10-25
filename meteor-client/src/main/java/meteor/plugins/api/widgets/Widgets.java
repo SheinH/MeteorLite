@@ -2,16 +2,14 @@ package meteor.plugins.api.widgets;
 
 import meteor.plugins.api.game.Game;
 import meteor.plugins.api.game.GameThread;
-import net.runelite.api.Client;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Widgets {
 
@@ -40,6 +38,31 @@ public class Widgets {
         return get(group).stream().filter(filter).findFirst().orElse(null);
     }
 
+    public static List<Widget> getChildren(Widget widget, Predicate<Widget> filter) {
+        if (widget == null) {
+            return Collections.emptyList();
+        }
+
+        Widget[] children = widget.getChildren();
+        if (children == null) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.stream(children).filter(filter).collect(Collectors.toList());
+    }
+
+    public static List<Widget> getChildren(WidgetInfo widgetInfo, Predicate<Widget> filter) {
+        return getChildren(get(widgetInfo), filter);
+    }
+
+    public static List<Widget> getChildren(int group, int child, Predicate<Widget> filter) {
+        return getChildren(get(group, child), filter);
+    }
+
+    public static List<Widget> getAll(int group, Predicate<Widget> filter) {
+        return get(group).stream().filter(filter).collect(Collectors.toList());
+    }
+
     public static Widget fromId(int packedId) {
         return Game.getClient().getWidget(packedId);
     }
@@ -47,6 +70,4 @@ public class Widgets {
     public static boolean isVisible(Widget widget) {
         return widget != null && !GameThread.invokeLater(widget::isHidden);
     }
-
-
 }
