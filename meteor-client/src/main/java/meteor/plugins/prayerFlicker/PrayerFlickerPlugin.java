@@ -27,8 +27,7 @@ import java.util.concurrent.ScheduledExecutorService;
         name = "Prayer Flicker",
         description = "prayer flicker for quick prayers",
         tags = {},
-        enabledByDefault = false,
-        disabledOnStartup = true
+        enabledByDefault = false
 )
 public class PrayerFlickerPlugin extends Plugin {
     public int timeout = 0;

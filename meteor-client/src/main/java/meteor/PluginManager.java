@@ -8,6 +8,8 @@ import com.google.inject.Singleton;
 import com.owain.chinLogin.ChinLoginPlugin;
 import com.owain.chinmanager.ChinManagerPlugin;
 import com.questhelper.QuestHelperPlugin;
+
+import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -52,7 +54,6 @@ import meteor.plugins.banktags.BankTagsPlugin;
 import meteor.plugins.barbassault.BAPlugin;
 import meteor.plugins.barrows.BarrowsPlugin;
 import meteor.plugins.antidrag.BetterAntiDragPlugin;
-import meteor.plugins.paistisuite.PaistiSuite;
 import meteor.plugins.roguesden.BetterRougesDenPlugin;
 import meteor.plugins.blackjack.BlackjackPlugin;
 import meteor.plugins.blastfurnace.BlastFurnacePlugin;
@@ -182,7 +183,6 @@ import meteor.plugins.tithefarm.TitheFarmPlugin;
 import meteor.plugins.tmorph.TMorphPlugin;
 import meteor.plugins.vetion.VetionPlugin;
 import meteor.plugins.vorkath.VorkathPlugin;
-import meteor.plugins.webwalker.WebWalker;
 import meteor.plugins.woodcutting.WoodcuttingPlugin;
 import meteor.plugins.worldmap.WorldMapPlugin;
 import meteor.plugins.worldmapwalker.WorldMapWalkerPlugin;
@@ -191,6 +191,7 @@ import meteor.plugins.xpglobes.XpGlobesPlugin;
 import meteor.plugins.xptracker.XpTrackerPlugin;
 import meteor.plugins.xpupdater.XpUpdaterPlugin;
 import meteor.plugins.zulrah.ZulrahPlugin;
+import meteor.ui.FontManager;
 import meteor.ui.components.Category;
 import meteor.ui.client.PluginListPanel;
 import net.runelite.api.GameState;
@@ -222,6 +223,7 @@ public class PluginManager {
 		if (!EXTERNALS_DIR.exists()) {
 			EXTERNALS_DIR.mkdirs();
 		}
+		Font font = FontManager.getDefaultFont();
 	}
 
 
@@ -243,8 +245,6 @@ public class PluginManager {
 	  plugins.add(new ChangAutoEnergyPot());
 	  plugins.add(new KotlinTestPlugin());
 	  plugins.add(new LavaDragScript());
-	  plugins.add(new PaistiSuite());
-	  plugins.add(new WebWalker());
 	  plugins.add(new BankDuelingRingPlugin());
 		plugins.add(new AgilityPlugin());
 		plugins.add(new HydraPlugin());

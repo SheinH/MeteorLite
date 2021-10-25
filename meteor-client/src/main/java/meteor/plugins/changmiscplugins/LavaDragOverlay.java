@@ -1,9 +1,11 @@
 package meteor.plugins.changmiscplugins;
 
 import meteor.plugins.changmiscplugins.LavaDragScript;
+import meteor.ui.FontManager;
 import meteor.ui.overlay.OverlayMenuEntry;
 import meteor.ui.overlay.OverlayPanel;
 import meteor.ui.overlay.OverlayPosition;
+import meteor.ui.overlay.components.LineComponent;
 import meteor.ui.overlay.components.TableAlignment;
 import meteor.ui.overlay.components.TableComponent;
 import meteor.ui.overlay.components.TitleComponent;
@@ -12,6 +14,7 @@ import meteor.util.ColorUtil;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
@@ -39,17 +42,46 @@ class LavaDragOverlay extends OverlayPanel {
             return DurationFormatUtils.formatDuration(plugin.runTime.getTime(),"mm:ss");
     }
 
+    private String goldToString(double goldAmount){
+        DecimalFormat format;
+        double amount;
+        if(goldAmount > 1e7){
+            amount = goldAmount / 1e6;
+            format = new DecimalFormat("##.## M");
+        }
+        else if(goldAmount > 1e4){
+            amount = goldAmount / 1e3;
+            format = new DecimalFormat("# K");
+        }
+        else{
+            amount = goldAmount;
+            format = new DecimalFormat("# gp");
+        }
+        return format.format(amount);
+    }
+
+    private String getProfitPerHourString(double profitPerHour){
+        return goldToString(profitPerHour) + " / hour";
+    }
     @Override
     public Dimension render(Graphics2D graphics) {
         if(!plugin.isEnabled())
             return null;
 
+        var profit = plugin.getTotalProfit();
+        var timeElapsed = plugin.runTime.getTime();
+        var profitPerHour =  ( ((double) profit) / (timeElapsed == 0 ? 0 : timeElapsed) * (60L * 60L * 1000L));
+        var profitPerHourString = getProfitPerHourString(profitPerHour);
         TableComponent tableComponent = new TableComponent();
         tableComponent.setColumnAlignments(TableAlignment.LEFT, TableAlignment.RIGHT);
         tableComponent.addRow("State",plugin.state.name());
         tableComponent.addRow("Runtime",getRuntime());
         tableComponent.addRow("Kill Count",Integer.toString(plugin.killCount));
+        tableComponent.addRow("Profit rate",profitPerHourString);
+        tableComponent.addRow("Total Profit",goldToString(profit));
+        var defaultFont = FontManager.getDefaultFont();
         if (!tableComponent.isEmpty()) {
+            panelComponent.setPreferredSize(new Dimension(200,0));
             panelComponent.getChildren().add(TitleComponent.builder()
                     .text("Lava Dragons")
                     .color(ColorUtil.fromHex("#f8a252"))

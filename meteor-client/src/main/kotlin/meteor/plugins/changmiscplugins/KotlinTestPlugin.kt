@@ -1,13 +1,18 @@
 package meteor.plugins.changmiscplugins
 
 import com.google.inject.Inject
+import com.google.inject.Provides
 import meteor.chat.ChatMessageManager
+import meteor.config.ConfigManager
 import meteor.eventbus.Subscribe
 import meteor.plugins.Plugin
 import meteor.plugins.PluginDescriptor
 import meteor.plugins.api.entities.NPCs
 import meteor.plugins.api.kotlin.KotlinUtils
+import meteor.ui.FontManager
+import meteor.ui.overlay.OverlayManager
 import net.runelite.api.events.GameTick
+import java.awt.Font
 
 @PluginDescriptor(
     name = "Kotlin Test",
@@ -16,14 +21,24 @@ import net.runelite.api.events.GameTick
 class KotlinTestPlugin : Plugin() {
     @Inject
     lateinit var chatMessageManager : ChatMessageManager
+    @Inject
+    lateinit var config : KotlinTestConfig
+    @Inject
+    lateinit var fontManager : FontManager
+    @Inject
+    lateinit var overlayManager : OverlayManager
 
+
+    @Provides
+    override fun getConfig(configManager : ConfigManager): KotlinTestConfig {
+        return configManager.getConfig(KotlinTestConfig::class.java)
+    }
     @Subscribe
     fun onGameTick(event: GameTick) {
         sendChatMessage("Testing Kotlin!")
         NPCs.getNearest("Banker")?.interact("Bank")
         toggle()
     }
-    private fun sendChatMessage(message: String) {
-        KotlinUtils.sendChatMessage(chatMessageManager,message)
+    fun sendChatMessage(message: String) {
     }
 }

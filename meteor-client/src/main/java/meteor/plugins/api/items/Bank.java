@@ -2,6 +2,7 @@ package meteor.plugins.api.items;
 
 import meteor.plugins.api.commons.Time;
 import meteor.plugins.api.game.Game;
+import meteor.plugins.api.game.GameThread;
 import meteor.plugins.api.game.Vars;
 import meteor.plugins.api.packets.DialogPackets;
 import meteor.plugins.api.widgets.Dialog;

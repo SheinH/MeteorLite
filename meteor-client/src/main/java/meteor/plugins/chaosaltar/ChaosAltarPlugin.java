@@ -61,6 +61,7 @@ public class ChaosAltarPlugin extends Plugin {
             new RectangularArea(2949, 3817, 2952, 3824));
     int tickDelay = 0;
 
+
     @Provides
     public ChaosAltarConfig getConfig(ConfigManager configManager) {
         return configManager.getConfig(ChaosAltarConfig.class);
