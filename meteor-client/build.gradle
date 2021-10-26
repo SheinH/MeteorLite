@@ -62,6 +62,8 @@ dependencies {
     runtimeOnly(group: "net.runelite.jogl", name: "jogl-all", version: "2.4.0-rc-20200429", classifier: "natives-windows-amd64")
     runtimeOnly(group: "net.runelite.jogl", name: "jogl-all", version: "2.4.0-rc-20200429", classifier: "natives-windows-i586")
     runtimeOnly(group: "net.runelite.jogl", name: "jogl-all-natives-macosx", version: "2.4.0-rc-20210117")
+    runtimeOnly(group: "net.runelite.jocl", name: "jocl", version: "1.0", classifier: 'macos-x64')
+    runtimeOnly(group: "net.runelite.jocl", name: "jocl", version: "1.0", classifier: 'macos-arm64')
     implementation group: 'com.google.guava', name: 'guava', version: '_'
     implementation(group : "org.apache.commons", name : "commons-text", version : "_")
     implementation(group : "commons-io", name : "commons-io", version : "_")
