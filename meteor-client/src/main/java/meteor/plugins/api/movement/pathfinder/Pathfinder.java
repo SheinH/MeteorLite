@@ -3,7 +3,6 @@ package meteor.plugins.api.movement.pathfinder;
 import lombok.RequiredArgsConstructor;
 import meteor.plugins.api.game.Game;
 import meteor.plugins.api.movement.Reachable;
-import net.runelite.api.Client;
 import net.runelite.api.coords.WorldPoint;
 
 import java.util.*;
@@ -17,40 +16,49 @@ public class Pathfinder {
     private final Deque<WorldPoint> boundary = new ArrayDeque<>();
     private final CoordMap predecessors = new CoordMap();
     private WorldPoint nearest = null;
-    
+
     public List<WorldPoint> find() {
         boundary.addAll(startCoords);
-        int bestDistance = Integer.MAX_VALUE;
-        
+        float bestDistance = 69_420_69;
+
         for (WorldPoint start : startCoords) {
             predecessors.put(start, null);
         }
 
         while (!boundary.isEmpty()) {
-            WorldPoint node = boundary.removeFirst();
+            WorldPoint current = boundary.removeFirst();
 
-            if (node.equals(destination)) {
+            if (current.equals(destination)) {
                 LinkedList<WorldPoint> result = new LinkedList<>();
-                while (node != null) {
-                    result.add(0, node);
-                    node = predecessors.get(node);
+                while (current != null) {
+                    result.add(0, current);
+                    current = predecessors.get(current);
                 }
 
                 return result;
             }
 
-            int distance = node.distanceTo(destination);
+            float distance = current.distanceToHypotenuse(destination);
             if (nearest == null || distance < bestDistance) {
-                nearest = node;
+                nearest = current;
                 bestDistance = distance;
             }
 
-            if (destination.isInScene(Game.getClient())
-                    && ((Reachable.isObstacle(destination) && boundary.size() > 200)) || boundary.size() > 1000) {
+            try {
+                if (distance == bestDistance && distance == 1 && !Reachable.isWalled(current, destination)) {
+                    nearest = current;
+                }
+            } catch (NullPointerException e) {
+                Walker.LOCAL_PATH_CACHE.refresh(destination);
+                Walker.PATH_CACHE.refresh(destination);
+            }
+
+            if ((destination.isInScene(Game.getClient())
+                    && Reachable.isObstacle(destination) && boundary.size() > 200) || boundary.size() > 1000) {
                 break;
             }
 
-            addNeighbours(node);
+            addNeighbours(current);
         }
 
         if (nearest != null) {

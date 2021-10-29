@@ -1,13 +1,13 @@
 package meteor.plugins.api.movement;
 
 import meteor.plugins.api.game.Game;
+import meteor.plugins.api.game.GameThread;
+import meteor.plugins.api.scene.Tiles;
 import net.runelite.api.*;
 import net.runelite.api.coords.Direction;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -52,6 +52,41 @@ public class Reachable {
             case WEST -> check(startFlag, 0x80);
             case EAST -> check(startFlag, 0x8);
         };
+    }
+
+    public static boolean isWalled(WorldPoint source, WorldPoint destination) {
+        return isWalled(Tiles.getAt(source), Tiles.getAt(destination));
+    }
+
+    public static boolean isWalled(Tile source, Tile destination) {
+        WallObject wall = source.getWallObject();
+        if (wall == null) {
+            return false;
+        }
+
+        WorldPoint a = source.getWorldLocation();
+        WorldPoint b = destination.getWorldLocation();
+
+        return switch (wall.getOrientationA()) {
+            case 1 -> a.dx(-1).equals(b) || a.dx(-1).dy(1).equals(b) || a.dx(-1).dy(-1).equals(b);
+            case 2 -> a.dy(1).equals(b) || a.dx(-1).dy(1).equals(b) || a.dx(1).dy(1).equals(b);
+            case 4 -> a.dx(1).equals(b) || a.dx(1).dy(1).equals(b) || a.dx(1).dy(-1).equals(b);
+            case 8 -> a.dy(-1).equals(b) || a.dx(-1).dy(-1).equals(b) || a.dx(-1).dy(1).equals(b);
+            default -> false;
+        };
+    }
+
+    public static boolean isDoored(Tile source, Tile destination) {
+        WallObject wall = source.getWallObject();
+        if (wall == null) {
+            return false;
+        }
+
+        if (!wall.isDefinitionCached()) {
+            GameThread.invokeLater(() -> Game.getClient().getObjectComposition(wall.getId()));
+        }
+
+        return isWalled(source, destination) && wall.hasAction("Open");
     }
 
     public static boolean canWalk(Direction direction, int startFlag, int endFlag) {

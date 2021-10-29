@@ -55,7 +55,12 @@ public interface Callbacks {
   /**
    * Called each client cycle.
    */
-  void clientMainLoop();
+  void tick();
+
+  /**
+   * Called each frame
+   */
+  void frame();
 
   /**
    * Called after receiving update NPCs packet from server.

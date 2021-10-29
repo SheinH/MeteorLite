@@ -82,7 +82,7 @@ public class BankAndAccountGuide implements PluginTask {
 			Dialog.continueSpace();
 			return;
 		}
-		Widget account = Game.getClient().getWidget(164, 45);
+		Widget account = Game.getClient().getWidget(164, 38);
 
 		if (account == null) {
 			return;

@@ -65,7 +65,7 @@ public class PrayerGuide implements PluginTask {
 			Dialog.continueSpace();
 			return;
 		}
-		Widget prayer = Game.getClient().getWidget(164, 64);
+		Widget prayer = Game.getClient().getWidget(164, 56);
 
 		if (prayer == null) {
 			return;
@@ -79,7 +79,7 @@ public class PrayerGuide implements PluginTask {
 			Dialog.continueSpace();
 			return;
 		}
-		Widget friends = Game.getClient().getWidget(164, 46);
+		Widget friends = Game.getClient().getWidget(164, 39);
 
 		if (friends == null) {
 			return;

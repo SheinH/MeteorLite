@@ -7,8 +7,8 @@ import meteor.plugins.api.commons.Rand;
 import meteor.plugins.api.commons.Time;
 import meteor.plugins.api.entities.Players;
 import meteor.plugins.api.game.Game;
-import meteor.plugins.api.game.GameThread;
 import meteor.plugins.api.movement.Movement;
+import meteor.plugins.api.movement.Reachable;
 import meteor.plugins.api.scene.Tiles;
 import net.runelite.api.Player;
 import net.runelite.api.Tile;
@@ -122,8 +122,8 @@ public class Walker {
         // Refresh path if our direction changed
         if (!local.isAnimating() && !path.contains(local.getWorldLocation())) {
             logger.debug("Direction changed, resetting cached path towards {}", destination);
-            PATH_CACHE.refresh(destination);
             LOCAL_PATH_CACHE.refresh(destination);
+            PATH_CACHE.refresh(destination);
             return false;
         }
 
@@ -251,7 +251,7 @@ public class Walker {
                 return false;
             }
 
-            if (isDoored(tileA, tileB)) {
+            if (Reachable.isDoored(tileA, tileB)) {
                 WallObject wall = tileA.getWallObject();
                 wall.interact("Open");
                 logger.debug("Handling door {}", wall.getWorldLocation());
@@ -260,7 +260,7 @@ public class Walker {
                 return true;
             }
 
-            if (isDoored(tileB, tileA)) {
+            if (Reachable.isDoored(tileB, tileA)) {
                 WallObject wall = tileB.getWallObject();
                 wall.interact("Open");
                 logger.debug("Handling door {}", wall.getWorldLocation());
@@ -271,37 +271,6 @@ public class Walker {
         }
 
         return false;
-    }
-
-    public static boolean isDoored(Tile source, Tile destination) {
-        WallObject wall = source.getWallObject();
-        if (wall == null) {
-            return false;
-        }
-
-        if (!wall.isDefinitionCached()) {
-            GameThread.invokeLater(() -> Game.getClient().getObjectComposition(wall.getId()));
-        }
-
-        return isWalled(source, destination) && wall.hasAction("Open");
-    }
-
-    public static boolean isWalled(Tile source, Tile destination) {
-        WallObject wall = source.getWallObject();
-        if (wall == null) {
-            return false;
-        }
-
-        WorldPoint a = source.getWorldLocation();
-        WorldPoint b = destination.getWorldLocation();
-
-        return switch (wall.getOrientationA()) {
-            case 1 -> a.dx(-1).equals(b) || a.dx(-1).dy(1).equals(b) || a.dx(-1).dy(-1).equals(b);
-            case 2 -> a.dy(1).equals(b) || a.dx(-1).dy(1).equals(b) || a.dx(1).dy(1).equals(b);
-            case 4 -> a.dx(1).equals(b) || a.dx(1).dy(1).equals(b) || a.dx(1).dy(-1).equals(b);
-            case 8 -> a.dy(-1).equals(b) || a.dx(-1).dy(-1).equals(b) || a.dx(-1).dy(1).equals(b);
-            default -> false;
-        };
     }
 
     public static List<WorldPoint> remainingPath(List<WorldPoint> path) {

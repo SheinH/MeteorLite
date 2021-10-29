@@ -38,10 +38,11 @@ public class MiningGuide implements PluginTask {
 		}
 
 		NPC guide = NPCs.getNearest("Mining Instructor");
-		WorldArea miningArea = new WorldArea(new WorldPoint(3083, 9520, 0), new WorldPoint(3077, 9500, 0));
+		WorldPoint miningArea = new WorldPoint(3080, 9505, 0);
 
 		if (guide == null) {
-			Movement.walk(miningArea);
+			Movement.walkTo(miningArea, 10);
+
 			return;
 		}
 

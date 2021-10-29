@@ -54,7 +54,7 @@ public class MagicGuide implements PluginTask {
 			Dialog.continueSpace();
 			return;
 		}
-		Widget magic = Game.getClient().getWidget(164, 65);
+		Widget magic = Game.getClient().getWidget(164, 57);
 
 		if (magic == null) {
 			return;

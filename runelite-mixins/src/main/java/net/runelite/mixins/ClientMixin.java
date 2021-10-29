@@ -10,11 +10,13 @@ import static net.runelite.api.MenuAction.PLAYER_SIXTH_OPTION;
 import static net.runelite.api.MenuAction.PLAYER_THIRD_OPTION;
 import static net.runelite.api.MenuAction.UNKNOWN;
 import static net.runelite.api.Perspective.LOCAL_TILE_SIZE;
+import static net.runelite.mixins.meteor.CameraMixin.*;
 
 import java.math.BigInteger;
 import java.util.*;
 import javax.annotation.Nullable;
 
+import com.google.common.primitives.Doubles;
 import net.runelite.api.*;
 import net.runelite.api.clan.ClanChannel;
 import net.runelite.api.clan.ClanRank;
@@ -59,8 +61,6 @@ public abstract class ClientMixin implements RSClient {
   @Inject
   private static RSPlayer[] oldPlayers = new RSPlayer[2048];
   @Inject
-  private static boolean hdMinimapEnabled = false;
-  @Inject
   private static ArrayList<WidgetItem> widgetItems = new ArrayList<WidgetItem>();
   @Inject
   private static ArrayList<Widget> hiddenWidgets = new ArrayList<Widget>();
@@ -99,6 +99,16 @@ public abstract class ClientMixin implements RSClient {
   private static boolean lowCpu;
   @Inject
   private static boolean allWidgetsAreOpTargetable = false;
+  @Inject
+  private static boolean hdMinimapEnabled;
+  @Inject
+  public static boolean unlockedFps;
+  @Inject
+  public static double tmpCamAngleY;
+  @Inject
+  public static double tmpCamAngleX;
+  @Inject
+  public long lastNanoTime;
   
   @Inject
   @FieldHook("gameState")
@@ -635,7 +645,14 @@ public abstract class ClientMixin implements RSClient {
   @Inject
   @MethodHook("draw")
   public void draw$api(boolean var1) {
-    callbacks.clientMainLoop();
+    callbacks.frame();
+    updateCamera();
+  }
+
+  @Inject
+  @MethodHook("doCycle")
+  protected final void doCycle$api() {
+    callbacks.tick();
   }
 
   @Override
@@ -990,6 +1007,25 @@ public abstract class ClientMixin implements RSClient {
   public RSItemContainer getItemContainer(InventoryID inventory) {
     RSNodeHashTable itemContainers = getItemContainers();
     return (RSItemContainer) itemContainers.get$api(inventory.getId());
+  }
+
+  @Inject
+  @Override
+  public RSItemContainer getItemContainer(int id)
+  {
+    RSNodeHashTable itemContainers = getItemContainers();
+
+    for (Object itemContainer : itemContainers)
+    {
+      RSItemContainer container = ((RSItemContainer) itemContainer);
+
+      if (((RSItemContainer) itemContainer).getId() == id)
+      {
+        return container;
+      }
+    }
+
+    return null;
   }
 
   @Inject
@@ -1566,19 +1602,20 @@ public abstract class ClientMixin implements RSClient {
   @FieldHook("guestClanChannel")
   public static void onGuestClanChannelChanged(int idx)
   {
-    client.getCallbacks().post(new ClanChannelChanged(client.getGuestClanChannel(), true));
+    client.getCallbacks().post(new ClanChannelChanged(client.getGuestClanChannel(), -1, true));
   }
 
   @Inject
   @FieldHook("currentClanChannels")
   public static void onCurrentClanChannelsChanged(int idx)
   {
-    if (idx == -1)
-    {
-      return;
-    }
+    RSClanChannel[] clanChannels = client.getCurrentClanChannels();
 
-    client.getCallbacks().post(new ClanChannelChanged(client.getClanChannel(), false));
+    if (idx >= 0 && idx < clanChannels.length)
+    {
+      RSClanChannel clanChannel = clanChannels[idx];
+      client.getCallbacks().post(new ClanChannelChanged(clanChannel, idx, false));
+    }
   }
 
   @Inject
@@ -1904,5 +1941,80 @@ public abstract class ClientMixin implements RSClient {
   public Sequence loadAnimation(int id)
   {
     return client.getSequenceDefinition(id);
+  }
+
+  @Inject
+  @Override
+  public boolean isUnlockedFps()
+  {
+    return unlockedFps;
+  }
+
+  @Inject
+  @Override
+  public void setUnlockedFps(boolean unlocked)
+  {
+    unlockedFps = unlocked;
+
+    if (unlocked)
+    {
+      posToCameraAngle(client.getMapAngle(), client.getCameraPitch());
+    }
+  }
+
+  @Inject
+  public void updateCamera()
+  {
+    if (unlockedFps)
+    {
+      long nanoTime = System.nanoTime();
+      long diff = nanoTime - this.lastNanoTime;
+      this.lastNanoTime = nanoTime;
+
+      if (this.getGameState() == GameState.LOGGED_IN)
+      {
+        this.interpolateCamera(diff);
+      }
+    }
+  }
+
+  @Inject
+  public void interpolateCamera(long var1)
+  {
+    double angleDX = diffToDangle(client.getCamAngleDY(), var1);
+    double angleDY = diffToDangle(client.getCamAngleDX(), var1);
+
+    tmpCamAngleY += angleDX / 2;
+    tmpCamAngleX += angleDY / 2;
+    tmpCamAngleX = Doubles.constrainToRange(tmpCamAngleX, Perspective.UNIT * STANDARD_PITCH_MIN, client.getCameraPitchRelaxerEnabled() ? Perspective.UNIT * NEW_PITCH_MAX : Perspective.UNIT * STANDARD_PITCH_MAX);
+
+    int yaw = toCameraPos(tmpCamAngleY);
+    int pitch = toCameraPos(tmpCamAngleX);
+
+    client.setCameraYawTarget(yaw);
+    client.setCameraPitchTarget(pitch);
+  }
+
+  @Inject
+  public static double diffToDangle(int var0, long var1)
+  {
+    double var2 = var0 * Perspective.UNIT;
+    double var3 = (double) var1 / 2.0E7D;
+
+    return var2 * var3;
+  }
+
+  @Inject
+  @Override
+  public void posToCameraAngle(int var0, int var1)
+  {
+    tmpCamAngleY = var0 * Perspective.UNIT;
+    tmpCamAngleX = var1 * Perspective.UNIT;
+  }
+
+  @Inject
+  public static int toCameraPos(double var0)
+  {
+    return (int) (var0 / Perspective.UNIT) & 2047;
   }
 }

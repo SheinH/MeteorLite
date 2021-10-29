@@ -84,7 +84,7 @@ public class CombatGuide implements PluginTask {
 			return;
 		}
 
-		Widget equipment = Game.getClient().getWidget(164, 63);
+		Widget equipment = Game.getClient().getWidget(164, 55);
 
 		if (equipment == null) {
 			return;
@@ -113,7 +113,7 @@ public class CombatGuide implements PluginTask {
 			Dialog.continueSpace();
 			return;
 		}
-		Widget combat = Game.getClient().getWidget(164, 59);
+		Widget combat = Game.getClient().getWidget(164, 51);
 
 		if (combat == null) {
 			return;

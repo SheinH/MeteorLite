@@ -192,7 +192,11 @@ public class IronmanGuide implements PluginTask {
 		}
 
 		if (pinSection.getText().equals("Set new PIN")) {
-			Keyboard.type(config.bankPin());
+
+			for (char pin : config.bankPin().toCharArray()) {
+				Keyboard.type(pin);
+				Time.sleep(600);
+			}
 			Time.sleepUntil(() -> pinSection.getText().equals("Confirm new PIN"), 5000);
 			return;
 		}

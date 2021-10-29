@@ -7,96 +7,120 @@ import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import lombok.Getter;
 import meteor.ui.MeteorUI;
 import meteor.util.MeteorConstants;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.awt.*;
 
 @Singleton
 public class RightPanel extends JFXPanel {
 
-	private HBox root;
-	private Parent lastPanel = null;
-
-	@Inject
-	private Sidebar sidebar;
+	private Parent panel = new Pane();
+	private HBox root = new HBox(panel);
 
 	@Inject
 	private MeteorUI meteorUI;
 
+	@Inject
+	private Toolbar toolbar;
+
+	@Getter
+	private boolean isOpen = false;
+
 	public RightPanel() {
-		Platform.runLater(this::createScene);
-	}
-
-	private void createScene() {
-		root = new HBox();
-		root.getChildren().add(sidebar);
-		Scene scene = new Scene(root, MeteorConstants.SIDEBAR_WIDTH, 1080);
+		Scene scene = new Scene(root, 0, 1080);
 		setScene(scene);
 	}
 
-	private void createScene(int width) {
-		root = new HBox();
-		if (lastPanel != null && width == MeteorConstants.RIGHT_PANEL_WIDTH) {
-			root.getChildren().add(lastPanel);
-		}
-		root.getChildren().add(sidebar);
-		Scene scene = new Scene(root, width, 1080);
-		setScene(scene);
+	private void updateScene(int width) {
+		Platform.runLater(() -> {
+			root = new HBox();
+			if (isOpen) {
+				root.getChildren().add(panel);
+			}
+			if (hasToolbar()) {
+				VBox tb = toolbar.initVerticalToolbar();
+				tb.setFillWidth(true);
+				root.getChildren().add(tb);
+			}
+			Scene scene = new Scene(root, width, 1080);
+			setScene(scene);
+		});
 	}
 
-	public boolean isOpen() {
-		return getScene().getWidth() == MeteorConstants.RIGHT_PANEL_WIDTH;
+	public void addToolbar() {
+		Platform.runLater(() -> {
+			root = new HBox(panel, toolbar.initVerticalToolbar());
+			updateScene(MeteorConstants.PANEL_WIDTH + MeteorConstants.TOOLBAR_SIZE);
+		});
 	}
 
-	public void changePanel(Pane pane) {
-		if (root.getChildren().size() > 1) {
-			root.getChildren().clear();
-		}
-		pane.setMinWidth(MeteorConstants.PANEL_WIDTH);
-		pane.setMaxWidth(MeteorConstants.PANEL_WIDTH);
-		root.getChildren().addAll(pane, sidebar);
+	public void removeToolbar() {
+		Platform.runLater(() -> {
+			root = new HBox(panel);
+			toolbar.refresh();
+			updateScene(MeteorConstants.PANEL_WIDTH);
+		});
 	}
 
-	public void addPanel(Parent parent) {
+	private boolean hasToolbar() {
+		return toolbar.getPosition().equals(BorderLayout.EAST);
+	}
+
+	private void changePanel(Parent parent) {
 		if (parent instanceof ScrollPane) {
 			((ScrollPane) parent).setMinWidth(MeteorConstants.PANEL_WIDTH);
 		}
 		if (parent instanceof Pane) {
 			((Pane) parent).setMinWidth(MeteorConstants.PANEL_WIDTH);
 		}
+		panel = parent;
 		if (root.getChildren().size() > 1) {
 			root.getChildren().remove(0);
 		}
-		root.getChildren().add(0, parent);
-		lastPanel = parent;
+		root.getChildren().add(0, panel);
 	}
 
 	private void open(Parent parent) {
-		Platform.runLater(() -> createScene(MeteorConstants.RIGHT_PANEL_WIDTH));
-		addPanel(parent);
+		isOpen = true;
+		if (hasToolbar()) {
+			updateScene(MeteorConstants.PANEL_WIDTH + MeteorConstants.TOOLBAR_SIZE);
+		} else {
+			updateScene(MeteorConstants.PANEL_WIDTH);
+			meteorUI.showRightPanel();
+		}
+		changePanel(parent);
+		meteorUI.updateClientSize();
 	}
 
-	private void close() {
-		Platform.runLater(() -> createScene(MeteorConstants.SIDEBAR_WIDTH));
-	}
-
-	public void refresh() {
-		Platform.runLater(() -> createScene(getWidth()));
+	public void close() {
+		Platform.runLater(() -> {
+			isOpen = false;
+			if (hasToolbar()) {
+				updateScene(MeteorConstants.TOOLBAR_SIZE);
+			} else {
+				updateScene(0);
+				meteorUI.hideRightPanel();
+			}
+			meteorUI.updateClientSize();
+		});
 	}
 
 	public void update(Parent parent) {
-		if (isOpen()) {
-			if (lastPanel != null && parent.idProperty().equals(lastPanel.idProperty())) {
-				close();
-				meteorUI.updateClientSize();
+		Platform.runLater(() -> {
+			if (isOpen()) {
+				if (parent.equals(panel)) {
+					close();
+				} else {
+					changePanel(parent);
+				}
 			} else {
-				addPanel(parent);
+				open(parent);
 			}
-		} else {
-			open(parent);
-			meteorUI.updateClientSize();
-		}
+		});
 	}
 }

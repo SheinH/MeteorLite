@@ -46,7 +46,7 @@ public class GielinorGuide implements PluginTask {
 			Dialog.continueSpace();
 		}
 
-		Widget settings = Game.getClient().getWidget(164, 47);
+		Widget settings = Game.getClient().getWidget(164, 40);
 
 		if (settings == null) {
 			return;

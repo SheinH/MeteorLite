@@ -42,7 +42,7 @@ import meteor.menus.MenuManager;
 import meteor.plugins.Plugin;
 import meteor.plugins.PluginDescriptor;
 import meteor.ui.MeteorUI;
-import meteor.ui.client.Sidebar;
+import meteor.ui.client.Toolbar;
 import net.runelite.api.Client;
 
 @PluginDescriptor(
@@ -67,7 +67,7 @@ public class HiscoreWisePlugin extends Plugin
 	private Provider<MenuManager> menuManager;
 
 	@Inject
-	public Sidebar sidebar;
+	public Toolbar toolbar;
 
 	@Inject
 	private MeteorUI meteorUI;
@@ -101,13 +101,13 @@ public class HiscoreWisePlugin extends Plugin
 		ImageView imageView = new ImageView(image);
 		imageView.setPreserveRatio(true);
 
-		sidebar.addNavigationButton(image, wiseOldManPanel);
+		toolbar.addNavigationButton(image, wiseOldManPanel, this);
 	}
 
 	@Override
 	public void shutdown()
 	{
-		sidebar.removeNavigationButton(wiseOldManPanel);
+		toolbar.removeNavigationButton(this);
 
 		if (client != null)
 		{

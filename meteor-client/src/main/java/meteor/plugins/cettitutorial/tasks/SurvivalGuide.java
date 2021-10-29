@@ -54,7 +54,7 @@ public class SurvivalGuide implements PluginTask {
 			Dialog.continueSpace();
 		}
 
-		Widget inventory = Game.getClient().getWidget(164, 62);
+		Widget inventory = Game.getClient().getWidget(164, 54);
 
 		if (inventory == null) {
 			return;
@@ -68,7 +68,7 @@ public class SurvivalGuide implements PluginTask {
 			Dialog.continueSpace();
 		}
 
-		Widget skills = Game.getClient().getWidget(164, 60);
+		Widget skills = Game.getClient().getWidget(164, 52);
 
 		if (skills == null) {
 			return;

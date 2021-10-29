@@ -15,6 +15,7 @@ import meteor.eventbus.events.ClientPreLaunch;
 import meteor.game.WorldService;
 import meteor.plugins.api.game.Game;
 import meteor.plugins.api.game.GameThread;
+import meteor.plugins.api.game.Prices;
 import meteor.plugins.itemstats.ItemStatChangesService;
 import meteor.plugins.itemstats.ItemStatChangesServiceImpl;
 import meteor.config.MeteorLiteConfig;
@@ -143,7 +144,8 @@ public class MeteorLiteClientModule extends AbstractModule {
 
     requestStaticInjection(
             GameThread.class,
-            Game.class
+            Game.class,
+            Prices.class
     );
   }
 

@@ -71,7 +71,7 @@ public class QuestGuide implements PluginTask {
 			Dialog.continueSpace();
 		}
 
-		Widget quest = Game.getClient().getWidget(164, 61);
+		Widget quest = Game.getClient().getWidget(164, 53);
 
 		if (quest == null) {
 			return;

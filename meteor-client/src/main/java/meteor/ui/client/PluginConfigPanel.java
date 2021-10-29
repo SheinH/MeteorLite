@@ -114,9 +114,9 @@ public class PluginConfigPanel extends AnchorPane {
 		configList.setBackground(new Background(new BackgroundFill(MeteorConstants.LIGHT_GRAY, null, null)));
 
 		ScrollPane scrollPane = new ScrollPane();
-		AnchorPane.setLeftAnchor(scrollPane, 8.0);
-		AnchorPane.setRightAnchor(scrollPane, 8.0);
-		AnchorPane.setBottomAnchor(scrollPane, 8.0);
+		AnchorPane.setLeftAnchor(scrollPane, 4.0);
+		AnchorPane.setRightAnchor(scrollPane, 4.0);
+		AnchorPane.setBottomAnchor(scrollPane, 0.0);
 		AnchorPane.setTopAnchor(scrollPane, 40.0);
 		scrollPane.getStylesheets().add("css/plugins/jfx-scrollbar.css");
 		scrollPane.setFitToWidth(true);

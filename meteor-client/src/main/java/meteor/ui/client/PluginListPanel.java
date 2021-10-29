@@ -88,10 +88,11 @@ public class PluginListPanel extends BorderPane {
 		scrollPane.setFitToWidth(true);
 		scrollPane.setFitToHeight(true);
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+		scrollPane.setPadding(new Insets(0,4,0,4));
 		scrollPane.setBackground(new Background(new BackgroundFill(MeteorConstants.LIGHT_GRAY, null, null)));
 
 		VBox pluginListView = new VBox();
-		pluginListView.setPadding(new Insets(4));
 		pluginListView.setBackground(new Background(new BackgroundFill(MeteorConstants.LIGHT_GRAY, null, null)));
 
 		filteredData.addListener((ListChangeListener.Change<? extends PluginListCell> c) -> {
