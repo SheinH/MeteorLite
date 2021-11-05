@@ -78,6 +78,7 @@ public class LeftClickCastPlugin extends Plugin {
         @Override
         public void hotkeyPressed() {
             currentSpell = config.spellOne();
+            logger.info(config.spellOne());
         }
     };
 

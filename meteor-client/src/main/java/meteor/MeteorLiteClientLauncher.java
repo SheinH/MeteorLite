@@ -11,12 +11,19 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
 import meteor.themes.MeteorliteTheme;
 import meteor.util.LoggerStream;
+import meteor.util.bootstrap.Bootstrapper;
 import net.runelite.api.Client;
+import org.sponge.util.Logger;
 import sun.misc.Unsafe;
 
 public class MeteorLiteClientLauncher extends Application {
@@ -39,6 +46,49 @@ public class MeteorLiteClientLauncher extends Application {
 
   public static Injector injector; //this is so bad
 
+  //File PROXY_CFG = new File(MeteorLiteClientLauncher.METEOR_DIR, "proxy");
+  static Path PROXY_CFG = Paths.get(MeteorLiteClientLauncher.METEOR_DIR.toURI()).resolve("proxy");
+
+
+  private static void setupProxies()
+  {
+    if(Files.exists(PROXY_CFG))
+    {
+      try
+      {
+        var proxyString = Files.readString(PROXY_CFG).strip();
+        var proxy = proxyString.split(":");
+
+        if (proxy.length >= 2)
+        {
+          System.setProperty("socksProxyHost", proxy[0]);
+          System.setProperty("socksProxyPort", proxy[1]);
+        }
+
+        if (proxy.length >= 4)
+        {
+          System.setProperty("java.net.socks.username", proxy[2]);
+          System.setProperty("java.net.socks.password", proxy[3]);
+
+          final String user = proxy[2];
+          final char[] pass = proxy[3].toCharArray();
+
+          Authenticator.setDefault(new Authenticator()
+          {
+            private final PasswordAuthentication auth = new PasswordAuthentication(user, pass);
+
+            protected PasswordAuthentication getPasswordAuthentication()
+            {
+              return auth;
+            }
+          });
+        }
+        Logger.getLogger(MeteorLiteClientLauncher.class).info("Proxy file LOADED");
+      } catch (IOException e)
+      {
+      }
+    }
+  }
   @Override
   public void start(Stage primaryStage) throws IOException, InterruptedException, InvocationTargetException {
     try {
@@ -53,6 +103,7 @@ public class MeteorLiteClientLauncher extends Application {
     } catch (FileNotFoundException ex) {
       ex.printStackTrace();
     }
+    setupProxies();
     MeteorliteTheme.install();
     MeteorLiteClientModule module = new MeteorLiteClientModule();
     injector = Guice.createInjector(module);

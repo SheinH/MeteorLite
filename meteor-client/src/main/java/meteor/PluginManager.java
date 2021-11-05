@@ -30,7 +30,6 @@ import meteor.plugins.PluginDescriptor;
 import meteor.plugins.api.game.Game;
 import meteor.plugins.banktaglayouts.BankTagLayoutsPlugin;
 import meteor.plugins.*;
-import meteor.plugins.ccrabber.CCrabberPlugin;
 import meteor.plugins.changmiscplugins.*;
 import meteor.plugins.cettitutorial.CettiTutorialPlugin;
 import meteor.plugins.nexus.NexusMapPlugin;
@@ -60,6 +59,7 @@ import meteor.plugins.banktags.BankTagsPlugin;
 import meteor.plugins.barbassault.BAPlugin;
 import meteor.plugins.barrows.BarrowsPlugin;
 import meteor.plugins.antidrag.BetterAntiDragPlugin;
+import meteor.plugins.quicklogin.QuickLoginPlugin;
 import meteor.plugins.roguesden.BetterRougesDenPlugin;
 import meteor.plugins.blackjack.BlackjackPlugin;
 import meteor.plugins.blastfurnace.BlastFurnacePlugin;
@@ -198,8 +198,6 @@ import meteor.plugins.xptracker.XpTrackerPlugin;
 import meteor.plugins.xpupdater.XpUpdaterPlugin;
 import meteor.plugins.zulrah.ZulrahPlugin;
 import meteor.ui.FontManager;
-import meteor.ui.components.Category;
-import meteor.ui.client.PluginListPanel;
 import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
 import org.sponge.util.Logger;
@@ -236,6 +234,7 @@ public class PluginManager {
   private void initPlugins() {
 		// Leave at the top pls, these are not regular plugins
 	  plugins.add(new MeteorLitePlugin());
+	  plugins.add(new QuickLoginPlugin());
 	  plugins.add(new AgilityPlugin());
 	  plugins.add(new CettiTutorialPlugin());
 	  plugins.add(new HousePartyPlugin());
@@ -243,6 +242,7 @@ public class PluginManager {
 	  plugins.add(new ChangTestPlugin());
 	  plugins.add(new ChangEnchanter());
 	  plugins.add(new ChaosAltarPlugin());
+	  plugins.add(new ChangAutoCast());
 	  plugins.add(new ChangWoodCutter());
 	  plugins.add(new ChangFisher());
 	  plugins.add(new ChangBirdhouses());
@@ -250,7 +250,7 @@ public class PluginManager {
 	  plugins.add(new ChangTelegrabber());
 	  plugins.add(new ChangAutoEnergyPot());
 	  plugins.add(new KotlinTestPlugin());
-	  plugins.add(new LavaDragScript());
+	  plugins.add(new ChangLavaDrags());
 	  plugins.add(new BankDuelingRingPlugin());
 		plugins.add(new AgilityPlugin());
 		plugins.add(new HydraPlugin());

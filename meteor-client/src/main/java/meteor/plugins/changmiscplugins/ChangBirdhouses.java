@@ -231,7 +231,6 @@ public class ChangBirdhouses extends Plugin {
 
 
     TileObject getCurrentBirdhouse(){
-        TileObjects.getAll(999);
         var player = client.getLocalPlayer();
         return TileObjects.getAll(currentBirdhouseID)
                 .stream()

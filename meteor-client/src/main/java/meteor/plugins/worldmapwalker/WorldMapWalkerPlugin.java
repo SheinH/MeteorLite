@@ -9,6 +9,7 @@ import meteor.input.KeyListener;
 import meteor.input.KeyManager;
 import meteor.plugins.Plugin;
 import meteor.plugins.PluginDescriptor;
+import meteor.plugins.api.entities.NPCs;
 import meteor.plugins.api.entities.Players;
 import meteor.plugins.api.movement.Movement;
 import meteor.plugins.api.movement.Reachable;
@@ -113,8 +114,18 @@ public class WorldMapWalkerPlugin extends Plugin {
         }
     }
 
+
+    public boolean darwinFilter(Player player){
+        return player.getName().equals("Darwin");
+    }
+
     //Special logic if the destination is loaded in scene
     private void handleLocalDestination(){
+        //var darwin = Players.getAll(this::darwinFilter).get(0);
+        var darwin = Players.getAll( x -> x.getName().equals("Darwin")).get(0);
+
+
+
         var player = client.getLocalPlayer();
         if(player == null || mapPoint == null)
             return;
@@ -144,7 +155,7 @@ public class WorldMapWalkerPlugin extends Plugin {
                 return;
             }
             //Path contains a door
-            if(Walker.isDoored(source,dest) || Walker.isDoored(dest,source)){
+            if(Reachable.isDoored(source,dest) || Reachable.isDoored(dest,source)){
                 walkUsingWalker();
                 return;
             }

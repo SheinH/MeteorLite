@@ -5,6 +5,7 @@ import meteor.plugins.api.game.Game;
 import meteor.plugins.api.game.GameThread;
 import meteor.plugins.api.game.Vars;
 import meteor.plugins.api.packets.DialogPackets;
+import meteor.plugins.api.packets.Packets;
 import meteor.plugins.api.widgets.Dialog;
 import meteor.plugins.api.widgets.Widgets;
 import net.runelite.api.InventoryID;
@@ -221,8 +222,9 @@ public class Bank extends Items {
 		item.interact(withdrawOption.getMenuIndex());
 
 		if (withdrawOption == WithdrawOption.X) {
+			GameThread.invoke( () -> Packets.queuePacket(Game.getClient().getNumberInputPacket(), amount));
 			Time.sleepUntil(Dialog::isEnterInputOpen,50,5000);
-			DialogPackets.sendNumberInput(amount);
+			GameThread.invoke(() -> Game.getClient().runScript(138)); // closes the input dialog
 		}
 	}
 

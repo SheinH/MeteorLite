@@ -2,18 +2,24 @@ package meteor.util.bootstrap;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.util.Objects;
+import meteor.MeteorLiteClientLauncher;
 import org.sponge.util.Logger;
 
 import java.io.*;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
-public class Bootstrapper {
+public class Bootstrapper
+{
     private static final File HOSTING_UPDATE = new File("./build/update.json");
     private static final String HOSTING_BASE = "https://raw.githubusercontent.com/MeteorLite/Hosting/main/";
     private static File shadowJar;
@@ -28,12 +34,15 @@ public class Bootstrapper {
     private static Update update;
     private static String currentVer;
 
-    public static void main(String[] args) throws NoSuchAlgorithmException, IOException {
+    public static void main(String[] args) throws NoSuchAlgorithmException, IOException
+    {
+        setupProxies();
         outputDir.mkdirs();
         fetchCurrentRevision();
         Reader reader = Files.newBufferedReader(HOSTING_UPDATE.toPath());
         Gson gson = new Gson();
-        update = gson.fromJson(reader, Update.class);;
+        update = gson.fromJson(reader, Update.class);
+        ;
         String[] vers = update.version.split("\\.");
         int patch = Integer.parseInt(vers[2]);
         currentVer = vers[0] + "." + vers[1] + "." + patch;
@@ -47,13 +56,59 @@ public class Bootstrapper {
         copyShadowJar();
     }
 
-    private static void fetchCurrentRevision() {
-        if (HOSTING_UPDATE.exists()) {
+    //File PROXY_CFG = new File(MeteorLiteClientLauncher.METEOR_DIR, "proxy");
+    static Path PROXY_CFG = Paths.get(MeteorLiteClientLauncher.METEOR_DIR.toURI()).resolve("proxy");
+
+
+    private static void setupProxies()
+    {
+        if(Files.exists(PROXY_CFG))
+        {
+            try
+            {
+                var proxyString = Files.readString(PROXY_CFG);
+                var proxy = proxyString.split(":");
+
+                if (proxy.length >= 2)
+                {
+                    System.setProperty("socksProxyHost", proxy[0]);
+                    System.setProperty("socksProxyPort", proxy[1]);
+                }
+
+                if (proxy.length >= 4)
+                {
+                    System.setProperty("java.net.socks.username", proxy[2]);
+                    System.setProperty("java.net.socks.password", proxy[3]);
+
+                    final String user = proxy[2];
+                    final char[] pass = proxy[3].toCharArray();
+
+                    Authenticator.setDefault(new Authenticator()
+                    {
+                        private final PasswordAuthentication auth = new PasswordAuthentication(user, pass);
+
+                        protected PasswordAuthentication getPasswordAuthentication()
+                        {
+                            return auth;
+                        }
+                    });
+                }
+            } catch (IOException e)
+            {
+            }
+        }
+    }
+
+    private static void fetchCurrentRevision()
+    {
+        if (HOSTING_UPDATE.exists())
+        {
             HOSTING_UPDATE.delete();
         }
 
         URL website = null;
-        try {
+        try
+        {
             website = new URL(HOSTING_BASE + "bootstrap-meteorlite.json");
             String filepath = HOSTING_UPDATE.getAbsolutePath();
 
@@ -62,51 +117,65 @@ public class Bootstrapper {
             FileOutputStream stream = new FileOutputStream(filepath);
 
             stream.getChannel().transferFrom(channel, 0, Long.MAX_VALUE);
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
     }
 
 
-
-    private static void copyShadowJar() {
-        try {
+    private static void copyShadowJar()
+    {
+        try
+        {
             if (bootstrapShadowJar.exists())
                 bootstrapShadowJar.delete();
             Files.copy(shadowJar.toPath(), bootstrapShadowJar.toPath());
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
 
-    private static void saveBootstrap() {
+    private static void saveBootstrap()
+    {
         if (update.size < 100)
             throw new RuntimeException("Bad bootstrap, bump meteor-client version");
         outputDir.mkdirs();
-        if (!updateOutput.exists()) {
-            try {
+        if (!updateOutput.exists())
+        {
+            try
+            {
                 updateOutput.createNewFile();
-            } catch (IOException e) {
+            } catch (IOException e)
+            {
                 e.printStackTrace();
             }
         }
-        if (!updateOutput.exists()) {
-            try {
+        if (!updateOutput.exists())
+        {
+            try
+            {
                 updateOutput.createNewFile();
-            } catch (IOException e) {
+            } catch (IOException e)
+            {
                 e.printStackTrace();
             }
         }
-        try (Writer writer = new FileWriter(updateOutput)) {
+        try (Writer writer = new FileWriter(updateOutput))
+        {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(update, writer);
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
 
-    private static void processFile(File f) {
-        if (!f.getName().endsWith(".msi")) {
+    private static void processFile(File f)
+    {
+        if (!f.getName().endsWith(".msi"))
+        {
             update.size = f.length();
             update.hash = getFileChecksum(md5Digest, f);
         }
@@ -116,16 +185,19 @@ public class Bootstrapper {
     {
         //Get file input stream for reading the file content
         FileInputStream fis = null;
-        try {
+        try
+        {
             fis = new FileInputStream(file);
             //Create byte array to read data in chunks
             byte[] byteArray = new byte[1024];
             int bytesCount = 0;
 
             //Read file data and update in message digest
-            while ((bytesCount = fis.read(byteArray)) != -1) {
+            while ((bytesCount = fis.read(byteArray)) != -1)
+            {
                 digest.update(byteArray, 0, bytesCount);
-            };
+            }
+            ;
 
             //close the stream; We don't need it now.
             fis.close();
@@ -136,14 +208,15 @@ public class Bootstrapper {
             //This bytes[] has bytes in decimal format;
             //Convert it to hexadecimal format
             StringBuilder sb = new StringBuilder();
-            for(int i=0; i< bytes.length ;i++)
+            for (int i = 0; i < bytes.length; i++)
             {
                 sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
             }
 
             //return complete hash
             return sb.toString();
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
         return "";

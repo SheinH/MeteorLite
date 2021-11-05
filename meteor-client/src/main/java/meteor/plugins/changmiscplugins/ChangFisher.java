@@ -33,6 +33,7 @@ public class ChangFisher extends Plugin {
     private ListIterator<Item> dropListIterator;
     private WorldPoint currentFishingSpotLoc;
     private NPC currentFishingSpot;
+    private int tickDelay;
 
     enum WCState {
         CHOPPING,
@@ -66,7 +67,8 @@ public class ChangFisher extends Plugin {
 
     private void dropItem(Item item){
         MousePackets.queueClickPacket(0,0);
-        ItemPackets.itemAction(item,"Drop");
+//        ItemPackets.itemAction(item,"Drop");
+        item.interact("Drop");
     }
 
     private void updateDropList()
@@ -120,20 +122,29 @@ public class ChangFisher extends Plugin {
 
     Timer timer = new Timer();
 
+    boolean alreadyDropped = false;
+    boolean isActive = true;
     @Subscribe
     public void onGameTick(GameTick event) {
         if(timer.getMinutesFromStart() > 220)
             toggle();
+        if(tickDelay > 0){
+            tickDelay--;
+            return;
+        }
         if(state == WCState.CHOPPING){
             if(!getFishing() || Dialog.isOpen() || currentFishingSpot == null || !currentFishingSpot.getWorldLocation().equals(currentFishingSpotLoc)){
                 var tree = NPCs.getNearest("Rod Fishing spot");
                 currentFishingSpot = tree;
                 currentFishingSpotLoc = tree.getWorldLocation();
                 MousePackets.queueClickPacket(0,0);
-                NPCPackets.npcAction(tree, "Lure",0);
+//                NPCPackets.npcAction(tree, "Lure",0);
+                tree.interact("Lure");
+//                client.invokeMenuAction("","",tree.getIndex(),MenuAction.NPC_FIRST_OPTION.getId(),0,0);
             }
             if(Inventory.isFull()){
                 state = WCState.DROPPING;
+                alreadyDropped = false;
                 onGameTick(event);
             }
         }
@@ -145,7 +156,11 @@ public class ChangFisher extends Plugin {
                 currentFishingSpotLoc = null;
             }
             else{
-                logs.forEach(this::dropItem);
+                if(!alreadyDropped)
+                {
+                    logs.forEach(this::dropItem);
+                    alreadyDropped = true;
+                }
             }
         }
     }

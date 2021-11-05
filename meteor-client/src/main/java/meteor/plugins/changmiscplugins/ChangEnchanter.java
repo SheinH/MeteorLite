@@ -11,11 +11,10 @@ import meteor.plugins.api.items.Bank;
 import meteor.plugins.api.items.Inventory;
 import meteor.plugins.api.magic.Regular;
 import meteor.plugins.api.magic.Spell;
-import meteor.plugins.api.packets.MousePackets;
-import meteor.plugins.api.packets.NPCPackets;
-import meteor.plugins.api.packets.SpellPackets;
-import meteor.plugins.api.packets.WidgetPackets;
+import meteor.plugins.api.packets.*;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.ItemID;
+import net.runelite.api.MenuAction;
 import net.runelite.api.NPC;
 import net.runelite.api.events.ClientTick;
 import net.runelite.api.events.GameTick;
@@ -26,12 +25,14 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 @PluginDescriptor(
-        name = "Chang Enchanger",
+        name = "Chang Enchanter",
         description = "EZ Enchants",
         enabledByDefault = false
 )
 public class ChangEnchanter extends Plugin {
 
+
+    private int failed;
 
     enum State {
         ENCHANTING,
@@ -60,6 +61,11 @@ public class ChangEnchanter extends Plugin {
         WidgetPackets.queueWidgetActionPacket(WidgetInfo.BANK_ITEM_CONTAINER.getPackedId(), 1973, bankItemSlot);
     }
 
+    @Override
+    public void startup()
+    {
+    }
+
     @Subscribe
     public void onGameTick(GameTick event) {
         if (tickDelay > 0) {
@@ -74,35 +80,91 @@ public class ChangEnchanter extends Plugin {
             var ring = Inventory.getFirst(itemToEnchant);
             if (ring == null) {
                 state = State.BANKING;
+                bankTick = 0;
                 onGameTick(event);
                 return;
             } else {
                 MousePackets.queueClickPacket(0, 0);
                 SpellPackets.spellOnItem(spell, ring);
             }
-        } else {
-            if (Bank.isOpen()) {
-                if (Inventory.contains(itemToEnchant)) {
-                    state = State.ENCHANTING;
-                    onGameTick(event);
-                    return;
-                }
-                if (Inventory.contains(itemOutput)) {
-                    Bank.depositAll(itemOutput);
-                    Bank.withdrawAll(itemToEnchant, Bank.WithdrawMode.ITEM);
-                } else if (!Inventory.isFull()) {
-                    if (Bank.contains(itemToEnchant))
+        } else
+        {
+            if (Inventory.contains(itemToEnchant))
+            {
+                state = State.ENCHANTING;
+                onGameTick(event);
+                return;
+            }
+            if (bankItemSlot == -1)
+            {
+                if (Bank.isOpen())
+                {
+                    if (Inventory.contains(itemOutput))
+                    {
+                        Bank.depositAll(itemOutput);
                         Bank.withdrawAll(itemToEnchant, Bank.WithdrawMode.ITEM);
-                    else
+                        bankItemSlot = Bank.getFirst(itemToEnchant).getSlot();
+                    } else if (!Inventory.isFull())
+                    {
+                        if (Bank.contains(itemToEnchant))
+                        {
+                            Bank.withdrawAll(itemToEnchant, Bank.WithdrawMode.ITEM);
+                        }
+                        else
+                            toggle();
+                    } else
+                    {
                         toggle();
-                } else {
-                    toggle();
+                    }
+                } else
+                {
+                    NPC banker = NPCs.getNearest("Banker");
+                    banker.interact("Bank");
+                    tickDelay = 1;
                 }
-            } else {
-                NPC banker = NPCs.getNearest("Banker");
-                banker.interact("Bank");
-                tickDelay = 1;
+            }
+            else{
+                quickBank();
             }
         }
+    }
+    int bankTick = 0;
+    private void quickBank()
+    {
+        NPC bank = NPCs.getNearest("Banker");
+        if (bankTick == 0)
+        {
+            if (bank != null)
+            {
+                if (Inventory.getFreeSlots() > 0)
+                {
+                    failed++;
+                    if (failed > 2)
+                    {
+                        this.toggle();
+                        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "ChocoGrinder", "Out of chocolate", null);
+                        return;
+                    }
+                    MousePackets.queueClickPacket(0, 0);
+                    NPCPackets.queueNPCAction3Packet(bank.getIndex(), 0);
+                    return;
+                }
+                failed = 0;
+                MousePackets.queueClickPacket(0, 0);
+                NPCPackets.queueNPCAction3Packet(bank.getIndex(), 0);
+            }
+        }
+        if(bankTick == 1){
+            if(!Inventory.getAll(itemOutput).isEmpty()) {
+                MousePackets.queueClickPacket(0, 0);
+                WidgetPackets.queueWidgetAction2Packet(WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER.getPackedId(),itemOutput,0);
+            }
+            MousePackets.queueClickPacket(0, 0);
+            WidgetPackets.queueWidgetActionPacket(WidgetInfo.BANK_ITEM_CONTAINER.getPackedId(),itemToEnchant,bankItemSlot);
+        }
+        if(bankTick == 3){
+            MousePackets.queueClickPacket(0, 0);
+        }
+        bankTick++;
     }
 }

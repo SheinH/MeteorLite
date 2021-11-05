@@ -1,11 +1,8 @@
 package meteor.plugins.changmiscplugins;
 
-import meteor.plugins.changmiscplugins.LavaDragScript;
 import meteor.ui.FontManager;
-import meteor.ui.overlay.OverlayMenuEntry;
 import meteor.ui.overlay.OverlayPanel;
 import meteor.ui.overlay.OverlayPosition;
-import meteor.ui.overlay.components.LineComponent;
 import meteor.ui.overlay.components.TableAlignment;
 import meteor.ui.overlay.components.TableComponent;
 import meteor.ui.overlay.components.TitleComponent;
@@ -15,21 +12,16 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.DurationFormatUtils;
-import org.apache.commons.lang3.time.StopWatch;
-
-import static net.runelite.api.MenuAction.RUNELITE_OVERLAY_CONFIG;
-import static meteor.ui.overlay.OverlayManager.OPTION_CONFIGURE;
 
 @Singleton
-class LavaDragOverlay extends OverlayPanel {
-    private final LavaDragScript plugin;
+class ChangLavaDragOverlay extends OverlayPanel {
+    private final ChangLavaDrags plugin;
 
     @Inject
-    private LavaDragOverlay(final LavaDragScript plugin) {
+    private ChangLavaDragOverlay(final ChangLavaDrags plugin) {
         super(plugin);
         setPosition(OverlayPosition.BOTTOM_LEFT);
         this.plugin = plugin;
@@ -81,7 +73,7 @@ class LavaDragOverlay extends OverlayPanel {
         tableComponent.addRow("Total Profit",goldToString(profit));
         var defaultFont = FontManager.getDefaultFont();
         if (!tableComponent.isEmpty()) {
-            panelComponent.setPreferredSize(new Dimension(200,0));
+            panelComponent.setPreferredSize(new Dimension(150,0));
             panelComponent.getChildren().add(TitleComponent.builder()
                     .text("Lava Dragons")
                     .color(ColorUtil.fromHex("#f8a252"))

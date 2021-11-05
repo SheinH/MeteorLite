@@ -9,10 +9,14 @@ import meteor.eventbus.Subscribe;
 import meteor.game.WorldService;
 import meteor.plugins.Plugin;
 import meteor.plugins.PluginDescriptor;
-import meteor.plugins.api.items.Equipment;
-import meteor.plugins.api.packets.ItemPackets;
+import meteor.plugins.api.commons.Time;
+import meteor.plugins.api.game.Game;
+import meteor.plugins.api.game.Worlds;
+import meteor.plugins.api.items.Inventory;
+import meteor.plugins.api.items.Shops;
 import meteor.plugins.api.packets.MousePackets;
 import meteor.plugins.api.packets.WidgetPackets;
+import meteor.plugins.quicklogin.QuickLoginPlugin;
 import meteor.ui.overlay.OverlayManager;
 import meteor.util.PvPUtil;
 import meteor.util.WorldUtil;
@@ -22,7 +26,6 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.PlayerSpawned;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
-import net.runelite.api.widgets.WidgetItem;
 import net.runelite.http.api.worlds.World;
 import net.runelite.http.api.worlds.WorldResult;
 
@@ -30,7 +33,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -45,7 +47,10 @@ import static java.awt.event.KeyEvent.VK_ENTER;
 )
 @SuppressWarnings("unused")
 @Singleton
-public class AutoLogHop extends Plugin {
+public class AutoLogHop extends Plugin
+{
+    @Inject
+    private QuickLoginPlugin quickLoginPlugin;
     @Inject
     private Client client;
 
@@ -76,55 +81,77 @@ public class AutoLogHop extends Plugin {
     private boolean login;
 
     @Provides
-    public AutoLogHopConfig getConfig(ConfigManager configManager) {
+    public AutoLogHopConfig getConfig(ConfigManager configManager)
+    {
         return configManager.getConfig(AutoLogHopConfig.class);
     }
 
     @Override
-    public void startup() {
-
+    public void startup()
+    {
+        var full = Inventory.isFull();
     }
 
     @Override
-    public void shutdown() {
+    public void shutdown()
+    {
 
     }
 
     @Subscribe
-    public void onGameTick(GameTick event) {
-        if (nearPlayer()) {
+    public void onGameTick(GameTick event)
+    {
+        if (nearPlayer())
+        {
             handleAction();
         }
 
     }
 
     @Subscribe
-    public void onGameStateChanged(GameStateChanged event) {
-        if (!login || event.getGameState() != GameState.LOGIN_SCREEN || config.user().isBlank() || config.password().isBlank()) {
+    public void onGameStateChanged(GameStateChanged event)
+    {
+        var items = Shops.getItems();
+        if (!login || event.getGameState() != GameState.LOGIN_SCREEN || config.user().isBlank() || config.password().isBlank())
+        {
             return;
         }
-        hopToWorld(getValidWorld());
-        executorService.submit(() -> {
-            sleep(600);
-            pressKey(VK_ENTER);
-            client.setUsername(config.user());
-            client.setPassword(config.password());
-            sleep(600);
-            pressKey(VK_ENTER);
-            pressKey(VK_ENTER);
-        });
+        hopWorlds();
+        if (QuickLoginPlugin.Companion.getLastLogin() != -1)
+        {
+            executorService.submit(() ->
+            {
+                Time.sleepUntil(() -> Game.getState() == GameState.LOGIN_SCREEN,50,2000);
+                Time.sleep(100);
+                quickLoginPlugin.enterLastLogin();
+            });
+        }
+        else
+            executorService.submit(() ->
+            {
+                sleep(600);
+                pressKey(VK_ENTER);
+                client.setUsername(config.user());
+                client.setPassword(config.password());
+                sleep(600);
+                pressKey(VK_ENTER);
+                pressKey(VK_ENTER);
+            });
         login = false;
     }
 
     @Subscribe
-    public void onPlayerSpawned(PlayerSpawned event) {
+    public void onPlayerSpawned(PlayerSpawned event)
+    {
         if (isPlayerBad(event.getPlayer()))
             handleAction();
     }
 
-    private boolean nearPlayer() {
+    private boolean nearPlayer()
+    {
         List<Player> players = client.getPlayers();
-        for (Player p : players) {
+        for (Player p : players)
+        {
             if (!isPlayerBad(p))
                 continue;
             return true;
@@ -132,10 +159,12 @@ public class AutoLogHop extends Plugin {
         return false;
     }
 
-    private void handleAction() {
-        switch (config.method()) {
+    private void handleAction()
+    {
+        switch (config.method())
+        {
             case HOP:
-                hopToWorld(getValidWorld());
+                hopWorlds();
                 break;
 
             case TELEPORT:
@@ -149,7 +178,8 @@ public class AutoLogHop extends Plugin {
         }
     }
 
-    private void teleportAway() {
+    private void teleportAway()
+    {
         //can't use ring of wealth above lv 30 wilderness.
         if (PvPUtil.getWildernessLevelFrom(client.getLocalPlayer().getWorldLocation()) > 30)
             return;
@@ -166,14 +196,16 @@ public class AutoLogHop extends Plugin {
         var ring = WidgetInfo.EQUIPMENT_RING;
         var ringWidget = client.getWidget(ring);
         MousePackets.queueClickPacket(0, 0);
-        WidgetPackets.widgetAction(ringWidget,"Grand Exchange");
+        WidgetPackets.widgetAction(ringWidget, "Grand Exchange");
     }
 
-    private boolean passedWildernessChecks() {
+    private boolean passedWildernessChecks()
+    {
         return config.disableWildyChecks() || inWilderness();
     }
 
-    private boolean isPlayerBad(Player player) {
+    private boolean isPlayerBad(Player player)
+    {
         if (player == client.getLocalPlayer())
             return false;
 
@@ -192,13 +224,15 @@ public class AutoLogHop extends Plugin {
         return true;
     }
 
-    private int getValidWorld() {
+    private int getValidWorld()
+    {
         WorldResult result = worldService.getWorlds();
         if (result == null)
             return -1;
         List<World> worlds = result.getWorlds();
         Collections.shuffle(worlds);
-        for (World w : worlds) {
+        for (World w : worlds)
+        {
             if (client.getWorld() == w.getId())
                 continue;
 
@@ -214,61 +248,67 @@ public class AutoLogHop extends Plugin {
         return -1;
     }
 
-    private void hopToWorld(int worldId) {
+    private void hopWorlds()
+    {
         assert client.isClientThread();
 
-        WorldResult worldResult = worldService.getWorlds();
-        // Don't try to hop if the world doesn't exist
-        World world = worldResult.findWorld(worldId);
-        if (world == null) {
-            return;
-        }
+        var world = Worlds.getRandom(x -> x.getId() != client.getWorld() && x.isNormal() && x.isMembers());
 
         final net.runelite.api.World rsWorld = client.createWorld();
         rsWorld.setActivity(world.getActivity());
         rsWorld.setAddress(world.getAddress());
         rsWorld.setId(world.getId());
-        rsWorld.setPlayerCount(world.getPlayers());
+        rsWorld.setPlayerCount(world.getPlayerCount());
         rsWorld.setLocation(world.getLocation());
-        rsWorld.setTypes(WorldUtil.toWorldTypes(world.getTypes()));
-
-        if (client.getGameState() == GameState.LOGIN_SCREEN) {
+        rsWorld.setTypes(world.getTypes());
+        if (client.getGameState() == GameState.LOGIN_SCREEN)
+        {
             // on the login screen we can just change the world by ourselves
             client.changeWorld(rsWorld);
             return;
         }
 
-        if (client.getWidget(WidgetInfo.WORLD_SWITCHER_LIST) == null) {
+        if (client.getWidget(WidgetInfo.WORLD_SWITCHER_LIST) == null)
+        {
             client.openWorldHopper();
 
-            executor.submit(() -> {
-                try {
+            executor.submit(() ->
+            {
+                try
+                {
                     Thread.sleep(25 + ThreadLocalRandom.current().nextInt(125));
-                } catch (InterruptedException e) {
+                } catch (InterruptedException e)
+                {
                     e.printStackTrace();
                 }
-                injector.getInstance(ClientThread.class).invokeLater(() -> {
+                injector.getInstance(ClientThread.class).invokeLater(() ->
+                {
                     if (client.getWidget(WidgetInfo.WORLD_SWITCHER_LIST) != null)
                         client.hopToWorld(rsWorld);
                 });
             });
-        } else {
+        } else
+        {
             client.hopToWorld(rsWorld);
         }
 
 
     }
 
-    private void logout() {
+    private void logout()
+    {
         Widget logoutButton = client.getWidget(182, 8);
         Widget logoutDoorButton = client.getWidget(69, 23);
         int param1 = -1;
-        if (logoutButton != null) {
+        if (logoutButton != null)
+        {
             param1 = logoutButton.getId();
-        } else if (logoutDoorButton != null) {
+        } else if (logoutDoorButton != null)
+        {
             param1 = logoutDoorButton.getId();
         }
-        if (param1 == -1) {
+        if (param1 == -1)
+        {
             return;
         }
         client.invokeMenuAction(
@@ -281,15 +321,18 @@ public class AutoLogHop extends Plugin {
         );
     }
 
-    public boolean inWilderness() {
+    public boolean inWilderness()
+    {
         return client.getVar(Varbits.IN_WILDERNESS) == 1;
     }
 
-    public boolean isInWhitelist(String username) {
+    public boolean isInWhitelist(String username)
+    {
         username = username.toLowerCase().replace(" ", "_");
         String[] names = config.whitelist().toLowerCase().replace(" ", "_").split(",");
 
-        for (String whitelisted : names) {
+        for (String whitelisted : names)
+        {
             if (whitelisted.isBlank() || whitelisted.isEmpty() || whitelisted.equals("_"))
                 continue;
 
@@ -303,20 +346,24 @@ public class AutoLogHop extends Plugin {
         return false;
     }
 
-    private boolean isPlayerSkulled(Player player) {
-        if (player == null) {
+    private boolean isPlayerSkulled(Player player)
+    {
+        if (player == null)
+        {
             return false;
         }
 
         return player.getSkullIcon() == SkullIcon.SKULL;
     }
 
-    public void pressKey(int key) {
+    public void pressKey(int key)
+    {
         keyEvent(KeyEvent.KEY_PRESSED, key);
         keyEvent(KeyEvent.KEY_RELEASED, key);
     }
 
-    private void keyEvent(int id, int key) {
+    private void keyEvent(int id, int key)
+    {
         KeyEvent e = new KeyEvent(
                 client.getCanvas(), id, System.currentTimeMillis(),
                 0, key, KeyEvent.CHAR_UNDEFINED
@@ -324,11 +371,15 @@ public class AutoLogHop extends Plugin {
         client.getCanvas().dispatchEvent(e);
     }
 
-    public static void sleep(long time) {
-        if (time > 0) {
-            try {
+    public static void sleep(long time)
+    {
+        if (time > 0)
+        {
+            try
+            {
                 Thread.sleep(time);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException e)
+            {
                 throw new RuntimeException(e);
             }
         }
