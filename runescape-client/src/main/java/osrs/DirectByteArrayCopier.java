@@ -3,58 +3,63 @@ package osrs;
 import java.nio.ByteBuffer;
 import net.runelite.mapping.Export;
 import net.runelite.mapping.Implements;
-import net.runelite.mapping.ObfuscatedGetter;
 import net.runelite.mapping.ObfuscatedName;
 import net.runelite.mapping.ObfuscatedSignature;
 
-@ObfuscatedName("jc")
+@ObfuscatedName("jz")
 @Implements("DirectByteArrayCopier")
 public class DirectByteArrayCopier extends AbstractByteArrayCopier {
-	@ObfuscatedName("t")
-	@ObfuscatedGetter(
-		intValue = 77516077
-	)
-	static int field3212;
-	@ObfuscatedName("l")
-	@Export("directBuffer")
-	ByteBuffer directBuffer;
+   @ObfuscatedName("g")
+   @ObfuscatedSignature(
+      descriptor = "Lko;"
+   )
+   @Export("ItemDefinition_archive")
+   public static AbstractArchive ItemDefinition_archive;
+   @ObfuscatedName("j")
+   static int[][] field3212;
+   @ObfuscatedName("bn")
+   @ObfuscatedSignature(
+      descriptor = "[Low;"
+   )
+   @Export("worldSelectBackSprites")
+   static SpritePixels[] worldSelectBackSprites;
+   @ObfuscatedName("i")
+   @Export("directBuffer")
+   ByteBuffer directBuffer;
 
-	@ObfuscatedName("j")
-	@ObfuscatedSignature(
-		descriptor = "(B)[B",
-		garbageValue = "-25"
-	)
-	@Export("get")
-	byte[] get() {
-		byte[] var1 = new byte[this.directBuffer.capacity()];
-		this.directBuffer.position(0);
-		this.directBuffer.get(var1);
-		return var1;
-	}
+   @ObfuscatedName("s")
+   @ObfuscatedSignature(
+      descriptor = "(B)[B",
+      garbageValue = "99"
+   )
+   @Export("get")
+   byte[] get() {
+      byte[] var1 = new byte[this.directBuffer.capacity()];
+      this.directBuffer.position(0);
+      this.directBuffer.get(var1);
+      return var1;
+   }
 
-	@ObfuscatedName("m")
-	@ObfuscatedSignature(
-		descriptor = "([BI)V",
-		garbageValue = "944891137"
-	)
-	@Export("set")
-	public void set(byte[] var1) {
-		this.directBuffer = ByteBuffer.allocateDirect(var1.length);
-		this.directBuffer.position(0);
-		this.directBuffer.put(var1);
-	}
+   @ObfuscatedName("a")
+   @ObfuscatedSignature(
+      descriptor = "([BB)V",
+      garbageValue = "-48"
+   )
+   @Export("set")
+   public void set(byte[] var1) {
+      this.directBuffer = ByteBuffer.allocateDirect(var1.length);
+      this.directBuffer.position(0);
+      this.directBuffer.put(var1);
+   }
 
-	@ObfuscatedName("a")
-	@ObfuscatedSignature(
-		descriptor = "(II)I",
-		garbageValue = "333873398"
-	)
-	static int method5102(int var0) {
-		Message var1 = (Message)Messages.Messages_hashTable.get((long)var0);
-		if (var1 == null) {
-			return -1;
-		} else {
-			return var1.nextDual == Messages.Messages_queue.sentinel ? -1 : ((Message)var1.nextDual).count;
-		}
-	}
+   @ObfuscatedName("ju")
+   @ObfuscatedSignature(
+      descriptor = "(II)V",
+      garbageValue = "-1646184786"
+   )
+   static final void method5179(int var0) {
+      if (class174.loadInterface(var0)) {
+         class135.drawModelComponents(WorldMapSection1.Widget_interfaceComponents[var0], -1);
+      }
+   }
 }

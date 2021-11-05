@@ -24,10 +24,16 @@ import meteor.config.ConfigManager;
 import meteor.eventbus.EventBus;
 import meteor.eventbus.Subscribe;
 import meteor.eventbus.events.PluginChanged;
+import meteor.events.ExternalsReloaded;
+import meteor.plugins.ExternalPluginClassLoader;
+import meteor.plugins.PluginDescriptor;
+import meteor.plugins.api.game.Game;
+import meteor.plugins.banktaglayouts.BankTagLayoutsPlugin;
 import meteor.plugins.*;
 import meteor.plugins.ccrabber.CCrabberPlugin;
 import meteor.plugins.changmiscplugins.*;
 import meteor.plugins.cettitutorial.CettiTutorialPlugin;
+import meteor.plugins.nexus.NexusMapPlugin;
 import meteor.plugins.chaosaltar.ChaosAltarPlugin;
 import meteor.plugins.houseparty.HousePartyPlugin;
 import meteor.plugins.interfacestyles.InterfaceStylesPlugin;
@@ -255,6 +261,7 @@ public class PluginManager {
 		plugins.add(new AutoLoginPlugin());
 		plugins.add(new BankPlugin());
 		plugins.add(new BankTagsPlugin());
+		plugins.add(new BankTagLayoutsPlugin());
 		plugins.add(new BAPlugin());
 		plugins.add(new BarrowsPlugin());
 		plugins.add(new BetterAntiDragPlugin());
@@ -337,6 +344,7 @@ public class PluginManager {
 		plugins.add(new MouseTooltipPlugin());
 		plugins.add(new MTAPlugin());
 		plugins.add(new NeverLogoutPlugin());
+		plugins.add(new NexusMapPlugin());
 	  plugins.add(new NightmareHelper());
 		plugins.add(new NightmarePlugin());
 		plugins.add(new NpcAggroAreaPlugin());
@@ -482,20 +490,17 @@ public class PluginManager {
 			plugin.toggle();
 	}
 
+
 	public void startExternals() {
 		List<Plugin> externals = loadPluginsFromDir(EXTERNALS_DIR);
 		plugins.stream().filter(Plugin::isExternal).forEach(Plugin::unload);
 		plugins.removeIf(Plugin::isExternal);
-//		Category category = PluginListPanel.INSTANCE.findOrCreateCategory(PluginListPanel.EXTERNAL_CATEGORY_NAME);
 
 		for (Plugin external : externals) {
-//			if (!category.plugins.contains(external.getName())) {
-//				category.plugins.add(0, external.getName());
-//			}
-
 			plugins.add(external);
 			startPlugin(external);
 		}
+		Game.getClient().getCallbacks().post(new ExternalsReloaded());
 	}
 
 	private List<Plugin> loadPluginsFromDir(File dir) {

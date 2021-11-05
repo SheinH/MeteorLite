@@ -226,6 +226,18 @@ public class TransportLoader {
                 1164,
                 "Well that is a risk I will have to take."));
 
+        // Fossil Island
+        transports.add(npcTransport(new WorldPoint(3362, 3445, 0),
+                new WorldPoint(3724, 3808, 0),
+                8012,
+                "Quick-Travel"));
+
+        transports.add(objectDialogTransport(new WorldPoint(3724, 3808, 0),
+                new WorldPoint(3362, 3445, 0),
+                30914,
+                "Travel",
+                "Row to the barge and travel to the Digsite."));
+
         // Motherload Mine
         if (MLM.contains(Players.getLocal())) {
             transports.addAll(motherloadMineTransport(new WorldPoint(3726, 5643, 0)));

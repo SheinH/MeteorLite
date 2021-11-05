@@ -3,19 +3,19 @@ package osrs;
 import net.runelite.mapping.ObfuscatedName;
 import net.runelite.mapping.ObfuscatedSignature;
 
-@ObfuscatedName("nb")
+@ObfuscatedName("nd")
 public interface class388 {
-	@ObfuscatedName("l")
-	@ObfuscatedSignature(
-		descriptor = "(Ljava/lang/Object;Lot;I)V",
-		garbageValue = "804166773"
-	)
-	void vmethod6815(Object var1, Buffer var2);
+   @ObfuscatedName("i")
+   @ObfuscatedSignature(
+      descriptor = "(Ljava/lang/Object;Lop;B)V",
+      garbageValue = "59"
+   )
+   void vmethod6878(Object var1, Buffer var2);
 
-	@ObfuscatedName("q")
-	@ObfuscatedSignature(
-		descriptor = "(Lot;I)Ljava/lang/Object;",
-		garbageValue = "1421946597"
-	)
-	Object vmethod6822(Buffer var1);
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "(Lop;I)Ljava/lang/Object;",
+      garbageValue = "-2140031619"
+   )
+   Object vmethod6883(Buffer var1);
 }

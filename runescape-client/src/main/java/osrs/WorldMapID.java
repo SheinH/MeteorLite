@@ -6,35 +6,33 @@ import net.runelite.mapping.ObfuscatedGetter;
 import net.runelite.mapping.ObfuscatedName;
 import net.runelite.mapping.ObfuscatedSignature;
 
-@ObfuscatedName("gm")
+@ObfuscatedName("gz")
 @Implements("WorldMapID")
 public class WorldMapID {
-	@ObfuscatedName("l")
-	@ObfuscatedSignature(
-		descriptor = "Lgm;"
-	)
-	static final WorldMapID field2195;
-	@ObfuscatedName("q")
-	@ObfuscatedSignature(
-		descriptor = "Lgm;"
-	)
-	static final WorldMapID field2190;
-	@ObfuscatedName("t")
-	@Export("Interpreter_stringLocals")
-	static String[] Interpreter_stringLocals;
-	@ObfuscatedName("f")
-	@ObfuscatedGetter(
-		intValue = 1713675959
-	)
-	@Export("value")
-	final int value;
+   @ObfuscatedName("i")
+   @ObfuscatedSignature(
+      descriptor = "Lgz;"
+   )
+   static final WorldMapID field2186 = new WorldMapID(0);
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "Lgz;"
+   )
+   static final WorldMapID field2184 = new WorldMapID(1);
+   @ObfuscatedName("l")
+   @ObfuscatedSignature(
+      descriptor = "[Lnw;"
+   )
+   @Export("JagexCache_idxFiles")
+   public static BufferedFile[] JagexCache_idxFiles;
+   @ObfuscatedName("s")
+   @ObfuscatedGetter(
+      intValue = 418528697
+   )
+   @Export("value")
+   final int value;
 
-	static {
-		field2195 = new WorldMapID(0);
-		field2190 = new WorldMapID(1);
-	}
-
-	WorldMapID(int var1) {
-		this.value = var1;
-	}
+   WorldMapID(int var1) {
+      this.value = var1;
+   }
 }

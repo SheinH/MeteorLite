@@ -6,41 +6,60 @@ import net.runelite.mapping.Implements;
 import net.runelite.mapping.ObfuscatedName;
 import net.runelite.mapping.ObfuscatedSignature;
 
-@ObfuscatedName("ok")
+@ObfuscatedName("ox")
 @Implements("UserComparator1")
 public class UserComparator1 implements Comparator {
-	@ObfuscatedName("l")
-	@Export("reversed")
-	final boolean reversed;
+   @ObfuscatedName("i")
+   @Export("reversed")
+   final boolean reversed;
 
-	public UserComparator1(boolean var1) {
-		this.reversed = var1;
-	}
+   public UserComparator1(boolean var1) {
+      this.reversed = var1;
+   }
 
-	@ObfuscatedName("l")
-	@ObfuscatedSignature(
-		descriptor = "(Llu;Llu;B)I",
-		garbageValue = "-110"
-	)
-	@Export("compare_bridged")
-	int compare_bridged(User var1, User var2) {
-		return this.reversed ? var1.compareTo_user(var2) : var2.compareTo_user(var1);
-	}
+   @ObfuscatedName("i")
+   @ObfuscatedSignature(
+      descriptor = "(Lla;Lla;S)I",
+      garbageValue = "-7375"
+   )
+   @Export("compare_bridged")
+   int compare_bridged(User var1, User var2) {
+      return this.reversed ? var1.compareTo_user(var2) : var2.compareTo_user(var1);
+   }
 
-	public int compare(Object var1, Object var2) {
-		return this.compare_bridged((User)var1, (User)var2);
-	}
+   public int compare(Object var1, Object var2) {
+      return this.compare_bridged((User)var1, (User)var2);
+   }
 
-	public boolean equals(Object var1) {
-		return super.equals(var1);
-	}
+   public boolean equals(Object var1) {
+      return super.equals(var1);
+   }
 
-	@ObfuscatedName("m")
-	@ObfuscatedSignature(
-		descriptor = "(II)I",
-		garbageValue = "725345511"
-	)
-	public static int method7162(int var0) {
-		return Widget.method5030(ViewportMouse.ViewportMouse_entityTags[var0]);
-	}
+   @ObfuscatedName("g")
+   @ObfuscatedSignature(
+      descriptor = "(Lko;Lko;Ljava/lang/String;Ljava/lang/String;I)Lle;",
+      garbageValue = "976267291"
+   )
+   public static Font method7234(AbstractArchive var0, AbstractArchive var1, String var2, String var3) {
+      int var4 = var0.getGroupId(var2);
+      int var5 = var0.getFileId(var4, var3);
+      Font var6;
+      if (!BuddyRankComparator.method2502(var0, var4, var5)) {
+         var6 = null;
+      } else {
+         byte[] var8 = var1.takeFile(var4, var5);
+         Font var7;
+         if (var8 == null) {
+            var7 = null;
+         } else {
+            Font var9 = new Font(var8, class414.SpriteBuffer_xOffsets, class414.SpriteBuffer_yOffsets, UrlRequester.SpriteBuffer_spriteWidths, class414.SpriteBuffer_spriteHeights, HitSplatDefinition.SpriteBuffer_spritePalette, class295.SpriteBuffer_pixels);
+            PacketBuffer.method6913();
+            var7 = var9;
+         }
+
+         var6 = var7;
+      }
+
+      return var6;
+   }
 }

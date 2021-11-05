@@ -16,6 +16,7 @@ import meteor.game.WorldService;
 import meteor.plugins.api.game.Game;
 import meteor.plugins.api.game.GameThread;
 import meteor.plugins.api.game.Prices;
+import meteor.plugins.api.game.Worlds;
 import meteor.plugins.itemstats.ItemStatChangesService;
 import meteor.plugins.itemstats.ItemStatChangesServiceImpl;
 import meteor.config.MeteorLiteConfig;
@@ -29,8 +30,6 @@ import meteor.util.NonScheduledExecutorServiceExceptionLogger;
 import net.runelite.api.Client;
 import net.runelite.api.hooks.Callbacks;
 import net.runelite.http.api.chat.ChatClient;
-import net.runelite.http.api.wiseoldman.Period;
-import net.runelite.http.api.wiseoldman.WiseOldManClient;
 import okhttp3.OkHttpClient;
 import org.sponge.util.Logger;
 
@@ -145,7 +144,8 @@ public class MeteorLiteClientModule extends AbstractModule {
     requestStaticInjection(
             GameThread.class,
             Game.class,
-            Prices.class
+            Prices.class,
+            Worlds.class
     );
   }
 

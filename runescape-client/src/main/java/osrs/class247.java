@@ -5,75 +5,85 @@ import net.runelite.mapping.ObfuscatedGetter;
 import net.runelite.mapping.ObfuscatedName;
 import net.runelite.mapping.ObfuscatedSignature;
 
-@ObfuscatedName("io")
+@ObfuscatedName("ir")
 public class class247 {
-	@ObfuscatedName("l")
-	@ObfuscatedSignature(
-		descriptor = "Lkl;"
-	)
-	@Export("musicPatchesArchive")
-	public static AbstractArchive musicPatchesArchive;
-	@ObfuscatedName("q")
-	@ObfuscatedGetter(
-		longValue = 3354000453036338827L
-	)
-	static long field2919;
-	@ObfuscatedName("f")
-	@ObfuscatedSignature(
-		descriptor = "Lkl;"
-	)
-	@Export("soundEffectsArchive")
-	public static AbstractArchive soundEffectsArchive;
-	@ObfuscatedName("j")
-	@ObfuscatedSignature(
-		descriptor = "Lig;"
-	)
-	@Export("midiPcmStream")
-	public static MidiPcmStream midiPcmStream;
-	@ObfuscatedName("m")
-	@ObfuscatedGetter(
-		intValue = 707697237
-	)
-	@Export("musicPlayerStatus")
-	public static int musicPlayerStatus;
-	@ObfuscatedName("e")
-	@ObfuscatedGetter(
-		intValue = -413440179
-	)
-	@Export("musicTrackVolume")
-	public static int musicTrackVolume;
-	@ObfuscatedName("i")
-	@ObfuscatedGetter(
-		intValue = -1828900963
-	)
-	@Export("pcmSampleLength")
-	public static int pcmSampleLength;
-	@ObfuscatedName("y")
-	@Export("musicTrackBoolean")
-	public static boolean musicTrackBoolean;
-	@ObfuscatedName("g")
-	@ObfuscatedSignature(
-		descriptor = "Lat;"
-	)
-	@Export("soundCache")
-	public static SoundCache soundCache;
+   @ObfuscatedName("i")
+   @ObfuscatedSignature(
+      descriptor = "Lko;"
+   )
+   @Export("musicPatchesArchive")
+   public static AbstractArchive musicPatchesArchive;
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "Lko;"
+   )
+   @Export("musicSamplesArchive")
+   public static AbstractArchive musicSamplesArchive;
+   @ObfuscatedName("a")
+   @ObfuscatedSignature(
+      descriptor = "Lio;"
+   )
+   @Export("midiPcmStream")
+   public static MidiPcmStream midiPcmStream;
+   @ObfuscatedName("o")
+   @ObfuscatedGetter(
+      intValue = 1167067929
+   )
+   @Export("musicPlayerStatus")
+   public static int musicPlayerStatus = 0;
+   @ObfuscatedName("j")
+   @ObfuscatedGetter(
+      intValue = 2050223797
+   )
+   @Export("musicTrackVolume")
+   public static int musicTrackVolume;
+   @ObfuscatedName("b")
+   @ObfuscatedGetter(
+      intValue = -609469797
+   )
+   @Export("pcmSampleLength")
+   public static int pcmSampleLength;
+   @ObfuscatedName("k")
+   @ObfuscatedSignature(
+      descriptor = "Lad;"
+   )
+   @Export("soundCache")
+   public static SoundCache soundCache;
+   @ObfuscatedName("kh")
+   @ObfuscatedSignature(
+      descriptor = "Ljf;"
+   )
+   @Export("dragInventoryWidget")
+   static Widget dragInventoryWidget;
 
-	static {
-		musicPlayerStatus = 0;
-	}
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "(IIIII)V",
+      garbageValue = "-1859511667"
+   )
+   static final void method4751(int var0, int var1, int var2, int var3) {
+      for(int var4 = var1; var4 <= var3 + var1; ++var4) {
+         for(int var5 = var0; var5 <= var0 + var2; ++var5) {
+            if (var5 >= 0 && var5 < 104 && var4 >= 0 && var4 < 104) {
+               class54.field419[0][var5][var4] = 127;
+               if (var0 == var5 && var5 > 0) {
+                  Tiles.Tiles_heights[0][var5][var4] = Tiles.Tiles_heights[0][var5 - 1][var4];
+               }
 
-	@ObfuscatedName("i")
-	@ObfuscatedSignature(
-		descriptor = "(IIIZIB)J",
-		garbageValue = "121"
-	)
-	@Export("calculateTag")
-	public static long calculateTag(int var0, int var1, int var2, boolean var3, int var4) {
-		long var5 = (long)((var0 & 127) << 0 | (var1 & 127) << 7 | (var2 & 3) << 14) | ((long)var4 & 4294967295L) << 17;
-		if (var3) {
-			var5 |= 65536L;
-		}
+               if (var0 + var2 == var5 && var5 < 103) {
+                  Tiles.Tiles_heights[0][var5][var4] = Tiles.Tiles_heights[0][var5 + 1][var4];
+               }
 
-		return var5;
-	}
+               if (var4 == var1 && var4 > 0) {
+                  Tiles.Tiles_heights[0][var5][var4] = Tiles.Tiles_heights[0][var5][var4 - 1];
+               }
+
+               if (var3 + var1 == var4 && var4 < 103) {
+                  Tiles.Tiles_heights[0][var5][var4] = Tiles.Tiles_heights[0][var5][var4 + 1];
+               }
+            }
+         }
+      }
+
+   }
 }

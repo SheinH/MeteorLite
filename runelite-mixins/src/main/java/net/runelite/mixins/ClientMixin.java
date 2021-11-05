@@ -1717,9 +1717,9 @@ public abstract class ClientMixin implements RSClient {
     return itemDefCache.containsKey(id);
   }
 
-  @Inject
-  @MethodHook("openMenu")
-  public void menuOpened(int x, int y)
+  @Copy("openMenu")
+  @Replace("openMenu")
+  public void copy$openMenu(int x, int y)
   {
     final MenuOpened event = new MenuOpened();
     event.setMenuEntries(getMenuEntries());
@@ -1729,6 +1729,10 @@ public abstract class ClientMixin implements RSClient {
     {
       setMenuEntries(event.getMenuEntries());
     }
+
+    copy$openMenu(x, y);
+
+    client.getScene().menuOpen$api(client.getPlane(), x - client.getViewportXOffset(), y - client.getViewportYOffset(), false);
   }
 
   @Inject

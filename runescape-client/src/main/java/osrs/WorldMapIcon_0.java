@@ -6,90 +6,145 @@ import net.runelite.mapping.ObfuscatedGetter;
 import net.runelite.mapping.ObfuscatedName;
 import net.runelite.mapping.ObfuscatedSignature;
 
-@ObfuscatedName("gb")
+@ObfuscatedName("gh")
 @Implements("WorldMapIcon_0")
 public class WorldMapIcon_0 extends AbstractWorldMapIcon {
-	@ObfuscatedName("l")
-	@ObfuscatedGetter(
-		intValue = -1190804449
-	)
-	@Export("element")
-	final int element;
-	@ObfuscatedName("q")
-	@ObfuscatedSignature(
-		descriptor = "Lga;"
-	)
-	@Export("label")
-	final WorldMapLabel label;
-	@ObfuscatedName("f")
-	@ObfuscatedGetter(
-		intValue = 511085029
-	)
-	@Export("subWidth")
-	final int subWidth;
-	@ObfuscatedName("j")
-	@ObfuscatedGetter(
-		intValue = 139309099
-	)
-	@Export("subHeight")
-	final int subHeight;
+   @ObfuscatedName("fa")
+   @Export("worldHost")
+   static String worldHost;
+   @ObfuscatedName("hd")
+   @ObfuscatedSignature(
+      descriptor = "[Low;"
+   )
+   @Export("mapMarkerSprites")
+   static SpritePixels[] mapMarkerSprites;
+   @ObfuscatedName("i")
+   @ObfuscatedGetter(
+      intValue = 1687504305
+   )
+   @Export("element")
+   final int element;
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "Lga;"
+   )
+   @Export("label")
+   final WorldMapLabel label;
+   @ObfuscatedName("s")
+   @ObfuscatedGetter(
+      intValue = -515906735
+   )
+   @Export("subWidth")
+   final int subWidth;
+   @ObfuscatedName("a")
+   @ObfuscatedGetter(
+      intValue = 724406877
+   )
+   @Export("subHeight")
+   final int subHeight;
 
-	@ObfuscatedSignature(
-		descriptor = "(Lic;Lic;ILga;)V"
-	)
-	WorldMapIcon_0(Coord var1, Coord var2, int var3, WorldMapLabel var4) {
-		super(var1, var2);
-		this.element = var3;
-		this.label = var4;
-		WorldMapElement var5 = class13.WorldMapElement_get(this.getElement());
-		SpritePixels var6 = var5.getSpriteBool(false);
-		if (var6 != null) {
-			this.subWidth = var6.subWidth;
-			this.subHeight = var6.subHeight;
-		} else {
-			this.subWidth = 0;
-			this.subHeight = 0;
-		}
+   @ObfuscatedSignature(
+      descriptor = "(Lie;Lie;ILga;)V"
+   )
+   WorldMapIcon_0(Coord var1, Coord var2, int var3, WorldMapLabel var4) {
+      super(var1, var2);
+      this.element = var3;
+      this.label = var4;
+      WorldMapElement var5 = ItemComposition.WorldMapElement_get(this.getElement());
+      SpritePixels var6 = var5.getSpriteBool(false);
+      if (var6 != null) {
+         this.subWidth = var6.subWidth;
+         this.subHeight = var6.subHeight;
+      } else {
+         this.subWidth = 0;
+         this.subHeight = 0;
+      }
 
-	}
+   }
 
-	@ObfuscatedName("q")
-	@ObfuscatedSignature(
-		descriptor = "(I)I",
-		garbageValue = "1329338621"
-	)
-	@Export("getElement")
-	public int getElement() {
-		return this.element;
-	}
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "(I)I",
+      garbageValue = "-1660589105"
+   )
+   @Export("getElement")
+   public int getElement() {
+      return this.element;
+   }
 
-	@ObfuscatedName("f")
-	@ObfuscatedSignature(
-		descriptor = "(S)Lga;",
-		garbageValue = "5309"
-	)
-	@Export("getLabel")
-	WorldMapLabel getLabel() {
-		return this.label;
-	}
+   @ObfuscatedName("s")
+   @ObfuscatedSignature(
+      descriptor = "(B)Lga;",
+      garbageValue = "0"
+   )
+   @Export("getLabel")
+   WorldMapLabel getLabel() {
+      return this.label;
+   }
 
-	@ObfuscatedName("j")
-	@ObfuscatedSignature(
-		descriptor = "(I)I",
-		garbageValue = "-1544604408"
-	)
-	@Export("getSubWidth")
-	int getSubWidth() {
-		return this.subWidth;
-	}
+   @ObfuscatedName("a")
+   @ObfuscatedSignature(
+      descriptor = "(I)I",
+      garbageValue = "374350712"
+   )
+   @Export("getSubWidth")
+   int getSubWidth() {
+      return this.subWidth;
+   }
 
-	@ObfuscatedName("m")
-	@ObfuscatedSignature(
-		descriptor = "(I)I",
-		garbageValue = "318612621"
-	)
-	@Export("getSubHeight")
-	int getSubHeight() {
-		return this.subHeight;
-	}
+   @ObfuscatedName("o")
+   @ObfuscatedSignature(
+      descriptor = "(I)I",
+      garbageValue = "-1569056170"
+   )
+   @Export("getSubHeight")
+   int getSubHeight() {
+      return this.subHeight;
+   }
+
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "(II)Ljk;",
+      garbageValue = "1771772075"
+   )
+   public static GameBuild method3890(int var0) {
+      GameBuild[] var1 = class245.method4742();
+
+      for(int var2 = 0; var2 < var1.length; ++var2) {
+         GameBuild var3 = var1[var2];
+         if (var0 == var3.buildId) {
+            return var3;
+         }
+      }
+
+      return null;
+   }
+
+   @ObfuscatedName("t")
+   @ObfuscatedSignature(
+      descriptor = "(III)I",
+      garbageValue = "-2005741653"
+   )
+   static final int method3885(int var0, int var1) {
+      if (var0 == -2) {
+         return 12345678;
+      } else if (var0 == -1) {
+         if (var1 < 2) {
+            var1 = 2;
+         } else if (var1 > 126) {
+            var1 = 126;
+         }
+
+         return var1;
+      } else {
+         var1 = (var0 & 127) * var1 / 128;
+         if (var1 < 2) {
+            var1 = 2;
+         } else if (var1 > 126) {
+            var1 = 126;
+         }
+
+         return (var0 & 'ﾀ') + var1;
+      }
+   }
 }

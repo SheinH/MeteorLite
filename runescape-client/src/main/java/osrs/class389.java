@@ -1,34 +1,42 @@
 package osrs;
 
+import net.runelite.mapping.Export;
 import net.runelite.mapping.ObfuscatedName;
 import net.runelite.mapping.ObfuscatedSignature;
 
 @ObfuscatedName("ne")
 final class class389 implements class388 {
-	@ObfuscatedName("l")
-	@ObfuscatedSignature(
-		descriptor = "(Ljava/lang/Object;Lot;I)V",
-		garbageValue = "804166773"
-	)
-	public void vmethod6815(Object var1, Buffer var2) {
-		this.method6770((Integer)var1, var2);
-	}
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "Lko;"
+   )
+   @Export("SpotAnimationDefinition_modelArchive")
+   public static AbstractArchive SpotAnimationDefinition_modelArchive;
 
-	@ObfuscatedName("q")
-	@ObfuscatedSignature(
-		descriptor = "(Lot;I)Ljava/lang/Object;",
-		garbageValue = "1421946597"
-	)
-	public Object vmethod6822(Buffer var1) {
-		return var1.readInt();
-	}
+   @ObfuscatedName("i")
+   @ObfuscatedSignature(
+      descriptor = "(Ljava/lang/Object;Lop;B)V",
+      garbageValue = "59"
+   )
+   public void vmethod6878(Object var1, Buffer var2) {
+      this.method6830((Integer)var1, var2);
+   }
 
-	@ObfuscatedName("a")
-	@ObfuscatedSignature(
-		descriptor = "(Ljava/lang/Integer;Lot;I)V",
-		garbageValue = "1391168197"
-	)
-	void method6770(Integer var1, Buffer var2) {
-		var2.writeInt(var1);
-	}
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "(Lop;I)Ljava/lang/Object;",
+      garbageValue = "-2140031619"
+   )
+   public Object vmethod6883(Buffer var1) {
+      return var1.readInt();
+   }
+
+   @ObfuscatedName("p")
+   @ObfuscatedSignature(
+      descriptor = "(Ljava/lang/Integer;Lop;I)V",
+      garbageValue = "1046823792"
+   )
+   void method6830(Integer var1, Buffer var2) {
+      var2.writeInt(var1);
+   }
 }

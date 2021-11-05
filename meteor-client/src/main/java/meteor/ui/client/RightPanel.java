@@ -113,6 +113,12 @@ public class RightPanel extends JFXPanel {
 	public void update(Parent parent) {
 		Platform.runLater(() -> {
 			if (isOpen()) {
+				if (parent == null) {
+					return;
+				}
+				if (panel == null) {
+					return;
+				}
 				if (parent.equals(panel)) {
 					close();
 				} else {

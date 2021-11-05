@@ -1,43 +1,36 @@
 package osrs;
 
-import net.runelite.mapping.Export;
 import net.runelite.mapping.ObfuscatedName;
 import net.runelite.mapping.ObfuscatedSignature;
 
-@ObfuscatedName("kh")
+@ObfuscatedName("kq")
 public class class301 {
-	@ObfuscatedName("l")
-	@ObfuscatedSignature(
-		descriptor = "Lkh;"
-	)
-	static final class301 field3780;
-	@ObfuscatedName("q")
-	@ObfuscatedSignature(
-		descriptor = "Lkh;"
-	)
-	static final class301 field3782;
-	@ObfuscatedName("f")
-	@ObfuscatedSignature(
-		descriptor = "Lkh;"
-	)
-	static final class301 field3781;
+   @ObfuscatedName("i")
+   @ObfuscatedSignature(
+      descriptor = "Lkq;"
+   )
+   static final class301 field3767 = new class301();
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "Lkq;"
+   )
+   static final class301 field3770 = new class301();
+   @ObfuscatedName("s")
+   @ObfuscatedSignature(
+      descriptor = "Lkq;"
+   )
+   static final class301 field3769 = new class301();
 
-	static {
-		field3780 = new class301();
-		field3782 = new class301();
-		field3781 = new class301();
-	}
-
-	class301() {
-	}
-
-	@ObfuscatedName("m")
-	@ObfuscatedSignature(
-		descriptor = "(II)Lbo;",
-		garbageValue = "-230325466"
-	)
-	@Export("Messages_getMessage")
-	static Message Messages_getMessage(int var0) {
-		return (Message)Messages.Messages_hashTable.get((long)var0);
-	}
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "(I)V",
+      garbageValue = "-1299258099"
+   )
+   static void method5508() {
+      ByteArrayPool.field3890.clear();
+      ByteArrayPool.field3890.add(100);
+      ByteArrayPool.field3890.add(5000);
+      ByteArrayPool.field3890.add(10000);
+      ByteArrayPool.field3890.add(30000);
+   }
 }

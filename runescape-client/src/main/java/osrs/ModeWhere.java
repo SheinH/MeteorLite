@@ -1,5 +1,6 @@
 package osrs;
 
+import java.awt.Component;
 import java.util.HashSet;
 import java.util.Set;
 import net.runelite.mapping.Export;
@@ -8,152 +9,181 @@ import net.runelite.mapping.ObfuscatedGetter;
 import net.runelite.mapping.ObfuscatedName;
 import net.runelite.mapping.ObfuscatedSignature;
 
-@ObfuscatedName("kw")
+@ObfuscatedName("ks")
 @Implements("ModeWhere")
 public enum ModeWhere implements MouseWheel {
-	@ObfuscatedName("l")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3819("", 0, new class301[]{class301.field3781}),
-	@ObfuscatedName("q")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3817("", 1, new class301[]{class301.field3782, class301.field3781}),
-	@ObfuscatedName("f")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3805("", 2, new class301[]{class301.field3782, class301.field3780, class301.field3781}),
-	@ObfuscatedName("j")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3806("", 3, new class301[]{class301.field3782}),
-	@ObfuscatedName("m")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3807("", 4),
-	@ObfuscatedName("k")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3808("", 5, new class301[]{class301.field3782, class301.field3781}),
-	@ObfuscatedName("t")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3809("", 6, new class301[]{class301.field3781}),
-	@ObfuscatedName("a")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3811("", 8, new class301[]{class301.field3782, class301.field3781}),
-	@ObfuscatedName("e")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3815("", 9, new class301[]{class301.field3782, class301.field3780}),
-	@ObfuscatedName("i")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3812("", 10, new class301[]{class301.field3782}),
-	@ObfuscatedName("y")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3813("", 11, new class301[]{class301.field3782}),
-	@ObfuscatedName("w")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3803("", 12, new class301[]{class301.field3782, class301.field3781}),
-	@ObfuscatedName("g")
-	@ObfuscatedSignature(
-		descriptor = "Lkw;"
-	)
-	field3814("", 13, new class301[]{class301.field3782});
+   @ObfuscatedName("i")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3803("", 0, new class301[]{class301.field3769}),
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3791("", 1, new class301[]{class301.field3770, class301.field3769}),
+   @ObfuscatedName("s")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3792("", 2, new class301[]{class301.field3770, class301.field3767, class301.field3769}),
+   @ObfuscatedName("a")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3793("", 3, new class301[]{class301.field3770}),
+   @ObfuscatedName("o")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3794("", 4),
+   @ObfuscatedName("g")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3796("", 5, new class301[]{class301.field3770, class301.field3769}),
+   @ObfuscatedName("e")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3807("", 6, new class301[]{class301.field3769}),
+   @ObfuscatedName("p")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3790("", 8, new class301[]{class301.field3770, class301.field3769}),
+   @ObfuscatedName("j")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3798("", 9, new class301[]{class301.field3770, class301.field3767}),
+   @ObfuscatedName("b")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3799("", 10, new class301[]{class301.field3770}),
+   @ObfuscatedName("x")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3800("", 11, new class301[]{class301.field3770}),
+   @ObfuscatedName("y")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3801("", 12, new class301[]{class301.field3770, class301.field3769}),
+   @ObfuscatedName("k")
+   @ObfuscatedSignature(
+      descriptor = "Lks;"
+   )
+   field3802("", 13, new class301[]{class301.field3770});
 
-	@ObfuscatedName("x")
-	@ObfuscatedSignature(
-		descriptor = "Ldk;"
-	)
-	static ClanSettings field3804;
-	@ObfuscatedName("fz")
-	@ObfuscatedGetter(
-		intValue = 1626624097
-	)
-	static int field3818;
-	@ObfuscatedName("hp")
-	@Export("xteaKeys")
-	static int[][] xteaKeys;
-	@ObfuscatedName("v")
-	@ObfuscatedGetter(
-		intValue = -1200736709
-	)
-	@Export("id")
-	final int id;
-	@ObfuscatedName("s")
-	final Set field3810;
+   @ObfuscatedName("hs")
+   @Export("regionLandArchives")
+   static byte[][] regionLandArchives;
+   @ObfuscatedName("t")
+   @ObfuscatedGetter(
+      intValue = -1276405955
+   )
+   @Export("id")
+   final int id;
+   @ObfuscatedName("l")
+   final Set field3804 = new HashSet();
 
-	@ObfuscatedSignature(
-		descriptor = "(Ljava/lang/String;I[Lkh;)V"
-	)
-	ModeWhere(String var3, int var4, class301[] var5) {
-		this.field3810 = new HashSet();
-		this.id = var4;
-		class301[] var6 = var5;
+   static {
+      method5536();
+   }
 
-		for (int var7 = 0; var7 < var6.length; ++var7) {
-			class301 var8 = var6[var7];
-			this.field3810.add(var8);
-		}
+   @ObfuscatedSignature(
+      descriptor = "(Ljava/lang/String;I[Lkq;)V"
+   )
+   ModeWhere(String var3, int var4, class301[] var5) {
+      this.id = var4;
+      class301[] var6 = var5;
 
-	}
+      for(int var7 = 0; var7 < var6.length; ++var7) {
+         class301 var8 = var6[var7];
+         this.field3804.add(var8);
+      }
 
-	ModeWhere(String var3, int var4) {
-		this.field3810 = new HashSet();
-		this.id = var4;
-	}
+   }
 
-	@ObfuscatedName("l")
-	@ObfuscatedSignature(
-		descriptor = "(I)I",
-		garbageValue = "661199397"
-	)
-	@Export("rsOrdinal")
-	public int rsOrdinal() {
-		return this.id;
-	}
+   ModeWhere(String var3, int var4) {
+      this.id = var4;
+   }
 
-	@ObfuscatedName("fo")
-	@ObfuscatedSignature(
-		descriptor = "(I)V",
-		garbageValue = "217948810"
-	)
-	static final void method5487() {
-		if (Client.field722 != VertexNormal.Client_plane) {
-			Client.field722 = VertexNormal.Client_plane;
-			WorldMapSectionType.method3830(VertexNormal.Client_plane);
-		}
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "(I)I",
+      garbageValue = "238732485"
+   )
+   @Export("rsOrdinal")
+   public int rsOrdinal() {
+      return this.id;
+   }
 
-	}
+   @ObfuscatedName("i")
+   @ObfuscatedSignature(
+      descriptor = "(Ljava/awt/Component;B)V",
+      garbageValue = "84"
+   )
+   static void method5543(Component var0) {
+      var0.removeMouseListener(MouseHandler.MouseHandler_instance);
+      var0.removeMouseMotionListener(MouseHandler.MouseHandler_instance);
+      var0.removeFocusListener(MouseHandler.MouseHandler_instance);
+      MouseHandler.MouseHandler_currentButtonVolatile = 0;
+   }
 
-	@ObfuscatedName("jf")
-	@ObfuscatedSignature(
-		descriptor = "(II)Z",
-		garbageValue = "-1805506953"
-	)
-	static boolean method5483(int var0) {
-		for (int var1 = 0; var1 < Client.field726; ++var1) {
-			if (Client.field718[var1] == var0) {
-				return true;
-			}
-		}
+   @ObfuscatedName("i")
+   @ObfuscatedSignature(
+      descriptor = "(B)[Lks;",
+      garbageValue = "-88"
+   )
+   static ModeWhere[] method5536() {
+      return new ModeWhere[]{field3802, field3803, field3801, field3790, field3792, field3796, field3791, field3807, field3793, field3799, field3794, field3798, field3800};
+   }
 
-		return false;
-	}
+   @ObfuscatedName("s")
+   @ObfuscatedSignature(
+      descriptor = "(B)V",
+      garbageValue = "95"
+   )
+   public static void method5542() {
+      MouseHandler var0 = MouseHandler.MouseHandler_instance;
+      synchronized(MouseHandler.MouseHandler_instance) {
+         MouseHandler.MouseHandler_currentButton = MouseHandler.MouseHandler_currentButtonVolatile;
+         MouseHandler.MouseHandler_x = MouseHandler.MouseHandler_xVolatile;
+         MouseHandler.MouseHandler_y = MouseHandler.MouseHandler_yVolatile;
+         MouseHandler.MouseHandler_millis = MouseHandler.MouseHandler_lastMovedVolatile;
+         MouseHandler.MouseHandler_lastButton = MouseHandler.MouseHandler_lastButtonVolatile;
+         MouseHandler.MouseHandler_lastPressedX = MouseHandler.MouseHandler_lastPressedXVolatile;
+         MouseHandler.MouseHandler_lastPressedY = MouseHandler.MouseHandler_lastPressedYVolatile;
+         MouseHandler.MouseHandler_lastPressedTimeMillis = MouseHandler.MouseHandler_lastPressedTimeMillisVolatile;
+         MouseHandler.MouseHandler_lastButtonVolatile = 0;
+      }
+   }
+
+   @ObfuscatedName("fo")
+   @ObfuscatedSignature(
+      descriptor = "(II)V",
+      garbageValue = "1212689938"
+   )
+   @Export("playSong")
+   static void playSong(int var0) {
+      if (var0 == -1 && !Client.field710) {
+         WorldMapCacheName.method4027();
+      } else if (var0 != -1 && var0 != Client.currentTrackGroupId && class408.clientPreferences.musicVolume != 0 && !Client.field710) {
+         Archive var1 = Messages.archive6;
+         int var2 = class408.clientPreferences.musicVolume;
+         class247.musicPlayerStatus = 1;
+         class128.musicTrackArchive = var1;
+         FillMode.musicTrackGroupId = var0;
+         ArchiveDiskActionHandler.musicTrackFileId = 0;
+         class247.musicTrackVolume = var2;
+         SecureRandomCallable.musicTrackBoolean = false;
+         class247.pcmSampleLength = 2;
+      }
+
+      Client.currentTrackGroupId = var0;
+   }
 }

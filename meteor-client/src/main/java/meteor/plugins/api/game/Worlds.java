@@ -1,5 +1,6 @@
 package meteor.plugins.api.game;
 
+import meteor.game.WorldService;
 import meteor.plugins.api.commons.Rand;
 import meteor.plugins.api.commons.Time;
 import meteor.plugins.api.input.Mouse;
@@ -7,33 +8,74 @@ import meteor.plugins.api.widgets.Dialog;
 import meteor.plugins.api.widgets.Tab;
 import meteor.plugins.api.widgets.Tabs;
 import meteor.plugins.api.widgets.Widgets;
+import meteor.util.WorldUtil;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.World;
 import net.runelite.api.WorldType;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.http.api.worlds.WorldResult;
+import org.sponge.util.Logger;
 
 import javax.inject.Inject;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class Worlds {
     private static final Point LOBBY_WORLD_SELECTOR = new Point(20, 475);
     private static final Point CLOSE_LOBBY_SELECTOR = new Point(715, 10);
+    private static final Logger logger = new Logger("Worlds");
+
+    @Inject
+    private static Client client;
+
+    @Inject
+    private static WorldService worldService;
+
+    private static List<World> lookup() {
+        List<World> out = new ArrayList<>();
+        WorldResult lookup = worldService.getWorlds();
+        if (lookup == null) {
+            return Collections.emptyList();
+        }
+
+        lookup.getWorlds().forEach(w -> {
+            World world = client.createWorld();
+            world.setActivity(w.getActivity());
+            world.setAddress(w.getAddress());
+            world.setId(w.getId());
+            world.setPlayerCount(w.getPlayers());
+            world.setLocation(w.getLocation());
+            world.setTypes(WorldUtil.toWorldTypes(w.getTypes()));
+            out.add(world);
+        });
+
+        return out;
+    }
 
     public static List<World> getAll(Predicate<World> filter) {
         List<World> out = new ArrayList<>();
+        List<World> loadedWorlds;
 
-        World[] worlds = Game.getClient().getWorldList();
-        if (worlds == null) {
-            loadWorlds();
-            return out;
+        try {
+            World[] worlds = Game.getClient().getWorldList();
+            if (worlds == null) {
+                loadWorlds();
+                return out;
+            }
+
+            loadedWorlds = Arrays.asList(worlds);
+        } catch (Exception e) {
+            logger.warn("Game couldn't load worlds, falling back to RuneLite API.");
+            loadedWorlds = lookup();
         }
 
-        for (World world : worlds) {
+        for (World world : loadedWorlds) {
             if (filter.test(world)) {
                 out.add(world);
             }
@@ -60,6 +102,10 @@ public class Worlds {
 
     public static int getCurrentId() {
         return Game.getClient().getWorld();
+    }
+
+    public static void hopTo(World world) {
+        hopTo(world, false);
     }
 
     public static void hopTo(World world, boolean spam) {

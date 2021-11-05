@@ -2,6 +2,6 @@ package osrs;
 
 import net.runelite.mapping.ObfuscatedName;
 
-@ObfuscatedName("hh")
+@ObfuscatedName("hy")
 public interface class231 extends Iterable {
 }

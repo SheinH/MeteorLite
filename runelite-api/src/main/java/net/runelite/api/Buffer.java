@@ -40,6 +40,10 @@ public interface Buffer extends Node {
 
   void writeByteA$api(int var1);
 
+  void writeByteB$api(int var1);
+
+  void writeByteC$api(int var1);
+
   void writeByte01$api(int var1);
 
   void writeShort$api(int var1);

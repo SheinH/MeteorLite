@@ -100,7 +100,11 @@ public class Toolbar extends JFXPanel {
 	}
 
 	public void refresh() {
-		Platform.runLater(() -> createScene(isVertical()));
+		if (position.equals(BorderLayout.EAST)) {
+			rightPanel.addToolbar();
+		} else {
+			Platform.runLater(() -> createScene(isVertical()));
+		}
 	}
 
 	private HBox initHorizontalToolbar() {
@@ -139,6 +143,7 @@ public class Toolbar extends JFXPanel {
 			meteorUI.updateRightPanel(parent);
 		});
 		buttons.put(plugin.getClass().getSimpleName(), toolbarButton);
+		refresh();
 	}
 
 	public void addNavigationButton(Image image, Parent parent, Plugin plugin) {
@@ -147,10 +152,12 @@ public class Toolbar extends JFXPanel {
 			meteorUI.updateRightPanel(parent);
 		});
 		buttons.put(plugin.getClass().getSimpleName(), toolbarButton);
+		refresh();
 	}
 
 	public void removeNavigationButton(Plugin plugin) {
 		buttons.remove(plugin.getClass().getSimpleName());
+		refresh();
 	}
 
 }

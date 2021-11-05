@@ -3,9 +3,9 @@ package osrs;
 import java.util.HashMap;
 import net.runelite.mapping.ObfuscatedName;
 
-@ObfuscatedName("kv")
+@ObfuscatedName("ke")
 public class class303 {
-	static {
-		new HashMap();
-	}
+   static {
+      new HashMap();
+   }
 }

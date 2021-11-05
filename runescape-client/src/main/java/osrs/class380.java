@@ -3,19 +3,19 @@ package osrs;
 import net.runelite.mapping.ObfuscatedName;
 import net.runelite.mapping.ObfuscatedSignature;
 
-@ObfuscatedName("nw")
+@ObfuscatedName("nz")
 public interface class380 extends Iterable {
-	@ObfuscatedName("l")
-	@ObfuscatedSignature(
-		descriptor = "(II)I",
-		garbageValue = "974003866"
-	)
-	int vmethod6668(int var1);
+   @ObfuscatedName("i")
+   @ObfuscatedSignature(
+      descriptor = "(II)I",
+      garbageValue = "1882106502"
+   )
+   int vmethod6739(int var1);
 
-	@ObfuscatedName("q")
-	@ObfuscatedSignature(
-		descriptor = "(ILjava/lang/Object;I)V",
-		garbageValue = "-1271528922"
-	)
-	void vmethod6669(int var1, Object var2);
+   @ObfuscatedName("w")
+   @ObfuscatedSignature(
+      descriptor = "(ILjava/lang/Object;I)V",
+      garbageValue = "-84615039"
+   )
+   void vmethod6736(int var1, Object var2);
 }

@@ -10,9 +10,9 @@ public class MovementPackets {
 		PacketWriter writer = Game.getClient().getPacketWriter();
 		PacketBufferNode packet = Game.getClient().preparePacket(Game.getClient().getWalkPacket(), writer.getIsaacCipher());
 		packet.getPacketBuffer().writeByte$api(5);
-		packet.getPacketBuffer().writeShort01A$api(worldX);
-		packet.getPacketBuffer().writeShortA$api(worldY);
-		packet.getPacketBuffer().writeByteA$api(run ? 2 : 0);
+		packet.getPacketBuffer().writeByteA$api(worldX);
+		packet.getPacketBuffer().writeByteB$api(run ? 2 : 0);
+		packet.getPacketBuffer().writeByteC$api(worldY);
 		writer.queuePacket(packet);
 	}
 
