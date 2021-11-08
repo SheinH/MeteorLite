@@ -244,6 +244,7 @@ public class PluginManager {
 	  plugins.add(new ChaosAltarPlugin());
 	  plugins.add(new ChangAutoCast());
 	  plugins.add(new ChangWoodCutter());
+	  plugins.add(new ChangBarbVillage());
 	  plugins.add(new ChangFisher());
 	  plugins.add(new ChangBirdhouses());
 	  plugins.add(new ChangFiremaker());

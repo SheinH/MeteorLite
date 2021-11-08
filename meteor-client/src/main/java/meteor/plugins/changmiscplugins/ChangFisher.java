@@ -134,12 +134,12 @@ public class ChangFisher extends Plugin {
         }
         if(state == WCState.CHOPPING){
             if(!getFishing() || Dialog.isOpen() || currentFishingSpot == null || !currentFishingSpot.getWorldLocation().equals(currentFishingSpotLoc)){
-                var tree = NPCs.getNearest("Rod Fishing spot");
-                currentFishingSpot = tree;
-                currentFishingSpotLoc = tree.getWorldLocation();
+                var fishingSpot = NPCs.getNearest("Rod Fishing spot");
+                currentFishingSpot = fishingSpot;
+                currentFishingSpotLoc = fishingSpot.getWorldLocation();
                 MousePackets.queueClickPacket(0,0);
 //                NPCPackets.npcAction(tree, "Lure",0);
-                tree.interact("Lure");
+                fishingSpot.interact("Lure");
 //                client.invokeMenuAction("","",tree.getIndex(),MenuAction.NPC_FIRST_OPTION.getId(),0,0);
             }
             if(Inventory.isFull()){
