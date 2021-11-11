@@ -226,7 +226,7 @@ public class PluginManager {
 
   private void initPlugins() {
 		// Leave at the top pls, these are not regular plugins
-	  plugins.add(new ChangBarbFish())
+	  plugins.add(new ChangBarbFish());
 	  plugins.add(new MeteorLitePlugin());
 	  plugins.add(new AgilityPlugin());
 	  plugins.add(new CettiTutorialPlugin());
