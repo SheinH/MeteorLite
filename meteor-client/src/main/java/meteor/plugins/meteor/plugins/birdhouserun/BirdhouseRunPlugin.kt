@@ -7,11 +7,9 @@ import meteor.plugins.api.game.Game
 import meteor.plugins.api.game.Skills
 import meteor.plugins.api.items.Bank
 import meteor.plugins.api.items.Inventory
-import net.runelite.api.ChatMessageType
-import net.runelite.api.InventoryID
-import net.runelite.api.ItemID
-import net.runelite.api.Skill
+import net.runelite.api.*
 import net.runelite.api.events.GameTick
+import java.util.function.Predicate
 
 @PluginDescriptor(
     name = "Birdhouse Run",
@@ -21,8 +19,8 @@ import net.runelite.api.events.GameTick
 class BirdhouseRunPlugin : Plugin() {
 
     internal enum class BirdhouseType(
-        val logType: Int,
-        val birdhouseItemID: Int,
+        val logID: Int,
+        val birdhouseID: Int,
         val hunterLevelReq: Int,
         val craftingLevelReq: Int
     ) {
@@ -56,7 +54,7 @@ class BirdhouseRunPlugin : Plugin() {
             val hunterLevel = Skills.getLevel(Skill.HUNTER)
             val craftingLevel = Skills.getLevel(Skill.CRAFTING)
             if (hunterLevel >= hunterLevelReq && craftingLevel >= craftingLevelReq) {
-                val logs = Inventory.getAll(logType)
+                val logs = Inventory.getAll(logID)
                 if (!logs.isEmpty()) {
                     return true
                 }
@@ -72,22 +70,48 @@ class BirdhouseRunPlugin : Plugin() {
                 }
         }
     }
+    private class InventoryRequirement(val quantity : Int) : Predicate<Item>{
+        var ids : Collection<Int>? = null
+        var id : Int? = null
 
-    fun shutDownWithError(error : String){
-        client.addChatMessage(ChatMessageType.GAMEMESSAGE,"BirdhouseRunPlugin",error,null)
+        constructor(ids : Collection<Int>, quantity : Int) : this(quantity) {
+            this.ids = ids
+        }
+        constructor(id : Int, quantity : Int) : this(quantity){
+            this.id = id
+        }
+
+        override fun test(t: Item): Boolean {
+            val ids = this.ids
+            return (ids?.contains(t.id)) ?: (t.id == id)
+        }
+    }
+    val baseRequirements = arrayListOf(
+        InventoryRequirement(ItemID.CHISEL,1),
+        InventoryRequirement(ItemID.CHISEL,1),
+        InventoryRequirement(ItemID.BARLEY_SEED,40),
+    )
+    val requirements
+    get() = {
+
+    }
+
+
+    fun shutDownWithError(error: String) {
+        client.addChatMessage(ChatMessageType.GAMEMESSAGE, "BirdhouseRunPlugin", error, null)
         toggle(false)
     }
+
     private lateinit var birdhouseType: BirdhouseType
     override fun startup() {
         super.startup()
-        if(!Bank.isOpen()){
+        if (!Bank.isOpen()) {
             shutDownWithError("Bank is not open!")
         }
-        var type =  BirdhouseType.typeToBuild
-        if(type == null){
+        var type = BirdhouseType.typeToBuild
+        if (type == null) {
             shutDownWithError("Missing level requirements!")
-        }
-        else{
+        } else {
             birdhouseType = type
         }
     }
@@ -97,7 +121,8 @@ class BirdhouseRunPlugin : Plugin() {
     }
 
     internal enum class State {
-        BANKING(),
+        BANKING,
+        BANKING2,
         MUSHTREE1,
         HOUSE1,
         HOUSE2,
@@ -105,51 +130,48 @@ class BirdhouseRunPlugin : Plugin() {
         HOUSE3,
         HOUSE4
     }
+
     internal var state = State.BANKING
 
     @Subscribe
     fun onGameTick(event: GameTick) {
-        when(state){
-           State.BANKING -> doBanking()
+        when (state) {
+            State.BANKING -> doBanking()
         }
     }
 
-
-    private fun inventoryContainsN(itemID : Int, quantity : Int): Boolean {
+    private fun inventoryContainsN(itemID: Int, quantity: Int): Boolean {
         val container = Game.getClient().getItemContainer(InventoryID.INVENTORY) ?: return false
         var count = 0;
-        for(item in container.items){
-            if(item.id == itemID){
+        for (item in container.items) {
+            if (item.id == itemID) {
                 count += item.quantity
-                if(count >= quantity)
+
+                if (count >= quantity)
                     return true
             }
         }
         return false
     }
+
     private fun doBanking() {
-        val requirements = arrayOf(
-            Pair(birdhouseType.logType,4),
-            Pair(ItemID.CHISEL,1),
-            Pair(ItemID.HAMMER,1),
-            Pair(ItemID.BARLEY_SEED,100),
-        )
-        fun handleReq(req : Pair<Int,Int>) : Boolean{
+        fun handleReq(req: Pair<Int, Int>): Boolean {
             val item = req.first
             var quant = req.second
             val bankItem = Bank.getFirst(item) ?: return false
-            if(bankItem.quantity >= quant){
-                for(x in 0 until quant){
-                    Bank.withdraw(item,1,Bank.WithdrawMode.ITEM)
+            if (bankItem.quantity >= quant) {
+                for (x in 0 until quant) {
+                    Bank.withdraw(item, 1, Bank.WithdrawMode.ITEM)
                 }
                 return true
             }
             return false
         }
-        for(x in requirements){
-            if(!handleReq(x)){
+        for (x in initialRequirements) {
+            if (!handleReq(x)) {
                 shutDownWithError("Missing item requirement: ID=${x.first} Quantity=${x.second}")
             }
         }
+        state = State.BANKING2
     }
 }

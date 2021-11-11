@@ -103,7 +103,7 @@ class ChangBarbFish : Plugin() {
 
     @Subscribe
     fun onGameTick(event: GameTick?) {
-        if (runtime.getTime(TimeUnit.MINUTES) >= 210 || !Inventory.contains(ItemID.FEATHER)) {
+        if (runtime.getTime(TimeUnit.MINUTES) >= 100 || !Inventory.contains(ItemID.FEATHER)) {
             logout()
             toggle()
         }
