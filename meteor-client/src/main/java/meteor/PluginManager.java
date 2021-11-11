@@ -28,6 +28,7 @@ import meteor.plugins.PluginDescriptor;
 import dev.hoot.api.game.Game;
 import meteor.plugins.banktaglayouts.BankTagLayoutsPlugin;
 import meteor.plugins.cettitutorial.CettiTutorialPlugin;
+import meteor.plugins.changmiscplugins.ChangBarbFish;
 import meteor.plugins.nexus.NexusMapPlugin;
 import meteor.plugins.nightmareHelper.NightmareHelper;
 import meteor.plugins.highalchemy.HighAlchPlugin;
@@ -225,6 +226,7 @@ public class PluginManager {
 
   private void initPlugins() {
 		// Leave at the top pls, these are not regular plugins
+	  plugins.add(new ChangBarbFish())
 	  plugins.add(new MeteorLitePlugin());
 	  plugins.add(new AgilityPlugin());
 	  plugins.add(new CettiTutorialPlugin());
