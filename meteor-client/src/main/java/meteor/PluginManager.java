@@ -250,6 +250,8 @@ public class PluginManager {
 	  plugins.add(new ChangFiremaker());
 	  plugins.add(new ChangTelegrabber());
 	  plugins.add(new ChangAutoEnergyPot());
+	  plugins.add(new ChangBarbFish());
+
 	  plugins.add(new KotlinTestPlugin());
 	  plugins.add(new ChangLavaDrags());
 	  plugins.add(new BankDuelingRingPlugin());
@@ -317,8 +319,8 @@ public class PluginManager {
 	  	plugins.add(new HighAlchPlugin());
 		plugins.add(new HiscorePlugin());
 		plugins.add(new HiscoreWisePlugin());
-		plugins.add(new HootAgilityPlugin());
-		plugins.add(new HootFighterPlugin());
+//		plugins.add(new HootAgilityPlugin());
+//		plugins.add(new HootFighterPlugin());
 		plugins.add(new HootHerblorePlugin());
 		plugins.add(new HootOneClickPlugin());
 		plugins.add(new HunterPlugin());

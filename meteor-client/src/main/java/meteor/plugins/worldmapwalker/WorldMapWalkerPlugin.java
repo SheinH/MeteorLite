@@ -115,14 +115,9 @@ public class WorldMapWalkerPlugin extends Plugin {
     }
 
 
-    public boolean darwinFilter(Player player){
-        return player.getName().equals("Darwin");
-    }
 
     //Special logic if the destination is loaded in scene
     private void handleLocalDestination(){
-        //var darwin = Players.getAll(this::darwinFilter).get(0);
-        var darwin = Players.getAll( x -> x.getName().equals("Darwin")).get(0);
 
 
 

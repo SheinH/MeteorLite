@@ -11,12 +11,13 @@ import meteor.plugins.api.packets.MousePackets
 import meteor.plugins.api.items.Inventory
 import meteor.plugins.api.widgets.Dialog
 import meteor.ui.overlay.OverlayManager
-import meteor.util.Timer
 import net.runelite.api.*
 import net.runelite.api.events.GameTick
 import net.runelite.api.widgets.Widget
 import net.runelite.api.widgets.WidgetInfo
+import org.apache.commons.lang3.time.StopWatch
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.function.Consumer
 import java.util.function.Predicate
 import javax.inject.Inject
@@ -37,7 +38,10 @@ class ChangBarbVillage : Plugin() {
 
     private fun getCookAllButton(): Widget? = client.getWidget(270,14)
 
-    override fun startup() {}
+    override fun startup() {
+        timer.reset()
+        state = WCState.FISHING
+    }
     override fun shutdown() {}
     var random = Random()
     private fun nextRandom(mean: Int, deviation: Int, min: Int, max: Int): Int {
@@ -73,7 +77,7 @@ class ChangBarbVillage : Plugin() {
                 && client.localPlayer!!.interacting.graphic != GraphicID.FLYING_FISH && FISHING_ANIMATIONS.contains(
             client.localPlayer!!.animation
         ))
-    var timer = Timer()
+    var timer = StopWatch()
     var alreadyDropped = false
     var isActive = true
 
@@ -127,6 +131,8 @@ class ChangBarbVillage : Plugin() {
             if(idleTickCount > 2){
                 val fire = TileObjects.getNearest("Fire")
                 fish.useOn(fire)
+                MousePackets.queueClickPacket(0,0)
+                idleTickCount = 0;
             }
         }
         else {
@@ -136,7 +142,7 @@ class ChangBarbVillage : Plugin() {
     }
     @Subscribe
     fun onGameTick(event: GameTick?) {
-        if (timer.minutesFromStart > 220) toggle()
+        if (timer.getTime(TimeUnit.MINUTES)> 220) toggle()
         if (tickDelay > 0) {
             tickDelay--
             return

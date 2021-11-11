@@ -150,8 +150,9 @@ public class BankDuelingRingPlugin extends Plugin {
             if(player.isIdle()) {
                 var chest = TileObjects.getNearest("Bank chest");
                 if(chest != null) {
-                    MousePackets.queueClickPacket(0, 0);
-                    TileObjectPackets.tileObjectAction(chest, "Use", 0);
+//                    MousePackets.queueClickPacket(0, 0);
+//                    TileObjectPackets.tileObjectAction(chest, "Use", 0);
+                    chest.interact("Use");
                     Time.sleep(100);
                 }
             }

@@ -12,9 +12,7 @@ import meteor.plugins.api.game.GameThread;
 import meteor.plugins.api.game.Skills;
 import meteor.plugins.api.input.Mouse;
 import meteor.plugins.api.items.Inventory;
-import meteor.plugins.api.packets.ItemPackets;
 import meteor.plugins.api.packets.MousePackets;
-import meteor.plugins.api.packets.TileObjectPackets;
 import meteor.plugins.api.widgets.Dialog;
 import meteor.util.Timer;
 import net.runelite.api.*;
@@ -331,8 +329,9 @@ public class ChangBirdhouses extends Plugin {
     private void useItemOnObject(Item item, TileObject object){
         WorldPoint wp = object.getWorldLocation();
         MousePackets.queueClickPacket(0,0);
-        ItemPackets.useItemOnTileObject(item,object);
-        //item.useOn(object);
+        item.useOn(object);
+        var sceneLoc = object.getLocalLocation();
+        client.invokeMenuAction("","",object.getId(),MenuAction.ITEM_USE_ON_GAME_OBJECT.getId(),sceneLoc.getSceneX(),sceneLoc.getSceneY());
     }
 
     private void doInsertingSeeds() {
@@ -378,8 +377,8 @@ public class ChangBirdhouses extends Plugin {
                 birdhouseType.logID
         );
         MousePackets.queueClickPacket(0,0);
-        ItemPackets.useItemOnItem(clockwork,logs);
-        //clockwork.useOn(logs);
+//        ItemPackets.useItemOnItem(clockwork,logs);
+        clockwork.useOn(logs);
         return;
     }
 
@@ -390,8 +389,8 @@ public class ChangBirdhouses extends Plugin {
         }
         var birdhouse = getCurrentBirdhouse();
         MousePackets.queueClickPacket(0,0);
-        TileObjectPackets.tileObjectAction(birdhouse,"Empty",0);
-        //birdhouse.interact("Empty");
+//        TileObjectPackets.tileObjectAction(birdhouse,"Empty",0);
+        birdhouse.interact("Empty");
     }
 
 }
