@@ -1,11 +1,8 @@
 package osrs;
 
+import net.runelite.mapping.*;
+
 import java.math.BigInteger;
-import net.runelite.mapping.Export;
-import net.runelite.mapping.Implements;
-import net.runelite.mapping.ObfuscatedGetter;
-import net.runelite.mapping.ObfuscatedName;
-import net.runelite.mapping.ObfuscatedSignature;
 
 @ObfuscatedName("op")
 @Implements("Buffer")
@@ -829,7 +826,7 @@ public class Buffer extends Node {
       descriptor = "(II)V",
       garbageValue = "-803217558"
    )
-   public void method7171(int var1) {
+   public void write2(int var1) {
       this.array[++this.offset - 1] = (byte)(var1 + 128);
    }
 
@@ -847,7 +844,7 @@ public class Buffer extends Node {
       descriptor = "(IB)V",
       garbageValue = "27"
    )
-   public void method6947(int var1) {
+   public void write1(int var1) {
       this.array[++this.offset - 1] = (byte)(128 - var1);
    }
 
@@ -910,7 +907,7 @@ public class Buffer extends Node {
       descriptor = "(II)V",
       garbageValue = "-355235162"
    )
-   public void method7001(int var1) {
+   public void writeByteB0(int var1) {
       this.array[++this.offset - 1] = (byte)var1;
       this.array[++this.offset - 1] = (byte)(var1 >> 8);
    }
@@ -1011,7 +1008,7 @@ public class Buffer extends Node {
       descriptor = "(IB)V",
       garbageValue = "-33"
    )
-   public void method7010(int var1) {
+   public void writeIntME2(int var1) {
       this.array[++this.offset - 1] = (byte)var1;
       this.array[++this.offset - 1] = (byte)(var1 >> 8);
       this.array[++this.offset - 1] = (byte)(var1 >> 16);
@@ -1036,7 +1033,7 @@ public class Buffer extends Node {
       descriptor = "(II)V",
       garbageValue = "-1701296195"
    )
-   public void method7126(int var1) {
+   public void writeIntME3(int var1) {
       this.array[++this.offset - 1] = (byte)(var1 >> 16);
       this.array[++this.offset - 1] = (byte)(var1 >> 24);
       this.array[++this.offset - 1] = (byte)var1;

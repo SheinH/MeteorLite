@@ -24,15 +24,6 @@
  */
 package net.runelite.api;
 
-import java.awt.Canvas;
-import java.awt.Dimension;
-import java.math.BigInteger;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.runelite.api.annotations.VisibleForExternalPlugins;
 import net.runelite.api.clan.ClanChannel;
 import net.runelite.api.clan.ClanSettings;
@@ -49,6 +40,15 @@ import net.runelite.api.vars.AccountType;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
 import org.sponge.util.Logger;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.awt.*;
+import java.math.BigInteger;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents the RuneScape client.
@@ -2352,6 +2352,7 @@ public interface Client extends GameEngine {
   ClientPacket getItemAction5Packet();
   ClientPacket getItemOnItemPacket();
   ClientPacket getBankItemActionPacket();
+  ClientPacket getItemUseOnNpcPacket();
   /*
   The NPC packets
    */
@@ -2382,11 +2383,21 @@ public interface Client extends GameEngine {
   ClientPacket getWidgetAction7Packet();
   ClientPacket getWidgetAction8Packet();
   ClientPacket getWidgetAction10Packet();
+  ClientPacket getResumePauseWidgetPacket();
 
   /*
   Spell packets
    */
-  ClientPacket getSpellOnItemPacket();
+  ClientPacket getItemOnWidgetPacket();
+
+  /*
+  Ground Item packets
+   */
+  ClientPacket getGroundItemActionPacket();
+  ClientPacket getGroundItemAction2Packet();
+  ClientPacket getGroundItemAction3Packet();
+  ClientPacket getGroundItemAction4Packet();
+  ClientPacket getGroundItemAction5Packet();
   /*
   Misc
    */

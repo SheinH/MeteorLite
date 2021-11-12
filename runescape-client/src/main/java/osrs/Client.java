@@ -1,7 +1,8 @@
 package osrs;
 
-import static osrs.javascript.JSObject.getWindow;
 import com.jagex.oldscape.pub.OAuthTokens;
+import net.runelite.mapping.*;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Socket;
@@ -10,11 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import net.runelite.mapping.Export;
-import net.runelite.mapping.Implements;
-import net.runelite.mapping.ObfuscatedGetter;
-import net.runelite.mapping.ObfuscatedName;
-import net.runelite.mapping.ObfuscatedSignature;
+
+import static osrs.javascript.JSObject.getWindow;
 
 @Implements("Client")
 @ObfuscatedName("client")
@@ -3427,21 +3425,21 @@ public final class Client extends GameEngine implements Usernamed, OAuthTokens {
             var6.packetBuffer.writeBytes(var32.array, 0, var32.array.length);
             var6.packetBuffer.writeByte(clientType);
             var6.packetBuffer.writeInt(0);
-            var6.packetBuffer.method7010(Messages.archive6.hash);
+            var6.packetBuffer.writeIntME2(Messages.archive6.hash);
             var6.packetBuffer.writeInt(Archive.archive15.hash);
             var6.packetBuffer.writeIntME(SecureRandomCallable.archive14.hash);
-            var6.packetBuffer.method7126(HorizontalAlignment.archive7.hash);
-            var6.packetBuffer.method7010(GrandExchangeOfferOwnWorldComparator.archive20.hash);
+            var6.packetBuffer.writeIntME3(HorizontalAlignment.archive7.hash);
+            var6.packetBuffer.writeIntME2(GrandExchangeOfferOwnWorldComparator.archive20.hash);
             var6.packetBuffer.writeIntME(Message.archive17.hash);
             var6.packetBuffer.writeIntME(GrandExchangeOfferOwnWorldComparator.archive8.hash);
-            var6.packetBuffer.method7010(Messages.archive18.hash);
-            var6.packetBuffer.method7126(class1.archive2.hash);
-            var6.packetBuffer.method7010(0);
-            var6.packetBuffer.method7010(class14.archive12.hash);
-            var6.packetBuffer.method7010(SecureRandomFuture.archive9.hash);
+            var6.packetBuffer.writeIntME2(Messages.archive18.hash);
+            var6.packetBuffer.writeIntME3(class1.archive2.hash);
+            var6.packetBuffer.writeIntME2(0);
+            var6.packetBuffer.writeIntME2(class14.archive12.hash);
+            var6.packetBuffer.writeIntME2(SecureRandomFuture.archive9.hash);
             var6.packetBuffer.writeInt(ApproximateRouteStrategy.archive1.hash);
             var6.packetBuffer.writeInt(InvDefinition.archive0.hash);
-            var6.packetBuffer.method7010(ChatChannel.archive10.hash);
+            var6.packetBuffer.writeIntME2(ChatChannel.archive10.hash);
             var6.packetBuffer.writeInt(class11.archive5.hash);
             var6.packetBuffer.writeIntME(class111.archive19.hash);
             var6.packetBuffer.writeIntME(class12.archive4.hash);
@@ -4057,7 +4055,7 @@ public final class Client extends GameEngine implements Usernamed, OAuthTokens {
 
                         field565 = var19;
                         var14.packetBuffer.method7009((int)var21);
-                        var14.packetBuffer.method6947(KeyHandler.field125[var5]);
+                        var14.packetBuffer.write1(KeyHandler.field125[var5]);
                      }
 
                      var14.packetBuffer.writeLengthShort(var14.packetBuffer.offset - var15);
@@ -4076,7 +4074,7 @@ public final class Client extends GameEngine implements Usernamed, OAuthTokens {
                      field620 = 20;
                      field555 = false;
                      var14 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2699, packetWriter.isaacCipher);
-                     var14.packetBuffer.method7001(camAngleX);
+                     var14.packetBuffer.writeByteB0(camAngleX);
                      var14.packetBuffer.writeByteC(camAngleY);
                      packetWriter.addNode(var14);
                   }
@@ -4470,10 +4468,10 @@ public final class Client extends GameEngine implements Usernamed, OAuthTokens {
                                                          }
 
                                                          var18 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2669, packetWriter.isaacCipher);
-                                                         var18.packetBuffer.method7001(dragItemSlotDestination);
+                                                         var18.packetBuffer.writeByteB0(dragItemSlotDestination);
                                                          var18.packetBuffer.writeByteC(dragItemSlotSource);
                                                          var18.packetBuffer.writeByteB(var39);
-                                                         var18.packetBuffer.method7010(class247.dragInventoryWidget.id);
+                                                         var18.packetBuffer.writeIntME2(class247.dragInventoryWidget.id);
                                                          packetWriter.addNode(var18);
                                                       }
                                                    } else if (this.shouldLeftClickOpenMenu()) {
@@ -5688,9 +5686,9 @@ public final class Client extends GameEngine implements Usernamed, OAuthTokens {
                var18 = Occluder.getGcDuration();
                PacketBufferNode var75 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2680, packetWriter.isaacCipher);
                var75.packetBuffer.writeByte(GameEngine.fps);
-               var75.packetBuffer.method7126(var17);
-               var75.packetBuffer.method7126(var5);
-               var75.packetBuffer.method6947(var18);
+               var75.packetBuffer.writeIntME3(var17);
+               var75.packetBuffer.writeIntME3(var5);
+               var75.packetBuffer.write1(var18);
                packetWriter.addNode(var75);
                var1.serverPacket = null;
                return true;
@@ -6711,11 +6709,11 @@ public final class Client extends GameEngine implements Usernamed, OAuthTokens {
 
                if (draggedOnWidget != null && BuddyRankComparator.method2501(clickedWidget) != null) {
                   PacketBufferNode var12 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2727, packetWriter.isaacCipher);
-                  var12.packetBuffer.method7001(draggedOnWidget.itemId);
+                  var12.packetBuffer.writeByteB0(draggedOnWidget.itemId);
                   var12.packetBuffer.writeShort(draggedOnWidget.childIndex);
-                  var12.packetBuffer.method7001(clickedWidget.childIndex);
-                  var12.packetBuffer.method7126(draggedOnWidget.id);
-                  var12.packetBuffer.method7001(clickedWidget.itemId);
+                  var12.packetBuffer.writeByteB0(clickedWidget.childIndex);
+                  var12.packetBuffer.writeIntME3(draggedOnWidget.id);
+                  var12.packetBuffer.writeByteB0(clickedWidget.itemId);
                   var12.packetBuffer.writeIntME(clickedWidget.id);
                   packetWriter.addNode(var12);
                }

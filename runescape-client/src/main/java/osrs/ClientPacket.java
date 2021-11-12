@@ -13,7 +13,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2734 = new ClientPacket(0, 8);
+   public static final ClientPacket IF_BUTTON5 = new ClientPacket(0, 8);
    @ObfuscatedName("w")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -43,7 +43,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2693 = new ClientPacket(6, 7);
+   public static final ClientPacket OPLOC5 = new ClientPacket(6, 7);
    @ObfuscatedName("p")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -53,7 +53,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2672 = new ClientPacket(8, 3);
+   public static final ClientPacket OPNPC5 = new ClientPacket(8, 3);
    @ObfuscatedName("b")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -78,7 +78,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2677 = new ClientPacket(13, 8);
+   public static final ClientPacket OPHELD3 = new ClientPacket(13, 8);
    @ObfuscatedName("l")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -88,7 +88,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2748 = new ClientPacket(15, 3);
+   public static final ClientPacket OPNPC2 = new ClientPacket(15, 3);
    @ObfuscatedName("n")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -98,17 +98,17 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2681 = new ClientPacket(17, 8);
+   public static final ClientPacket IF_BUTTON2 = new ClientPacket(17, 8);
    @ObfuscatedName("q")
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2682 = new ClientPacket(18, 8);
+   public static final ClientPacket IF_BUTTON3 = new ClientPacket(18, 8);
    @ObfuscatedName("d")
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2683 = new ClientPacket(19, 8);
+   public static final ClientPacket IF_BUTTON4 = new ClientPacket(19, 8);
    @ObfuscatedName("r")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -123,7 +123,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2686 = new ClientPacket(22, 8);
+   public static final ClientPacket IF_BUTTON1 = new ClientPacket(22, 8);
    @ObfuscatedName("f")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -138,17 +138,17 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2689 = new ClientPacket(25, 8);
+   public static final ClientPacket IF_BUTTON10 = new ClientPacket(25, 8);
    @ObfuscatedName("ag")
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2715 = new ClientPacket(26, 8);
+   public static final ClientPacket IF_BUTTON7 = new ClientPacket(26, 8);
    @ObfuscatedName("ae")
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2754 = new ClientPacket(27, 4);
+   public static final ClientPacket RESUME_P_COUNTDIALOG = new ClientPacket(27, 4);
    @ObfuscatedName("aq")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -198,7 +198,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2722 = new ClientPacket(37, 11);
+   public static final ClientPacket OPNPCU = new ClientPacket(37, 11);
    @ObfuscatedName("ab")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -208,7 +208,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2665 = new ClientPacket(39, 8);
+   public static final ClientPacket IF_BUTTON6 = new ClientPacket(39, 8);
    @ObfuscatedName("ad")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -218,7 +218,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2705 = new ClientPacket(41, 7);
+   public static final ClientPacket OPLOC4 = new ClientPacket(41, 7);
    @ObfuscatedName("ax")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -238,7 +238,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2709 = new ClientPacket(45, 7);
+   public static final ClientPacket groundItem3 = new ClientPacket(45, 7);
    @ObfuscatedName("aj")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -248,7 +248,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2711 = new ClientPacket(47, 8);
+   public static final ClientPacket IF_BUTTON9 = new ClientPacket(47, 8);
    @ObfuscatedName("aw")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -268,7 +268,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2763 = new ClientPacket(51, 7);
+   public static final ClientPacket groundItem4 = new ClientPacket(51, 7);
    @ObfuscatedName("bg")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -278,7 +278,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2717 = new ClientPacket(53, 3);
+   public static final ClientPacket OPNPC1 = new ClientPacket(53, 3);
    @ObfuscatedName("bx")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -303,12 +303,12 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2695 = new ClientPacket(58, 14);
+   public static final ClientPacket OPHELDT = new ClientPacket(58, 14);
    @ObfuscatedName("bh")
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2723 = new ClientPacket(59, 3);
+   public static final ClientPacket OPNPC3 = new ClientPacket(59, 3);
    @ObfuscatedName("bw")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -333,22 +333,22 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2761 = new ClientPacket(64, 6);
+   public static final ClientPacket RESUME_PAUSEBUTTON = new ClientPacket(64, 6);
    @ObfuscatedName("bv")
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2729 = new ClientPacket(65, 15);
+   public static final ClientPacket OPLOCU = new ClientPacket(65, 15);
    @ObfuscatedName("bu")
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2730 = new ClientPacket(66, 3);
+   public static final ClientPacket OPNPC4 = new ClientPacket(66, 3);
    @ObfuscatedName("bz")
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2731 = new ClientPacket(67, 8);
+   public static final ClientPacket OPHELD5 = new ClientPacket(67, 8);
    @ObfuscatedName("bc")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -363,7 +363,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2707 = new ClientPacket(70, -1);
+   public static final ClientPacket RESUME_P_STRINGDIALOG = new ClientPacket(70, -1);
    @ObfuscatedName("bp")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -393,7 +393,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2671 = new ClientPacket(76, 8);
+   public static final ClientPacket OPHELD4 = new ClientPacket(76, 8);
    @ObfuscatedName("bq")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -413,7 +413,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2744 = new ClientPacket(80, 7);
+   public static final ClientPacket OPLOC1 = new ClientPacket(80, 7);
    @ObfuscatedName("ci")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -433,7 +433,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2690 = new ClientPacket(84, 7);
+   public static final ClientPacket OPLOC3 = new ClientPacket(84, 7);
    @ObfuscatedName("cd")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -443,7 +443,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2767 = new ClientPacket(86, 7);
+   public static final ClientPacket groundItem5 = new ClientPacket(86, 7);
    @ObfuscatedName("cl")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -463,12 +463,12 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2664 = new ClientPacket(90, 7);
+   public static final ClientPacket OPLOC2 = new ClientPacket(90, 7);
    @ObfuscatedName("cg")
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2751 = new ClientPacket(91, 8);
+   public static final ClientPacket IF_BUTTON8 = new ClientPacket(91, 8);
    @ObfuscatedName("cw")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -478,12 +478,12 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2706 = new ClientPacket(93, 8);
+   public static final ClientPacket OPHELD1 = new ClientPacket(93, 8);
    @ObfuscatedName("cu")
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2740 = new ClientPacket(94, 8);
+   public static final ClientPacket OPHELD2 = new ClientPacket(94, 8);
    @ObfuscatedName("cc")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -498,7 +498,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2701 = new ClientPacket(97, 7);
+   public static final ClientPacket groundItem1 = new ClientPacket(97, 7);
    @ObfuscatedName("cv")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -513,7 +513,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2764 = new ClientPacket(100, -1);
+   public static final ClientPacket RESUME_P_NAMEDIALOG = new ClientPacket(100, -1);
    @ObfuscatedName("co")
    @ObfuscatedSignature(
       descriptor = "Lik;"
@@ -533,7 +533,7 @@ public class ClientPacket implements class238 {
    @ObfuscatedSignature(
       descriptor = "Lik;"
    )
-   public static final ClientPacket field2768 = new ClientPacket(104, 7);
+   public static final ClientPacket groundItem2 = new ClientPacket(104, 7);
    @ObfuscatedName("df")
    @ObfuscatedSignature(
       descriptor = "Lik;"

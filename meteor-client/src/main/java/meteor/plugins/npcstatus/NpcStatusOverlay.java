@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import meteor.plugins.api.widgets.Prayers;
+import dev.hoot.api.widgets.Prayers;
 import meteor.plugins.npcstatus.NpcStatusConfig.PrayStyle;
 import meteor.ui.overlay.Overlay;
 import meteor.ui.overlay.OverlayLayer;

@@ -108,7 +108,7 @@ public class ScriptFrame {
                var16 = TaskHandler.method2881(var7);
             }
 
-            PacketBufferNode var14 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2754, Client.packetWriter.isaacCipher);
+            PacketBufferNode var14 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.RESUME_P_COUNTDIALOG, Client.packetWriter.isaacCipher);
             var14.packetBuffer.writeInt(var16);
             Client.packetWriter.addNode(var14);
             return 1;
@@ -116,14 +116,14 @@ public class ScriptFrame {
             PacketBufferNode var12;
             if (var0 == ScriptOpcodes.RESUME_NAMEDIALOG) {
                var7 = Interpreter.Interpreter_stringStack[--class295.Interpreter_stringStackSize];
-               var12 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2764, Client.packetWriter.isaacCipher);
+               var12 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.RESUME_P_NAMEDIALOG, Client.packetWriter.isaacCipher);
                var12.packetBuffer.writeByte(var7.length() + 1);
                var12.packetBuffer.writeStringCp1252NullTerminated(var7);
                Client.packetWriter.addNode(var12);
                return 1;
             } else if (var0 == ScriptOpcodes.RESUME_STRINGDIALOG) {
                var7 = Interpreter.Interpreter_stringStack[--class295.Interpreter_stringStackSize];
-               var12 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2707, Client.packetWriter.isaacCipher);
+               var12 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.RESUME_P_STRINGDIALOG, Client.packetWriter.isaacCipher);
                var12.packetBuffer.writeByte(var7.length() + 1);
                var12.packetBuffer.writeStringCp1252NullTerminated(var7);
                Client.packetWriter.addNode(var12);

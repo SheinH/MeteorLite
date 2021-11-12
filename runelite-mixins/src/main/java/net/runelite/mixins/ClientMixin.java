@@ -1,21 +1,5 @@
 package net.runelite.mixins;
 
-import static net.runelite.api.MenuAction.PLAYER_EIGTH_OPTION;
-import static net.runelite.api.MenuAction.PLAYER_FIFTH_OPTION;
-import static net.runelite.api.MenuAction.PLAYER_FIRST_OPTION;
-import static net.runelite.api.MenuAction.PLAYER_FOURTH_OPTION;
-import static net.runelite.api.MenuAction.PLAYER_SECOND_OPTION;
-import static net.runelite.api.MenuAction.PLAYER_SEVENTH_OPTION;
-import static net.runelite.api.MenuAction.PLAYER_SIXTH_OPTION;
-import static net.runelite.api.MenuAction.PLAYER_THIRD_OPTION;
-import static net.runelite.api.MenuAction.UNKNOWN;
-import static net.runelite.api.Perspective.LOCAL_TILE_SIZE;
-import static net.runelite.mixins.meteor.CameraMixin.*;
-
-import java.math.BigInteger;
-import java.util.*;
-import javax.annotation.Nullable;
-
 import com.google.common.primitives.Doubles;
 import net.runelite.api.*;
 import net.runelite.api.clan.ClanChannel;
@@ -26,13 +10,7 @@ import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.*;
 import net.runelite.api.hooks.Callbacks;
 import net.runelite.api.hooks.DrawCallbacks;
-import net.runelite.api.mixins.Copy;
-import net.runelite.api.mixins.FieldHook;
-import net.runelite.api.mixins.Inject;
-import net.runelite.api.mixins.MethodHook;
-import net.runelite.api.mixins.Mixin;
-import net.runelite.api.mixins.Replace;
-import net.runelite.api.mixins.Shadow;
+import net.runelite.api.mixins.*;
 import net.runelite.api.vars.AccountType;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
@@ -40,6 +18,14 @@ import net.runelite.api.widgets.WidgetItem;
 import net.runelite.api.widgets.WidgetType;
 import net.runelite.rs.api.*;
 import org.sponge.util.Logger;
+
+import javax.annotation.Nullable;
+import java.math.BigInteger;
+import java.util.*;
+
+import static net.runelite.api.MenuAction.*;
+import static net.runelite.api.Perspective.LOCAL_TILE_SIZE;
+import static net.runelite.mixins.meteor.CameraMixin.*;
 
 @Mixin(RSClient.class)
 public abstract class ClientMixin implements RSClient {
@@ -527,7 +513,6 @@ public abstract class ClientMixin implements RSClient {
             menuOptionClicked.getMenuAction(), opcode + (decremented ? 2000 : 0),
             menuOptionClicked.getActionParam(), menuOptionClicked.getWidgetId(), canvasX, canvasY
     );
-
     copy$menuAction(menuOptionClicked.getActionParam(), menuOptionClicked.getWidgetId(),
             menuOptionClicked.getMenuAction() == UNKNOWN ? opcode
                     : menuOptionClicked.getMenuAction().getId(),

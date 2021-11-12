@@ -437,8 +437,8 @@ public class class92 {
    )
    @Export("resumePauseWidget")
    static void resumePauseWidget(int var0, int var1) {
-      PacketBufferNode var2 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2761, Client.packetWriter.isaacCipher);
-      var2.packetBuffer.method7010(var0);
+      PacketBufferNode var2 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.RESUME_PAUSEBUTTON, Client.packetWriter.isaacCipher);
+      var2.packetBuffer.writeIntME2(var0);
       var2.packetBuffer.writeShort(var1);
       Client.packetWriter.addNode(var2);
    }

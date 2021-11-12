@@ -36,6 +36,9 @@ public interface Buffer extends Node {
   /**
    * Use this api to write to byte buffers
    */
+
+  void writeIntME2$api(int var1);
+
   void writeByte$api(int var1);
 
   void writeByteA$api(int var1);
@@ -43,6 +46,14 @@ public interface Buffer extends Node {
   void writeByteB$api(int var1);
 
   void writeByteC$api(int var1);
+
+  void writeByteB0$api(int var1);
+
+  void writeIntME3$api(int var1);
+
+  void write1$api(int var1);
+
+  void write2$api(int var1);
 
   void writeByte01$api(int var1);
 

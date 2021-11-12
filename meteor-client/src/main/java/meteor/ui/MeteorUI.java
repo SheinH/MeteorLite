@@ -11,7 +11,6 @@ import meteor.eventbus.EventBus;
 import meteor.eventbus.Subscribe;
 import meteor.eventbus.events.ClientShutdown;
 import meteor.eventbus.events.ConfigChanged;
-import meteor.plugins.api.game.Game;
 import meteor.ui.client.PluginListPanel;
 import meteor.ui.client.RightPanel;
 import meteor.ui.client.Toolbar;

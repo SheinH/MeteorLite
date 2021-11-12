@@ -94,17 +94,17 @@ public abstract class AbstractByteArrayCopier {
             } else if (var0 == 4) {
                var8 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2769, Client.packetWriter.isaacCipher);
                var8.packetBuffer.writeByteA(var3[var6]);
-               var8.packetBuffer.method7171(0);
+               var8.packetBuffer.write2(0);
                Client.packetWriter.addNode(var8);
             } else if (var0 == 6) {
                var8 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2714, Client.packetWriter.isaacCipher);
-               var8.packetBuffer.method7001(var3[var6]);
+               var8.packetBuffer.writeByteB0(var3[var6]);
                var8.packetBuffer.writeByteB(0);
                Client.packetWriter.addNode(var8);
             } else if (var0 == 7) {
                var8 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2673, Client.packetWriter.isaacCipher);
                var8.packetBuffer.writeShort(var3[var6]);
-               var8.packetBuffer.method7171(0);
+               var8.packetBuffer.write2(0);
                Client.packetWriter.addNode(var8);
             }
 

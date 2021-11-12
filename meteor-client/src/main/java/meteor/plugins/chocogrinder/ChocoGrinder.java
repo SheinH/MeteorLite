@@ -3,14 +3,17 @@ package meteor.plugins.chocogrinder;
 import meteor.eventbus.Subscribe;
 import meteor.plugins.Plugin;
 import meteor.plugins.PluginDescriptor;
-import meteor.plugins.api.entities.NPCs;
-import meteor.plugins.api.items.Bank;
-import meteor.plugins.api.items.Inventory;
-import meteor.plugins.api.packets.ItemPackets;
-import meteor.plugins.api.packets.MousePackets;
-import meteor.plugins.api.packets.NPCPackets;
-import meteor.plugins.api.packets.WidgetPackets;
-import net.runelite.api.*;
+import dev.hoot.api.entities.NPCs;
+import dev.hoot.api.items.Bank;
+import dev.hoot.api.items.Inventory;
+import dev.hoot.api.packets.ItemPackets;
+import dev.hoot.api.packets.MousePackets;
+import dev.hoot.api.packets.NPCPackets;
+import dev.hoot.api.packets.WidgetPackets;
+import net.runelite.api.ChatMessageType;
+import net.runelite.api.GameState;
+import net.runelite.api.Item;
+import net.runelite.api.NPC;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.WidgetInfo;
 
@@ -53,7 +56,7 @@ public class ChocoGrinder extends Plugin {
             return;
         }
         if(chocoSlot==-1){
-            Item bars=Bank.getFirst(ItemID.CHOCOLATE_BAR);
+            Item bars=Bank.getFirst("Chocolate bar");
             if(bars==null){
                 this.toggle();
                 client.addChatMessage(ChatMessageType.GAMEMESSAGE, "ChocoGrinder", "Either bank was not open or you did not having chocolate bars in bank", null);

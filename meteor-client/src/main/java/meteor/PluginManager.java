@@ -8,8 +8,6 @@ import com.google.inject.Singleton;
 import com.owain.chinLogin.ChinLoginPlugin;
 import com.owain.chinmanager.ChinManagerPlugin;
 import com.questhelper.QuestHelperPlugin;
-
-import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -27,17 +25,14 @@ import meteor.eventbus.events.PluginChanged;
 import meteor.events.ExternalsReloaded;
 import meteor.plugins.ExternalPluginClassLoader;
 import meteor.plugins.PluginDescriptor;
-import meteor.plugins.api.game.Game;
+import dev.hoot.api.game.Game;
 import meteor.plugins.banktaglayouts.BankTagLayoutsPlugin;
-import meteor.plugins.*;
-import meteor.plugins.changmiscplugins.*;
 import meteor.plugins.cettitutorial.CettiTutorialPlugin;
 import meteor.plugins.nexus.NexusMapPlugin;
-import meteor.plugins.chaosaltar.ChaosAltarPlugin;
-import meteor.plugins.houseparty.HousePartyPlugin;
-import meteor.plugins.interfacestyles.InterfaceStylesPlugin;
 import meteor.plugins.nightmareHelper.NightmareHelper;
 import meteor.plugins.highalchemy.HighAlchPlugin;
+import meteor.plugins.Plugin;
+import meteor.plugins.PluginDependency;
 import meteor.plugins.PvPKeys.PvPKeys;
 import meteor.plugins.achievementdiary.DiaryRequirementsPlugin;
 import meteor.plugins.agility.AgilityPlugin;
@@ -45,7 +40,7 @@ import meteor.plugins.alchemicalhydra.HydraPlugin;
 import meteor.plugins.ammo.AmmoPlugin;
 import meteor.plugins.animsmoothing.AnimationSmoothingPlugin;
 import meteor.plugins.aoewarnings.AoeWarningPlugin;
-import meteor.plugins.api.example.deathevent.DeathEventPlugin;
+import dev.hoot.api.example.deathevent.DeathEventPlugin;
 import meteor.plugins.autobankpin.AutoBankPinPlugin;
 import meteor.plugins.hiscore.HiscorePlugin;
 import meteor.plugins.hiscorewise.HiscoreWisePlugin;
@@ -59,7 +54,6 @@ import meteor.plugins.banktags.BankTagsPlugin;
 import meteor.plugins.barbassault.BAPlugin;
 import meteor.plugins.barrows.BarrowsPlugin;
 import meteor.plugins.antidrag.BetterAntiDragPlugin;
-import meteor.plugins.quicklogin.QuickLoginPlugin;
 import meteor.plugins.roguesden.BetterRougesDenPlugin;
 import meteor.plugins.blackjack.BlackjackPlugin;
 import meteor.plugins.blastfurnace.BlastFurnacePlugin;
@@ -197,7 +191,6 @@ import meteor.plugins.xpglobes.XpGlobesPlugin;
 import meteor.plugins.xptracker.XpTrackerPlugin;
 import meteor.plugins.xpupdater.XpUpdaterPlugin;
 import meteor.plugins.zulrah.ZulrahPlugin;
-import meteor.ui.FontManager;
 import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
 import org.sponge.util.Logger;
@@ -227,35 +220,14 @@ public class PluginManager {
 		if (!EXTERNALS_DIR.exists()) {
 			EXTERNALS_DIR.mkdirs();
 		}
-		Font font = FontManager.getDefaultFont();
 	}
 
 
   private void initPlugins() {
 		// Leave at the top pls, these are not regular plugins
 	  plugins.add(new MeteorLitePlugin());
-	  plugins.add(new QuickLoginPlugin());
 	  plugins.add(new AgilityPlugin());
 	  plugins.add(new CettiTutorialPlugin());
-	  plugins.add(new HousePartyPlugin());
-	  plugins.add(new ChangAlcher());
-	  plugins.add(new ChangTestPlugin());
-	  plugins.add(new ChangEnchanter());
-	  plugins.add(new ChaosAltarPlugin());
-	  plugins.add(new ChangAutoCast());
-	  plugins.add(new ChangWoodCutter());
-	  plugins.add(new ChangBarbVillage());
-	  plugins.add(new ChangFisher());
-	  plugins.add(new ChangBirdhouses());
-	  plugins.add(new ChangFiremaker());
-	  plugins.add(new ChangTelegrabber());
-	  plugins.add(new ChangAutoEnergyPot());
-	  plugins.add(new ChangBarbFish());
-
-	  plugins.add(new KotlinTestPlugin());
-	  plugins.add(new ChangLavaDrags());
-	  plugins.add(new BankDuelingRingPlugin());
-		plugins.add(new AgilityPlugin());
 		plugins.add(new HydraPlugin());
 		plugins.add(new AmmoPlugin());
 		plugins.add(new AnimationSmoothingPlugin());
@@ -319,8 +291,8 @@ public class PluginManager {
 	  	plugins.add(new HighAlchPlugin());
 		plugins.add(new HiscorePlugin());
 		plugins.add(new HiscoreWisePlugin());
-//		plugins.add(new HootAgilityPlugin());
-//		plugins.add(new HootFighterPlugin());
+		plugins.add(new HootAgilityPlugin());
+		plugins.add(new HootFighterPlugin());
 		plugins.add(new HootHerblorePlugin());
 		plugins.add(new HootOneClickPlugin());
 		plugins.add(new HunterPlugin());
@@ -420,7 +392,6 @@ public class PluginManager {
 		plugins.add(new XpGlobesPlugin());
 		plugins.add(new XpUpdaterPlugin());
 		plugins.add(new ZulrahPlugin());
-		plugins.add(new InterfaceStylesPlugin());
   }
 
 	public void startInternalPlugins() {

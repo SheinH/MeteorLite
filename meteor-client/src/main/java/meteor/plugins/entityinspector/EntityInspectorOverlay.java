@@ -1,11 +1,11 @@
 package meteor.plugins.entityinspector;
 
 import java.awt.Font;
-import meteor.plugins.api.entities.*;
-import meteor.plugins.api.game.GameThread;
-import meteor.plugins.api.movement.Movement;
-import meteor.plugins.api.scene.Tiles;
-import meteor.plugins.api.widgets.Widgets;
+import dev.hoot.api.entities.*;
+import dev.hoot.api.game.GameThread;
+import dev.hoot.api.movement.Movement;
+import dev.hoot.api.scene.Tiles;
+import dev.hoot.api.widgets.Widgets;
 import meteor.ui.FontManager;
 import meteor.ui.overlay.*;
 import net.runelite.api.Point;

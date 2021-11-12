@@ -1,13 +1,14 @@
 package osrs;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import net.runelite.mapping.Export;
 import net.runelite.mapping.Implements;
 import net.runelite.mapping.ObfuscatedName;
 import net.runelite.mapping.ObfuscatedSignature;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 @ObfuscatedName("kx")
 @Implements("GrandExchangeEvents")
@@ -103,7 +104,7 @@ public class GrandExchangeEvents {
             if (var7) {
                PacketBufferNode var10;
                if (var0 == 1) {
-                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2686, Client.packetWriter.isaacCipher);
+                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.IF_BUTTON1, Client.packetWriter.isaacCipher);
                   var10.packetBuffer.writeInt(var1);
                   var10.packetBuffer.writeShort(var2);
                   var10.packetBuffer.writeShort(var3);
@@ -111,7 +112,7 @@ public class GrandExchangeEvents {
                }
 
                if (var0 == 2) {
-                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2681, Client.packetWriter.isaacCipher);
+                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.IF_BUTTON2, Client.packetWriter.isaacCipher);
                   var10.packetBuffer.writeInt(var1);
                   var10.packetBuffer.writeShort(var2);
                   var10.packetBuffer.writeShort(var3);
@@ -119,7 +120,7 @@ public class GrandExchangeEvents {
                }
 
                if (var0 == 3) {
-                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2682, Client.packetWriter.isaacCipher);
+                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.IF_BUTTON3, Client.packetWriter.isaacCipher);
                   var10.packetBuffer.writeInt(var1);
                   var10.packetBuffer.writeShort(var2);
                   var10.packetBuffer.writeShort(var3);
@@ -127,7 +128,7 @@ public class GrandExchangeEvents {
                }
 
                if (var0 == 4) {
-                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2683, Client.packetWriter.isaacCipher);
+                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.IF_BUTTON4, Client.packetWriter.isaacCipher);
                   var10.packetBuffer.writeInt(var1);
                   var10.packetBuffer.writeShort(var2);
                   var10.packetBuffer.writeShort(var3);
@@ -135,7 +136,7 @@ public class GrandExchangeEvents {
                }
 
                if (var0 == 5) {
-                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2734, Client.packetWriter.isaacCipher);
+                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.IF_BUTTON5, Client.packetWriter.isaacCipher);
                   var10.packetBuffer.writeInt(var1);
                   var10.packetBuffer.writeShort(var2);
                   var10.packetBuffer.writeShort(var3);
@@ -143,7 +144,7 @@ public class GrandExchangeEvents {
                }
 
                if (var0 == 6) {
-                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2665, Client.packetWriter.isaacCipher);
+                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.IF_BUTTON6, Client.packetWriter.isaacCipher);
                   var10.packetBuffer.writeInt(var1);
                   var10.packetBuffer.writeShort(var2);
                   var10.packetBuffer.writeShort(var3);
@@ -151,7 +152,7 @@ public class GrandExchangeEvents {
                }
 
                if (var0 == 7) {
-                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2715, Client.packetWriter.isaacCipher);
+                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.IF_BUTTON7, Client.packetWriter.isaacCipher);
                   var10.packetBuffer.writeInt(var1);
                   var10.packetBuffer.writeShort(var2);
                   var10.packetBuffer.writeShort(var3);
@@ -159,7 +160,7 @@ public class GrandExchangeEvents {
                }
 
                if (var0 == 8) {
-                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2751, Client.packetWriter.isaacCipher);
+                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.IF_BUTTON8, Client.packetWriter.isaacCipher);
                   var10.packetBuffer.writeInt(var1);
                   var10.packetBuffer.writeShort(var2);
                   var10.packetBuffer.writeShort(var3);
@@ -167,7 +168,7 @@ public class GrandExchangeEvents {
                }
 
                if (var0 == 9) {
-                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2711, Client.packetWriter.isaacCipher);
+                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.IF_BUTTON9, Client.packetWriter.isaacCipher);
                   var10.packetBuffer.writeInt(var1);
                   var10.packetBuffer.writeShort(var2);
                   var10.packetBuffer.writeShort(var3);
@@ -175,7 +176,7 @@ public class GrandExchangeEvents {
                }
 
                if (var0 == 10) {
-                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.field2689, Client.packetWriter.isaacCipher);
+                  var10 = AbstractWorldMapData.getPacketBufferNode(ClientPacket.IF_BUTTON10, Client.packetWriter.isaacCipher);
                   var10.packetBuffer.writeInt(var1);
                   var10.packetBuffer.writeShort(var2);
                   var10.packetBuffer.writeShort(var3);

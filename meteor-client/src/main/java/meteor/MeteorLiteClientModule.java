@@ -13,10 +13,10 @@ import meteor.eventbus.DeferredEventBus;
 import meteor.eventbus.EventBus;
 import meteor.eventbus.events.ClientPreLaunch;
 import meteor.game.WorldService;
-import meteor.plugins.api.game.Game;
-import meteor.plugins.api.game.GameThread;
-import meteor.plugins.api.game.Prices;
-import meteor.plugins.api.game.Worlds;
+import dev.hoot.api.game.Game;
+import dev.hoot.api.game.GameThread;
+import dev.hoot.api.game.Prices;
+import dev.hoot.api.game.Worlds;
 import meteor.plugins.itemstats.ItemStatChangesService;
 import meteor.plugins.itemstats.ItemStatChangesServiceImpl;
 import meteor.config.MeteorLiteConfig;
@@ -51,7 +51,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.*;
 
-import static meteor.MeteorLiteClientLauncher.DEFAULT_CONFIG_FILE;
+import static meteor.MeteorLiteClientLauncher.CONFIG_FILE;
 import static org.sponge.util.Logger.ANSI_RESET;
 import static org.sponge.util.Logger.ANSI_YELLOW;
 
@@ -211,7 +211,7 @@ public class MeteorLiteClientModule extends AbstractModule {
   @Provides
   @javax.inject.Singleton
   File provideConfigFile() {
-    return DEFAULT_CONFIG_FILE;
+    return CONFIG_FILE;
   }
 
   @Provides
