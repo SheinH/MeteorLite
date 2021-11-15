@@ -1,6 +1,7 @@
 package meteor.plugins.worldmapwalker;
 
 import com.google.inject.Provides;
+import lombok.Getter;
 import meteor.config.ConfigManager;
 import meteor.eventbus.Subscribe;
 import meteor.input.KeyListener;
@@ -38,6 +39,7 @@ public class WorldMapWalkerPlugin extends Plugin {
     private WorldMapOverlay worldMapOverlay;
     @Inject
     private KeyManager keyManager;
+    @Getter
     @Inject
     WorldMapWalkerConfig config;
     @Inject
@@ -48,7 +50,8 @@ public class WorldMapWalkerPlugin extends Plugin {
     private boolean hotKeyPressed;
 
     private Point lastMenuOpenedPoint;
-    WorldPoint mapPoint;
+    @Getter
+    public WorldPoint mapPoint;
 
 
     private static final String DESTINATION_MENU_TARGET = "<col=00ff00>Destination";

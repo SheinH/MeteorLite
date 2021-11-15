@@ -7,8 +7,8 @@ import meteor.input.KeyManager
 import meteor.menus.MenuManager
 import meteor.plugins.Plugin
 import meteor.plugins.PluginDescriptor
-import meteor.plugins.api.entities.Players
-import meteor.plugins.api.input.Keyboard
+import dev.hoot.api.entities.Players
+import dev.hoot.api.input.Keyboard
 import meteor.plugins.socket.org.json.JSONArray
 import net.runelite.api.Player
 import java.awt.event.KeyEvent

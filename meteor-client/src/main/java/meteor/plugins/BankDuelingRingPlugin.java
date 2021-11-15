@@ -2,15 +2,15 @@ package meteor.plugins;
 
 import com.google.common.collect.ImmutableSet;
 import meteor.eventbus.Subscribe;
-import meteor.plugins.api.commons.Time;
-import meteor.plugins.api.coords.Area;
-import meteor.plugins.api.coords.RectangularArea;
-import meteor.plugins.api.entities.TileObjects;
-import meteor.plugins.api.game.GameThread;
-import meteor.plugins.api.items.Bank;
-import meteor.plugins.api.items.Equipment;
-import meteor.plugins.api.packets.MousePackets;
-import meteor.plugins.api.packets.TileObjectPackets;
+import dev.hoot.api.commons.Time;
+import dev.hoot.api.coords.Area;
+import dev.hoot.api.coords.RectangularArea;
+import dev.hoot.api.entities.TileObjects;
+import dev.hoot.api.game.GameThread;
+import dev.hoot.api.items.Bank;
+import dev.hoot.api.items.Equipment;
+import dev.hoot.api.packets.MousePackets;
+import dev.hoot.api.packets.TileObjectPackets;
 import meteor.util.ColorUtil;
 import meteor.util.Timer;
 import net.runelite.api.*;
@@ -36,7 +36,8 @@ public class BankDuelingRingPlugin extends Plugin {
 
     static final Area CASTLE_WARS = new RectangularArea(2434, 3080, 2446, 3099);
     private static final String MENU_OPTION = "Open Bank";
-    static boolean duelingRingEquipped = false;
+    boolean duelingRingEquipped = false;
+    boolean rowEquipped = false;
     private static ImmutableSet<Integer> DUELING_RING_IDS = ImmutableSet.of(
             ItemID.RING_OF_DUELING1,
             ItemID.RING_OF_DUELING2,
@@ -62,10 +63,8 @@ public class BankDuelingRingPlugin extends Plugin {
     public void onItemContainerChanged(ItemContainerChanged event) {
         if (event.getContainerId() == InventoryID.EQUIPMENT.getId()) {
             var ring = Equipment.fromSlot(EquipmentInventorySlot.RING);
-            if (ring != null && DUELING_RING_IDS.contains(ring.getId())) {
-                duelingRingEquipped = true;
+            if(ring == null)
                 return;
-            }
             duelingRingEquipped = false;
             return;
         }

@@ -1,6 +1,6 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.6.0-RC"
-    id 'org.jetbrains.kotlin.plugin.lombok' version '1.6.0-RC'
+    id "org.jetbrains.kotlin.jvm" version "1.5.31"
+    id 'org.jetbrains.kotlin.plugin.lombok' version '1.5.31'
     id 'io.freefair.lombok' version '6.2.0'
     id 'java'
     id 'application'
@@ -65,16 +65,17 @@ dependencies {
     runtimeOnly(group: "net.runelite.jocl", name: "jocl", version: "1.0", classifier: 'macos-x64')
     runtimeOnly(group: "net.runelite.jocl", name: "jocl", version: "1.0", classifier: 'macos-arm64')
     implementation group: 'com.google.guava', name: 'guava', version: '_'
-    implementation(group : "org.apache.commons", name : "commons-text", version : "_")
-    implementation(group : "commons-io", name : "commons-io", version : "_")
-    implementation(group : "net.sf.jopt-simple", name : "jopt-simple", version : "_")
+    implementation(group: "org.apache.commons", name: "commons-text", version: "_")
+    implementation(group: "commons-io", name: "commons-io", version: "_")
+    implementation(group: "net.sf.jopt-simple", name: "jopt-simple", version: "_")
     annotationProcessor group: 'javax.inject', name: 'javax.inject', version: '1'
-    implementation(group : "io.reactivex.rxjava3", name : "rxjava", version : "_")
+    implementation(group: "io.reactivex.rxjava3", name: "rxjava", version: "_")
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '_'
     implementation group: 'com.google.code.gson', name: 'gson', version: '_'
     implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '2.9.0'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.5.21'
-    implementation(group : "net.runelite", name : "discord", version : "1.4")
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.5.31'
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+    implementation(group: "net.runelite", name: "discord", version: "1.4")
     implementation 'org.bouncycastle:bcprov-jdk15on:1.52'
     implementation 'org.openjfx:javafx:16'
     implementation 'org.slf4j:slf4j-api:1.7.12'
@@ -83,7 +84,7 @@ dependencies {
     implementation("com.formdev:flatlaf-intellij-themes:_")
 }
 
-task createJavadocs (type: Javadoc)
+task createJavadocs(type: Javadoc)
 {
     source = sourceSets.main.allJava
     classpath = sourceSets.main.getCompileClasspath()
@@ -122,7 +123,7 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-task copyRunBat (type: Copy) {
+task copyRunBat(type: Copy) {
     from "/"
     into "build/libs/"
     include "run.bat"
@@ -132,8 +133,8 @@ shadowJar {
     finalizedBy(copyRunBat)
     configurations = [project.configurations.runtimeClasspath]
     minimize {
-        it.exclude(it.dependency {'net.runelite.jogl:.*:.*'} as Spec<? super ResolvedDependency>)
-        it.exclude(it.dependency {'xerces:xercesImpl:.*:.*'} as Spec<? super ResolvedDependency>)
+        it.exclude(it.dependency { 'net.runelite.jogl:.*:.*' } as Spec<? super ResolvedDependency>)
+        it.exclude(it.dependency { 'xerces:xercesImpl:.*:.*' } as Spec<? super ResolvedDependency>)
         it.exclude(it.project(":runelite-api") as Spec<? super ResolvedDependency>)
         it.exclude(it.project(":runescape-api") as Spec<? super ResolvedDependency>)
     }
@@ -169,10 +170,18 @@ shadowJar {
             "-Dsun.java2d.uiScale=1.0",
             "--illegal-access=permit",
             "-ea"]
+    exclude "/META-INF/*.kotlin_module"
 }
+
 tasks {
     compileJava.dependsOn project(":fernflower").tasks.getByName("decompileInjected")
     compileJava.dependsOn(":runelite-mixins:compileJava")
+    compileKotlin {
+        kotlinOptions.jvmTarget = "16"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "16"
+    }
 }
 
 processResources {

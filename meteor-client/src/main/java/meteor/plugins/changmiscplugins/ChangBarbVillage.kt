@@ -4,12 +4,12 @@ import com.google.common.collect.ImmutableSet
 import meteor.eventbus.Subscribe
 import meteor.plugins.Plugin
 import meteor.plugins.PluginDescriptor
-import meteor.plugins.api.entities.NPCs
-import meteor.plugins.api.entities.TileObjects
+import dev.hoot.api.entities.NPCs
+import dev.hoot.api.entities.TileObjects
 import net.runelite.api.coords.WorldPoint
-import meteor.plugins.api.packets.MousePackets
-import meteor.plugins.api.items.Inventory
-import meteor.plugins.api.widgets.Dialog
+import dev.hoot.api.packets.MousePackets
+import dev.hoot.api.items.Inventory
+import dev.hoot.api.widgets.Dialog
 import meteor.ui.overlay.OverlayManager
 import net.runelite.api.*
 import net.runelite.api.events.GameTick

@@ -1,8 +1,8 @@
 package meteor.plugins.changlavadrags.pluginstate
 
 import com.google.inject.Inject
-import meteor.plugins.api.coords.Area
-import meteor.plugins.api.coords.RectangularArea
+import dev.hoot.api.coords.Area
+import dev.hoot.api.coords.RectangularArea
 import meteor.plugins.changlavadrags.ChangLavaDragsPlugin
 import meteor.plugins.changlavadrags.PluginState
 import net.runelite.api.NPC

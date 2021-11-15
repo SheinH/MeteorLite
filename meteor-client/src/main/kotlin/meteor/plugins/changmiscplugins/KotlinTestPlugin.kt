@@ -7,12 +7,10 @@ import meteor.config.ConfigManager
 import meteor.eventbus.Subscribe
 import meteor.plugins.Plugin
 import meteor.plugins.PluginDescriptor
-import meteor.plugins.api.entities.NPCs
-import meteor.plugins.api.kotlin.KotlinUtils
+import dev.hoot.api.entities.NPCs
 import meteor.ui.FontManager
 import meteor.ui.overlay.OverlayManager
 import net.runelite.api.events.GameTick
-import java.awt.Font
 
 @PluginDescriptor(
     name = "Kotlin Test",

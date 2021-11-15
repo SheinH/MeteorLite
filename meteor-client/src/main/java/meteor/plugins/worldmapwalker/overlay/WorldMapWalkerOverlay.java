@@ -1,8 +1,8 @@
 package meteor.plugins.worldmapwalker.overlay;
 
-import meteor.plugins.api.entities.Players;
-import meteor.plugins.api.game.Game;
-import meteor.plugins.api.movement.pathfinder.Walker;
+import dev.hoot.api.entities.Players;
+import dev.hoot.api.game.Game;
+import dev.hoot.api.movement.pathfinder.Walker;
 import meteor.plugins.worldmapwalker.WorldMapWalkerPlugin;
 import meteor.ui.overlay.Overlay;
 import meteor.ui.overlay.OverlayLayer;

@@ -1,7 +1,7 @@
 package meteor.plugins.worldmapwalker.overlay;
 
-import meteor.plugins.api.entities.Players;
-import meteor.plugins.api.movement.pathfinder.Walker;
+import dev.hoot.api.entities.Players;
+import dev.hoot.api.movement.pathfinder.Walker;
 import net.runelite.api.Perspective;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;

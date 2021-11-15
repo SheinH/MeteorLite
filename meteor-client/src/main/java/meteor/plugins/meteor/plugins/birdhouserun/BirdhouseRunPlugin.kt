@@ -3,10 +3,10 @@ package meteor.plugins.meteor.plugins.birdhouserun
 import meteor.eventbus.Subscribe
 import meteor.plugins.Plugin
 import meteor.plugins.PluginDescriptor
-import meteor.plugins.api.game.Game
-import meteor.plugins.api.game.Skills
-import meteor.plugins.api.items.Bank
-import meteor.plugins.api.items.Inventory
+import dev.hoot.api.game.Game
+import dev.hoot.api.game.Skills
+import dev.hoot.api.items.Bank
+import dev.hoot.api.items.Inventory
 import net.runelite.api.*
 import net.runelite.api.events.GameTick
 import java.util.function.Predicate
@@ -70,14 +70,16 @@ class BirdhouseRunPlugin : Plugin() {
                 }
         }
     }
-    private class InventoryRequirement(val quantity : Int) : Predicate<Item>{
-        var ids : Collection<Int>? = null
-        var id : Int? = null
 
-        constructor(ids : Collection<Int>, quantity : Int) : this(quantity) {
+    private class InventoryRequirement(val quantity: Int) : Predicate<Item> {
+        var ids: Collection<Int>? = null
+        var id: Int? = null
+
+        constructor(ids: Collection<Int>, quantity: Int) : this(quantity) {
             this.ids = ids
         }
-        constructor(id : Int, quantity : Int) : this(quantity){
+
+        constructor(id: Int, quantity: Int) : this(quantity) {
             this.id = id
         }
 
@@ -86,15 +88,18 @@ class BirdhouseRunPlugin : Plugin() {
             return (ids?.contains(t.id)) ?: (t.id == id)
         }
     }
-    val baseRequirements = arrayListOf(
-        InventoryRequirement(ItemID.CHISEL,1),
-        InventoryRequirement(ItemID.CHISEL,1),
-        InventoryRequirement(ItemID.BARLEY_SEED,40),
-    )
-    val requirements
-    get() = {
 
-    }
+    private val baseRequirements = listOf(
+        InventoryRequirement(ItemID.CHISEL, 1),
+        InventoryRequirement(ItemID.HAMMER, 1),
+        InventoryRequirement(ItemID.BARLEY_SEED, 40),
+    )
+    private val requirements: List<InventoryRequirement>
+        get() {
+            val items = ArrayList(requirements)
+            items.add(InventoryRequirement(birdhouseType.logID, 4))
+            return items
+        }
 
 
     fun shutDownWithError(error: String) {
@@ -106,7 +111,7 @@ class BirdhouseRunPlugin : Plugin() {
     override fun startup() {
         super.startup()
         if (!Bank.isOpen()) {
-            shutDownWithError("Bank is not open!")
+            shutDownWithError("Bank is not open jogger!")
         }
         var type = BirdhouseType.typeToBuild
         if (type == null) {
@@ -155,21 +160,20 @@ class BirdhouseRunPlugin : Plugin() {
     }
 
     private fun doBanking() {
-        fun handleReq(req: Pair<Int, Int>): Boolean {
-            val item = req.first
-            var quant = req.second
-            val bankItem = Bank.getFirst(item) ?: return false
+        fun handleReq(req: InventoryRequirement): Boolean {
+            var quant = req.quantity
+            val bankItem = Bank.getFirst(req) ?: return false
             if (bankItem.quantity >= quant) {
                 for (x in 0 until quant) {
-                    Bank.withdraw(item, 1, Bank.WithdrawMode.ITEM)
+                    Bank.withdraw(req, 1, Bank.WithdrawMode.ITEM)
                 }
                 return true
             }
             return false
         }
-        for (x in initialRequirements) {
+        for (x in requirements) {
             if (!handleReq(x)) {
-                shutDownWithError("Missing item requirement: ID=${x.first} Quantity=${x.second}")
+                shutDownWithError("Missing item requirement! ")
             }
         }
         state = State.BANKING2

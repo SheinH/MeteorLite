@@ -1,18 +1,16 @@
 package meteor.plugins.changmiscplugins
 
 import com.google.inject.Inject
+import dev.hoot.api.entities.NPCs
+import dev.hoot.api.game.GameThread
+import dev.hoot.api.items.Inventory
+import dev.hoot.api.packets.MousePackets
 import meteor.eventbus.Subscribe
 import meteor.plugins.Plugin
 import meteor.plugins.PluginDescriptor
-import meteor.plugins.api.entities.NPCs
-import meteor.plugins.api.game.GameThread
-import meteor.plugins.api.items.Inventory
-import meteor.plugins.api.packets.MousePackets
-import net.runelite.api.Item
-import net.runelite.api.ItemID
-import net.runelite.api.MenuAction
-import net.runelite.api.NPC
+import net.runelite.api.*
 import net.runelite.api.events.GameTick
+import net.runelite.api.widgets.WidgetInfo
 import org.apache.commons.lang3.time.StopWatch
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -48,8 +46,6 @@ class ChangBarbFish : Plugin() {
         }
     val nearestFishingSpot: NPC?
         get() = NPCs.getNearest(fishingSpotFilter)
-    val fishInInventory: Item?
-        get() = Inventory.getFirst(ItemID.LEAPING_STURGEON, ItemID.LEAPING_TROUT, ItemID.LEAPING_SALMON)
 
     override fun startup() {
         runtime.reset()
@@ -101,6 +97,8 @@ class ChangBarbFish : Plugin() {
 
     var runtime = StopWatch()
 
+    var tickDelay = 0
+
     @Subscribe
     fun onGameTick(event: GameTick?) {
         if (runtime.getTime(TimeUnit.MINUTES) >= 100 || !Inventory.contains(ItemID.FEATHER)) {
@@ -109,6 +107,10 @@ class ChangBarbFish : Plugin() {
         }
         if (handleBreaks())
             return
+        if (tickDelay > 0) {
+            tickDelay--
+            return
+        }
         tickCtr++
         tickCycle++
         val fishingSpot = adjacentFishingSpot
@@ -116,11 +118,9 @@ class ChangBarbFish : Plugin() {
             handleFishingSpotMoved()
             return
         }
-        if ((tickCycle > 3 || (!isFourTick && tickCycle == 3))) {
-            tickFish(fishingSpot)
-            tickCycle = 0
-            isFourTick = Random.nextInt(50) == 0
-        }
+//        if ((tickCycle > 3 || (!isFourTick && tickCycle == 3))) {
+        tickFish(fishingSpot)
+        tickDelay = if (Random.nextInt(50) == 0) 3 else 2
     }
 
 
@@ -155,30 +155,45 @@ class ChangBarbFish : Plugin() {
         }
     }
 
+
+    fun itemOnItem(item1: Item, item2: Item) {
+        MousePackets.queueClickPacket(0,0)
+        client.selectedItemWidget = WidgetInfo.INVENTORY.packedId
+        client.selectedItemSlot = item1.slot
+        client.setSelectedItemID(item1.id)
+        client.invokeMenuAction(
+            "",
+            "",
+            item2.id,
+            MenuAction.ITEM_USE_ON_WIDGET_ITEM.id,
+            item2.slot,
+            item2.widgetId
+        )
+    }
+
     private fun tickFish(fishingSpot: NPC) {
+//        val marrentill = Inventory.getFirst(ItemID.MARRENTILL)
+//        val swampTar = Inventory.getFirst(ItemID.SWAMP_TAR)
+//        val fish = fishInInventory
+//        swampTar.useOn(marrentill)
+//        fish?.interact("Drop")
+//        fishingSpot.interact(0)
         val marrentill = Inventory.getFirst(ItemID.MARRENTILL)
         val swampTar = Inventory.getFirst(ItemID.SWAMP_TAR)
+        val fish = Inventory.getFirst(ItemID.LEAPING_STURGEON, ItemID.LEAPING_TROUT, ItemID.LEAPING_SALMON)
         val knife = Inventory.getFirst(ItemID.KNIFE)
-        val fish = fishInInventory
-//        if (fish != null) {
-//            knife.useOn(fish)
-//            fishingSpot.interact(0)
-//        } else {
-//            swampTar.useOn(marrentill)
-//            Inventory.getFirst(ItemID.ROE, ItemID.CAVIAR)?.interact("Drop")
-//            fishingSpot.interact(0)
-//        }
-//        executor.schedule({
-//            Inventory.getFirst(ItemID.ROE, ItemID.CAVIAR)?.interact("Eat")
-//            var item = Inventory.getFirst(ItemID.ROE, ItemID.CAVIAR)
-//            if(item != null) {
-//                item.interact("Eat")
-//                Time.sleep(100)
-//            }
-//        }, 100, TimeUnit.MILLISECONDS)
-        swampTar.useOn(marrentill)
-        fish?.interact("Drop")
-        fishingSpot.interact(0)
+        val food = Inventory.getFirst(ItemID.ROE, ItemID.CAVIAR)
+        if (fish != null) {
+            itemOnItem(knife,fish)
+        }
+        if (food != null) {
+            MousePackets.queueClickPacket(0,0)
+            client.invokeMenuAction("","",food.id,MenuAction.ITEM_FIRST_OPTION.id,food.slot,food.widgetId)
+        } else {
+            itemOnItem(marrentill,swampTar)
+        }
+        MousePackets.queueClickPacket(0,0)
+        client.invokeMenuAction("","",fishingSpot.index,MenuAction.NPC_FIRST_OPTION.id,-1,-1)
     }
 
 }

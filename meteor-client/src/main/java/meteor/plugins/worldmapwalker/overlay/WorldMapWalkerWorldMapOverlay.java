@@ -48,19 +48,19 @@ public class WorldMapWalkerWorldMapOverlay extends Overlay {
 
     @Override
     public Dimension render(Graphics2D graphics) {
-        if (plugin.getMapPoint() == null || !plugin.getConfig().showPaths()) {
+        if (plugin.mapPoint == null || !plugin.getConfig().showPaths()) {
             return null;
         }
         final Widget map = client.getWidget(WidgetInfo.WORLD_MAP_VIEW);
         if (map == null)
             return null;
-        var path = OverlayUtils.getDisplayPath(plugin.getMapPoint());
+        var path = OverlayUtils.getDisplayPath(plugin.mapPoint);
         if (path == null)
             return null;
         var screenPath = path.stream().map(x -> worldPointToScreenPoint(x, map)).collect(Collectors.toList());
         OverlayUtils.drawPathOnScreen(graphics, screenPath);
 
-        var destinationFlagPoint = worldMapOverlay.mapWorldPointToGraphicsPoint(plugin.getMapPoint());
+        var destinationFlagPoint = worldMapOverlay.mapWorldPointToGraphicsPoint(plugin.mapPoint);
         if (destinationFlagPoint == null)
             return null;
         destinationFlagPoint = destinationFlagPoint.offset(-6, -14);

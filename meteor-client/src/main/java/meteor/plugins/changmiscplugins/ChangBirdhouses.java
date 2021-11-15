@@ -5,15 +5,15 @@ import meteor.callback.ClientThread;
 import meteor.eventbus.Subscribe;
 import meteor.plugins.Plugin;
 import meteor.plugins.PluginDescriptor;
-import meteor.plugins.api.commons.Time;
-import meteor.plugins.api.entities.TileObjects;
-import meteor.plugins.api.game.Game;
-import meteor.plugins.api.game.GameThread;
-import meteor.plugins.api.game.Skills;
-import meteor.plugins.api.input.Mouse;
-import meteor.plugins.api.items.Inventory;
-import meteor.plugins.api.packets.MousePackets;
-import meteor.plugins.api.widgets.Dialog;
+import dev.hoot.api.commons.Time;
+import dev.hoot.api.entities.TileObjects;
+import dev.hoot.api.game.Game;
+import dev.hoot.api.game.GameThread;
+import dev.hoot.api.game.Skills;
+import dev.hoot.api.input.Mouse;
+import dev.hoot.api.items.Inventory;
+import dev.hoot.api.packets.MousePackets;
+import dev.hoot.api.widgets.Dialog;
 import meteor.util.Timer;
 import net.runelite.api.*;
 import net.runelite.api.coords.LocalPoint;
@@ -73,6 +73,7 @@ public class ChangBirdhouses extends Plugin {
     }
     @Inject
     private ClientThread clientThread;
+
 
     private static final Set<Integer> seedIDs = Set.of(
             ItemID.BARLEY_SEED,
@@ -346,8 +347,6 @@ public class ChangBirdhouses extends Plugin {
             state = AutoBirdhouseState.IDLE;
             return;
         }
-        //seed.useOn(getCurrentBirdhouse());
-        //ItemPackets.queueItemUseOnGameObjectPacket();
         useItemOnObject(seed,getCurrentBirdhouse());
     }
 
@@ -377,7 +376,6 @@ public class ChangBirdhouses extends Plugin {
                 birdhouseType.logID
         );
         MousePackets.queueClickPacket(0,0);
-//        ItemPackets.useItemOnItem(clockwork,logs);
         clockwork.useOn(logs);
         return;
     }
@@ -389,7 +387,6 @@ public class ChangBirdhouses extends Plugin {
         }
         var birdhouse = getCurrentBirdhouse();
         MousePackets.queueClickPacket(0,0);
-//        TileObjectPackets.tileObjectAction(birdhouse,"Empty",0);
         birdhouse.interact("Empty");
     }
 

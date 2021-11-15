@@ -6,7 +6,7 @@ import meteor.input.KeyListener
 import meteor.input.KeyManager
 import meteor.plugins.Plugin
 import meteor.plugins.PluginDescriptor
-import meteor.plugins.api.packets.MousePackets
+import dev.hoot.api.packets.MousePackets
 import net.runelite.api.MenuAction
 import net.runelite.api.events.GameTick
 import net.runelite.api.events.MenuOptionClicked
